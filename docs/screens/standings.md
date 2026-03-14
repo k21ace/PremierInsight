@@ -74,7 +74,9 @@ Server Component のため `useState` なし。
 |------|-----|
 | `title` | `"プレミアリーグ 順位表 2025-26 | PremierInsight"` |
 | `description` | `"プレミアリーグの最新順位表。勝点・得失点差・直近5試合の結果をリアルタイムで確認できます。"` |
-| OGP | 未設定 |
+| OGP画像 | `/api/og?title=プレミアリーグ+順位表+2025-26`（動的生成） |
+| Twitter Card | `summary_large_image` |
+| JSON-LD | `BreadcrumbList`（ホーム → 順位表） |
 
 ---
 

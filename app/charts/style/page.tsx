@@ -6,10 +6,36 @@ import StyleChartSP from "@/components/charts/StyleChartSP";
 
 export const revalidate = 3600;
 
+const OG_TITLE = "プレミアリーグ 攻撃スタイル分析 2025-26 | PremierInsight";
+const OG_DESC =
+  "全20チームの得点力・守備力を散布図で可視化。チームの戦術傾向が一目でわかります。";
+
 export const metadata: Metadata = {
-  title: "プレミアリーグ 攻撃スタイル分析 2025-26 | PremierInsight",
-  description:
-    "プレミアリーグ全20チームの得点力・守備力を散布図で可視化。強豪・攻撃型・守備型チームの傾向が一目でわかります。",
+  title: OG_TITLE,
+  description: OG_DESC,
+  openGraph: {
+    title: OG_TITLE,
+    description: OG_DESC,
+    url: "/charts/style",
+    siteName: "PremierInsight",
+    images: [
+      {
+        url: `/api/og?title=${encodeURIComponent("プレミアリーグ 攻撃スタイル分析 2025-26")}`,
+        width: 1200,
+        height: 630,
+      },
+    ],
+    locale: "ja_JP",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: OG_TITLE,
+    description: OG_DESC,
+    images: [
+      `/api/og?title=${encodeURIComponent("プレミアリーグ 攻撃スタイル分析 2025-26")}`,
+    ],
+  },
 };
 
 export default async function StylePage() {

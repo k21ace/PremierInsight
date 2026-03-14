@@ -4,6 +4,7 @@ import Link from "next/link";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { getAllArticles, getArticleBySlug } from "@/lib/articles";
 import mdxComponents from "@/components/mdx/MdxComponents";
+import { JsonLd } from "@/components/JsonLd";
 
 export const revalidate = 3600;
 
@@ -20,9 +21,26 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   try {
     const article = getArticleBySlug(slug);
+    const title = `${article.title} | PremierInsight`;
+    const ogImage = `/api/og?title=${encodeURIComponent(article.title)}`;
     return {
-      title: `${article.title} | PremierInsight`,
+      title,
       description: article.description,
+      openGraph: {
+        title,
+        description: article.description,
+        url: `/articles/${slug}`,
+        siteName: "PremierInsight",
+        images: [{ url: ogImage, width: 1200, height: 630 }],
+        locale: "ja_JP",
+        type: "article",
+      },
+      twitter: {
+        card: "summary_large_image",
+        title,
+        description: article.description,
+        images: [ogImage],
+      },
     };
   } catch {
     return {};
@@ -47,6 +65,19 @@ export default async function ArticleDetailPage({ params }: Props) {
 
   return (
     <main className="min-h-screen bg-gray-50">
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "Article",
+          headline: article.title,
+          description: article.description,
+          datePublished: article.publishedAt,
+          publisher: {
+            "@type": "Organization",
+            name: "PremierInsight",
+          },
+        }}
+      />
       <div className="max-w-3xl mx-auto px-4 py-6">
         {/* ヘッダー */}
         <div className="bg-white border border-gray-200 rounded shadow-sm p-6 mb-6">

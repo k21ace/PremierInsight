@@ -2,11 +2,38 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { getStandingsWithForm } from "@/lib/football-api";
 import type { Standing } from "@/types/football";
+import { JsonLd } from "@/components/JsonLd";
+
+const OG_TITLE = "プレミアリーグ 順位表 2025-26 最新 | PremierInsight";
+const OG_DESC =
+  "プレミアリーグの最新順位表。勝点・得失点差・直近5試合の結果をリアルタイムで確認。";
 
 export const metadata: Metadata = {
-  title: "プレミアリーグ 順位表 2025-26 | PremierInsight",
-  description:
-    "プレミアリーグの最新順位表。勝点・得失点差・直近5試合の結果をリアルタイムで確認できます。",
+  title: OG_TITLE,
+  description: OG_DESC,
+  openGraph: {
+    title: OG_TITLE,
+    description: OG_DESC,
+    url: "/standings",
+    siteName: "PremierInsight",
+    images: [
+      {
+        url: `/api/og?title=${encodeURIComponent("プレミアリーグ 順位表 2025-26")}`,
+        width: 1200,
+        height: 630,
+      },
+    ],
+    locale: "ja_JP",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: OG_TITLE,
+    description: OG_DESC,
+    images: [
+      `/api/og?title=${encodeURIComponent("プレミアリーグ 順位表 2025-26")}`,
+    ],
+  },
 };
 
 // 順位帯ごとの左ボーダークラス
@@ -175,6 +202,16 @@ export default async function StandingsPage() {
 
   return (
     <main className="min-h-screen bg-gray-50">
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "ホーム", item: "https://premier-insight.vercel.app" },
+            { "@type": "ListItem", position: 2, name: "順位表", item: "https://premier-insight.vercel.app/standings" },
+          ],
+        }}
+      />
       <div className="max-w-5xl mx-auto px-4 py-6">
         {/* ページ見出し */}
         <h1 className="text-xl font-semibold tracking-tight text-gray-900 mb-4">

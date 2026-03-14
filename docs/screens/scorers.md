@@ -65,8 +65,10 @@ Server Component のため `useState` なし。
 | 項目 | 値 |
 |------|-----|
 | `title` | `"プレミアリーグ 得点王ランキング 2025-26 | PremierInsight"` |
-| `description` | `"プレミアリーグの得点王・アシストランキング。最新のゴール数・アシスト数をランキング形式で確認できます。"` |
-| OGP | 未設定 |
+| `description` | `"プレミアリーグの得点王・アシストランキング。最新のゴール数をランキングで確認。"` |
+| OGP画像 | `/api/og?title=プレミアリーグ+得点王ランキング+2025-26`（動的生成） |
+| Twitter Card | `summary_large_image` |
+| JSON-LD | `BreadcrumbList`（ホーム → 得点王ランキング） |
 
 ---
 

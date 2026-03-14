@@ -5,10 +5,37 @@ import RaceChart from "./RaceChart";
 
 export const revalidate = 3600;
 
+const OG_TITLE =
+  "プレミアリーグ 優勝争い・降格争いチャート 2025-26 | PremierInsight";
+const OG_DESC =
+  "節ごとの勝点推移を可視化。優勝争いと降格争いをリアルタイムで追えます。";
+
 export const metadata: Metadata = {
-  title: "プレミアリーグ 優勝争い・降格争いチャート 2025-26 | PremierInsight",
-  description:
-    "プレミアリーグの節ごとの勝点推移を可視化。優勝争いと降格争いをリアルタイムで追えます。",
+  title: OG_TITLE,
+  description: OG_DESC,
+  openGraph: {
+    title: OG_TITLE,
+    description: OG_DESC,
+    url: "/charts/race",
+    siteName: "PremierInsight",
+    images: [
+      {
+        url: `/api/og?title=${encodeURIComponent("プレミアリーグ 優勝争い・降格争いチャート 2025-26")}`,
+        width: 1200,
+        height: 630,
+      },
+    ],
+    locale: "ja_JP",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: OG_TITLE,
+    description: OG_DESC,
+    images: [
+      `/api/og?title=${encodeURIComponent("プレミアリーグ 優勝争い・降格争いチャート 2025-26")}`,
+    ],
+  },
 };
 
 export default async function RacePage() {

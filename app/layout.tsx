@@ -23,6 +23,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL ?? "https://premier-insight.vercel.app",
+  ),
   title: "PremierInsight",
   description: "プレミアリーグ データ分析サイト",
 };

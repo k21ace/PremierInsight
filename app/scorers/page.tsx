@@ -2,11 +2,38 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { getScorers } from "@/lib/football-api";
 import type { Scorer } from "@/types/football";
+import { JsonLd } from "@/components/JsonLd";
+
+const OG_TITLE = "プレミアリーグ 得点王ランキング 2025-26 | PremierInsight";
+const OG_DESC =
+  "プレミアリーグの得点王・アシストランキング。最新のゴール数をランキングで確認。";
 
 export const metadata: Metadata = {
-  title: "プレミアリーグ 得点王ランキング 2025-26 | PremierInsight",
-  description:
-    "プレミアリーグの得点王・アシストランキング。最新のゴール数・アシスト数をランキング形式で確認できます。",
+  title: OG_TITLE,
+  description: OG_DESC,
+  openGraph: {
+    title: OG_TITLE,
+    description: OG_DESC,
+    url: "/scorers",
+    siteName: "PremierInsight",
+    images: [
+      {
+        url: `/api/og?title=${encodeURIComponent("プレミアリーグ 得点王ランキング 2025-26")}`,
+        width: 1200,
+        height: 630,
+      },
+    ],
+    locale: "ja_JP",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: OG_TITLE,
+    description: OG_DESC,
+    images: [
+      `/api/og?title=${encodeURIComponent("プレミアリーグ 得点王ランキング 2025-26")}`,
+    ],
+  },
 };
 
 // 順位バッジのクラス（1〜3位のみ）
@@ -104,6 +131,16 @@ export default async function ScorersPage() {
 
   return (
     <main className="min-h-screen bg-gray-50">
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "ホーム", item: "https://premier-insight.vercel.app" },
+            { "@type": "ListItem", position: 2, name: "得点王ランキング", item: "https://premier-insight.vercel.app/scorers" },
+          ],
+        }}
+      />
       <div className="max-w-3xl mx-auto px-4 py-6">
         <h1 className="text-xl font-semibold tracking-tight text-gray-900 mb-6">
           得点王ランキング

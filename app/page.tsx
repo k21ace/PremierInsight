@@ -1,9 +1,41 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { getFeaturedArticles } from "@/lib/articles";
 import { getMatches } from "@/lib/football-api";
 import { convertToJSTShort } from "@/lib/utils";
+import { JsonLd } from "@/components/JsonLd";
 
 export const revalidate = 1800;
+
+const OG_TITLE = "PremierInsight - プレミアリーグ データ分析";
+const OG_DESC =
+  "プレミアリーグの順位表・試合結果・得点王・データ分析を日本語で。毎節更新。";
+
+export const metadata: Metadata = {
+  title: OG_TITLE,
+  description: OG_DESC,
+  openGraph: {
+    title: OG_TITLE,
+    description: OG_DESC,
+    url: "/",
+    siteName: "PremierInsight",
+    images: [
+      {
+        url: `/api/og?title=${encodeURIComponent("PremierInsight")}`,
+        width: 1200,
+        height: 630,
+      },
+    ],
+    locale: "ja_JP",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: OG_TITLE,
+    description: OG_DESC,
+    images: [`/api/og?title=${encodeURIComponent("PremierInsight")}`],
+  },
+};
 
 export default async function Home() {
   const [featuredArticles, matchesData] = await Promise.all([
@@ -17,6 +49,16 @@ export default async function Home() {
 
   return (
     <main className="min-h-screen bg-gray-50">
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: "PremierInsight",
+          url: "https://premier-insight.vercel.app",
+          description: "プレミアリーグのデータ分析サイト",
+          inLanguage: "ja",
+        }}
+      />
       <div className="max-w-3xl mx-auto px-4 py-8 space-y-8">
 
         {/* ヒーローエリア */}

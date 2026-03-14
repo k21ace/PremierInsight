@@ -36,6 +36,8 @@ football-data.org API v4
 | MDX | next-mdx-remote | — |
 | MDXパーサー | gray-matter | — |
 | 読了時間計算 | reading-time | — |
+| OGP画像生成 | next/og（ImageResponse） | — |
+| サイトマップ | next-sitemap | — |
 | アナリティクス | @next/third-parties（GA4） | — |
 | ホスティング | Vercel | — |
 | データソース | football-data.org API v4 | — |
@@ -52,6 +54,10 @@ c:/ws/PremierInsight/
 │   ├── page.tsx                # トップページ（ピックアップ記事・最新試合結果）
 │   ├── globals.css             # グローバルスタイル（Tailwind ベース）
 │   ├── favicon.ico
+│   │
+│   ├── api/
+│   │   └── og/
+│   │       └── route.tsx       # 動的OGP画像生成（Edge Runtime・1200×630）
 │   │
 │   ├── standings/
 │   │   └── page.tsx            # 順位表（Server Component・ISR 3600秒）
@@ -82,6 +88,7 @@ c:/ws/PremierInsight/
 │   │   └── Header.tsx          # 共通ヘッダー（2行構成・5項目ナビ・Client Component）
 │   ├── mdx/
 │   │   └── MdxComponents.tsx   # MDX用カスタムコンポーネント（h2/h3/p/ul/ol など）
+│   ├── JsonLd.tsx              # JSON-LD構造化データ出力コンポーネント
 │   └── charts/
 │       ├── chart-shared.tsx    # チャート共通型・buildChartData・CustomTooltip
 │       ├── RaceChartPC.tsx     # レースチャート PC版（500px・全機能）

@@ -102,9 +102,11 @@ APIは使用しない。ファイルシステムから直接取得。
 
 | 項目 | 値 |
 |------|-----|
-| `title` | `"分析記事 | PremierInsight"` |
-| `description` | `"プレミアリーグの戦術・データ分析記事一覧。マッチレポートや統計分析をお届けします。"` |
-| OGP | 未設定 |
+| `title` | `"プレミアリーグ 分析記事一覧 | PremierInsight"` |
+| `description` | `"プレミアリーグの試合分析・データ解説記事。毎節更新。"` |
+| OGP画像 | `/api/og?title=プレミアリーグ+分析記事一覧`（動的生成） |
+| Twitter Card | `summary_large_image` |
+| JSON-LD | なし |
 
 ### 記事詳細
 
@@ -112,7 +114,9 @@ APIは使用しない。ファイルシステムから直接取得。
 |------|-----|
 | `title` | `"${article.title} | PremierInsight"`（`generateMetadata` で動的生成） |
 | `description` | `article.description`（フロントマターから） |
-| OGP | 未設定 |
+| OGP画像 | `/api/og?title=${encodeURIComponent(article.title)}`（動的生成） |
+| Twitter Card | `summary_large_image` |
+| JSON-LD | `Article` スキーマ（`headline`, `description`, `datePublished`, `publisher`） |
 
 `generateStaticParams()` で全記事のslugを列挙し、ビルド時に静的生成。
 
@@ -123,4 +127,3 @@ APIは使用しない。ファイルシステムから直接取得。
 - 記事ファイルを追加してもビルド/再デプロイが必要（`revalidate = 3600` だが `generateStaticParams` によるSSGのため）
 - タグフィルターは URL に反映されないため、ページリロードでフィルターがリセットされる
 - 記事検索機能は未実装
-- OGP画像（SNS共有時のサムネイル）は未設定
