@@ -1,26 +1,39 @@
 @import "tailwindcss";
 
+/* ── PremierInsight カラーパレット ─────────────────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* ページ・カード */
+  --color-bg-page:   #f9fafb; /* bg-gray-50  */
+  --color-bg-card:   #ffffff; /* bg-white    */
+  --color-bg-hover:  #f9fafb; /* bg-gray-50  */
+
+  /* ボーダー */
+  --color-border:    #e5e7eb; /* border-gray-200 */
+
+  /* テキスト */
+  --color-text-primary:   #111827; /* text-gray-900 */
+  --color-text-secondary: #6b7280; /* text-gray-500 */
+
+  /* アクセント */
+  --color-accent:    #7c3aed; /* text-violet-600 */
+
+  /* W/D/L バッジ */
+  --color-win:  #16a34a; /* bg-green-600 */
+  --color-draw: #9ca3af; /* bg-gray-400  */
+  --color-loss: #ef4444; /* bg-red-500   */
+
+  /* 順位圏ボーダー */
+  --color-zone-cl:         #3b82f6; /* border-blue-500   */
+  --color-zone-el:         #fb923c; /* border-orange-400 */
+  --color-zone-relegation: #ef4444; /* border-red-500    */
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-sans: var(--font-inter), var(--font-noto-sans-jp), sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-bg-page);
+  color: var(--color-text-primary);
 }
