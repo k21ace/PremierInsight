@@ -30,21 +30,9 @@ export default async function RacePage() {
   // 降格争いアノテーション用：17位チームID（降格圏外の境界）
   const safeZoneTeamId = table[16]?.team.id ?? null;
 
-  const seasonLabel = finishedData.resultSet
-    ? `${finishedData.resultSet.first.slice(0, 4)}–${finishedData.resultSet.last.slice(2, 4)}`
-    : "";
-
   return (
     <main className="min-h-screen bg-gray-50">
       <div className="max-w-5xl mx-auto px-4 py-6">
-        <h1 className="text-xl font-semibold tracking-tight text-gray-900 mb-6">
-          優勝争い・降格争いチャート
-          {seasonLabel && (
-            <span className="ml-2 text-sm font-normal text-gray-500">
-              {seasonLabel}
-            </span>
-          )}
-        </h1>
         <RaceChart
           timelines={timelines}
           matches={finishedData.matches ?? []}
