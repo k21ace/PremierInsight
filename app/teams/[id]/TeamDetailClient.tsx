@@ -91,8 +91,8 @@ export default function TeamDetailClient({
 }: Props) {
   const chartData = recentMatches.map((m) => ({
     matchday: m.matchday,
-    得点: m.scored,
-    失点: m.conceded,
+    goalsFor: m.scored,
+    goalsAgainst: m.conceded,
     result: m.result,
   }));
 
@@ -182,18 +182,20 @@ export default function TeamDetailClient({
               />
               <Line
                 type="monotone"
-                dataKey="失点"
-                stroke="#9ca3af"
+                dataKey="goalsFor"
+                name="得点"
+                stroke="#3b82f6"
                 strokeWidth={2}
-                dot={{ r: 4, fill: "#9ca3af" }}
+                dot={{ r: 4, fill: "#3b82f6" }}
                 activeDot={{ r: 5 }}
               />
               <Line
                 type="monotone"
-                dataKey="得点"
-                stroke="#7c3aed"
+                dataKey="goalsAgainst"
+                name="失点"
+                stroke="#ef4444"
                 strokeWidth={2}
-                dot={{ r: 4, fill: "#7c3aed" }}
+                dot={{ r: 4, fill: "#ef4444" }}
                 activeDot={{ r: 5 }}
               />
             </LineChart>
