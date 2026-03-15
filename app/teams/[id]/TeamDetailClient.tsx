@@ -178,7 +178,18 @@ export default function TeamDetailClient({
                 }}
               />
               <Legend
-                wrapperStyle={{ fontSize: 11, paddingTop: 4 }}
+                content={() => (
+                  <div style={{ display: "flex", gap: 16, justifyContent: "center", fontSize: 12 }}>
+                    <span style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                      <span style={{ width: 24, height: 2, background: "#3b82f6", display: "inline-block" }} />
+                      得点
+                    </span>
+                    <span style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                      <span style={{ width: 24, height: 2, background: "#ef4444", display: "inline-block" }} />
+                      失点
+                    </span>
+                  </div>
+                )}
               />
               <Line
                 type="monotone"
