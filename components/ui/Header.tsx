@@ -9,6 +9,7 @@ const navLinks = [
   { href: "/players",     label: "Player",   activePrefix: "/players" },
   { href: "/teams",       label: "チーム",   activePrefix: "/teams" },
   { href: "/charts/race", label: "分析",     activePrefix: "/charts" },
+  { href: "/simulator",   label: "予測",     activePrefix: "/simulator" },
   { href: "/articles",    label: "記事",     activePrefix: "/articles" },
 ];
 

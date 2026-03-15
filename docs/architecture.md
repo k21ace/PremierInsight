@@ -93,6 +93,10 @@ c:/ws/PremierInsight/
 │   │       ├── page.tsx        # H/A比較（Server Component・ISR 3600秒）
 │   │       └── HomeAwayClient.tsx # ランキング・棒グラフ・テーブル（Client Component）
 │   │
+│   ├── simulator/
+│   │   ├── page.tsx            # 順位予測シミュレーター（Server Component・ISR standings:3600秒/matches:1800秒）
+│   │   └── SimulatorClient.tsx # H/D/A予測入力・リアルタイム順位表・サマリー（Client Component）
+│   │
 │   └── articles/
 │       ├── page.tsx            # 記事一覧（Server Component）
 │       ├── ArticlesView.tsx    # タグフィルター・カード一覧（Client Component）
@@ -101,7 +105,7 @@ c:/ws/PremierInsight/
 │
 ├── components/
 │   ├── ui/
-│   │   └── Header.tsx          # 共通ヘッダー（2行構成・6項目ナビ・Client Component）
+│   │   └── Header.tsx          # 共通ヘッダー（2行構成・7項目ナビ・Client Component）
 │   ├── mdx/
 │   │   └── MdxComponents.tsx   # MDX用カスタムコンポーネント（h2/h3/p/ul/ol など）
 │   ├── JsonLd.tsx              # JSON-LD構造化データ出力コンポーネント
@@ -120,6 +124,7 @@ c:/ws/PremierInsight/
 │   │   ├── player-stats.ts     # 選手詳細スタッツ モックデータ（PlayerDetailStats型）
 │   │   └── player-career.ts    # 選手キャリア履歴 モックデータ（PlayerCareer型）
 │   ├── chart-utils.ts          # チャート用データ加工関数群
+│   ├── simulator-utils.ts      # シミュレーター用型・matchToSimulator・calcSimulation
 │   ├── team-colors.ts          # チームID → チームカラー定義
 │   └── utils.ts                # 汎用ユーティリティ（UTC→JST変換など）
 │
@@ -143,6 +148,8 @@ c:/ws/PremierInsight/
 │       ├── scorers.md
 │       ├── charts-race.md
 │       ├── charts-style.md
+│       ├── charts-home-away.md
+│       ├── simulator.md
 │       └── articles.md
 │
 ├── public/                     # 静的ファイル

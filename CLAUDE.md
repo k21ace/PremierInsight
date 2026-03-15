@@ -9,6 +9,7 @@
 | Player | /players |
 | チーム | /teams |
 | 分析 | /charts/race |
+| 予測 | /simulator |
 | 記事 | /articles |
 
 ## 開発ルール
