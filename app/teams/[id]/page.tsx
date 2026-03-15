@@ -70,6 +70,7 @@ function buildMatchSummary(match: Match, teamId: number): MatchSummary {
   return {
     id: match.id,
     utcDate: match.utcDate,
+    matchday: match.matchday,
     isHome,
     opponentId: opponent.id,
     opponentName: opponent.name,

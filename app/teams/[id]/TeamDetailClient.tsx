@@ -16,6 +16,7 @@ import type { Standing } from "@/types/football";
 export interface MatchSummary {
   id: number;
   utcDate: string;
+  matchday: number;
   isHome: boolean;
   opponentId: number;
   opponentName: string;
@@ -89,7 +90,7 @@ export default function TeamDetailClient({
   recentMatches,
 }: Props) {
   const chartData = recentMatches.map((m) => ({
-    label: `${m.opponentShortName} ${m.isHome ? "H" : "A"}`,
+    matchday: m.matchday,
     得点: m.scored,
     失点: m.conceded,
     result: m.result,
@@ -159,12 +160,10 @@ export default function TeamDetailClient({
             >
               <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
               <XAxis
-                dataKey="label"
-                tick={{ fontSize: 10, fill: "#6b7280" }}
-                interval={0}
-                angle={-30}
-                textAnchor="end"
-                height={40}
+                dataKey="matchday"
+                tickFormatter={(v) => `第${v}節`}
+                tick={{ fontSize: 11, fill: "#9ca3af" }}
+                angle={0}
               />
               <YAxis
                 tick={{ fontSize: 10, fill: "#6b7280" }}
