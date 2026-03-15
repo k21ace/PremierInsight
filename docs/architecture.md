@@ -83,12 +83,15 @@ c:/ws/PremierInsight/
 │   │       └── TeamDetailClient.tsx # トレンドグラフ・試合リスト・ホーム/アウェイ（Client Component）
 │   │
 │   ├── charts/
-│   │   ├── layout.tsx          # チャートサブナビ（Client Component）
+│   │   ├── layout.tsx          # チャートサブナビ（Client Component・3タブ）
 │   │   ├── race/
 │   │   │   ├── page.tsx        # レースチャート（Server Component・ISR 3600秒）
 │   │   │   └── RaceChart.tsx   # タブ切り替え・グラフ制御（Client Component）
-│   │   └── style/
-│   │       └── page.tsx        # スタイル分析（Server Component・ISR 3600秒）
+│   │   ├── style/
+│   │   │   └── page.tsx        # スタイル分析（Server Component・ISR 3600秒）
+│   │   └── home-away/
+│   │       ├── page.tsx        # H/A比較（Server Component・ISR 3600秒）
+│   │       └── HomeAwayClient.tsx # ランキング・棒グラフ・テーブル（Client Component）
 │   │
 │   └── articles/
 │       ├── page.tsx            # 記事一覧（Server Component）

@@ -1,6 +1,78 @@
 import type { Match, Standing, TeamTimeline } from "@/types/football";
 import { getTeamColor } from "./team-colors";
 
+// ─── HomeAwayStats ─────────────────────────────────────────
+
+export interface HomeAwayStatEntry {
+  played: number;
+  won: number;
+  drawn: number;
+  lost: number;
+  goalsFor: number;
+  goalsAgainst: number;
+  points: number;
+  winRate: number;
+  ppg: number;
+}
+
+export interface HomeAwayStats {
+  teamId: number;
+  teamName: string;
+  shortName: string;
+  crestUrl: string;
+  home: HomeAwayStatEntry;
+  away: HomeAwayStatEntry;
+  /** ホームPPG − アウェイPPG（プラスならホーム強） */
+  homeDiff: number;
+}
+
+function toEntry(s: Standing): HomeAwayStatEntry {
+  const ppg = s.playedGames > 0
+    ? Math.round((s.points / s.playedGames) * 100) / 100
+    : 0;
+  const winRate = s.playedGames > 0
+    ? Math.round((s.won / s.playedGames) * 100)
+    : 0;
+  return {
+    played: s.playedGames,
+    won: s.won,
+    drawn: s.draw,
+    lost: s.lost,
+    goalsFor: s.goalsFor,
+    goalsAgainst: s.goalsAgainst,
+    points: s.points,
+    winRate,
+    ppg,
+  };
+}
+
+/**
+ * HOME / AWAY の順位表データからホーム・アウェイ別スタッツを算出する。
+ */
+export function calcHomeAwayStats(
+  homeTable: Standing[],
+  awayTable: Standing[],
+): HomeAwayStats[] {
+  const awayMap = new Map(awayTable.map((s) => [s.team.id, s]));
+  return homeTable.map((h) => {
+    const a = awayMap.get(h.team.id);
+    const home = toEntry(h);
+    const away = a
+      ? toEntry(a)
+      : { played: 0, won: 0, drawn: 0, lost: 0, goalsFor: 0, goalsAgainst: 0, points: 0, winRate: 0, ppg: 0 };
+    const homeDiff = Math.round((home.ppg - away.ppg) * 100) / 100;
+    return {
+      teamId: h.team.id,
+      teamName: h.team.name,
+      shortName: h.team.shortName,
+      crestUrl: h.team.crest,
+      home,
+      away,
+      homeDiff,
+    };
+  });
+}
+
 // ─── TeamStyle ────────────────────────────────────────────
 
 export interface TeamStyle {

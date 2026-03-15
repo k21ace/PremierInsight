@@ -4,8 +4,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const chartTabs = [
-  { href: "/charts/race",  label: "レースチャート" },
-  { href: "/charts/style", label: "スタイル分析" },
+  { href: "/charts/race",      label: "レースチャート" },
+  { href: "/charts/style",     label: "スタイル分析" },
+  { href: "/charts/home-away", label: "H/A比較" },
 ];
 
 export default function ChartsLayout({ children }: { children: React.ReactNode }) {
