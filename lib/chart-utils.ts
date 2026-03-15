@@ -1,4 +1,4 @@
-import type { Match, Standing, TeamTimeline } from "@/types/football";
+import type { HomeAwayTable, Match, Standing, TeamTimeline } from "@/types/football";
 import { getTeamColor } from "./team-colors";
 
 // ─── HomeAwayStats ─────────────────────────────────────────
@@ -26,7 +26,7 @@ export interface HomeAwayStats {
   homeDiff: number;
 }
 
-function toEntry(s: Standing): HomeAwayStatEntry {
+function toEntry(s: HomeAwayTable): HomeAwayStatEntry {
   const ppg = s.playedGames > 0
     ? Math.round((s.points / s.playedGames) * 100) / 100
     : 0;
@@ -48,10 +48,11 @@ function toEntry(s: Standing): HomeAwayStatEntry {
 
 /**
  * HOME / AWAY の順位表データからホーム・アウェイ別スタッツを算出する。
+ * getHomeAwayStandings() の戻り値をそのまま渡す。
  */
 export function calcHomeAwayStats(
-  homeTable: Standing[],
-  awayTable: Standing[],
+  homeTable: HomeAwayTable[],
+  awayTable: HomeAwayTable[],
 ): HomeAwayStats[] {
   const awayMap = new Map(awayTable.map((s) => [s.team.id, s]));
   return homeTable.map((h) => {

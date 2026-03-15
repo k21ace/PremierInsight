@@ -7,6 +7,7 @@
  */
 
 import type {
+  HomeAwayTable,
   Match,
   MatchesResponse,
   PersonResponse,
@@ -71,19 +72,39 @@ export async function getStandings(): Promise<StandingsResponse> {
 }
 
 /**
- * standingType（TOTAL / HOME / AWAY）を指定して順位表を取得する。
- * football-data.org 無料プランではパラメータなしで HOME/AWAY が返らない場合があるため
- * HOME・AWAY は個別リクエストで取得する。
+ * HOME と AWAY の順位表を並列取得して返す。
+ * football-data.org 無料プランでは standingType パラメータなしだと
+ * HOME/AWAY が TOTAL と同じデータになるため、個別フェッチで対応する。
  * ISR キャッシュ: 1時間（3600秒）
  */
-export async function getStandingsByType(
-  type: "TOTAL" | "HOME" | "AWAY",
-): Promise<StandingsResponse> {
-  return fetchFootball<StandingsResponse>(
-    `/competitions/${PL_ID}/standings`,
-    3600,
-    { standingType: type },
-  );
+export async function getHomeAwayStandings(): Promise<{
+  home: HomeAwayTable[];
+  away: HomeAwayTable[];
+}> {
+  const apiKey = process.env.FOOTBALL_DATA_API_KEY;
+  if (!apiKey) throw new Error("FOOTBALL_DATA_API_KEY が未設定です。");
+
+  const [homeRes, awayRes] = await Promise.all([
+    fetch(
+      `${BASE_URL}/competitions/${PL_ID}/standings?standingType=HOME`,
+      { headers: { "X-Auth-Token": apiKey }, next: { revalidate: 3600 } },
+    ),
+    fetch(
+      `${BASE_URL}/competitions/${PL_ID}/standings?standingType=AWAY`,
+      { headers: { "X-Auth-Token": apiKey }, next: { revalidate: 3600 } },
+    ),
+  ]);
+
+  if (!homeRes.ok) throw new Error(`HOME standings 取得失敗 [${homeRes.status}]`);
+  if (!awayRes.ok) throw new Error(`AWAY standings 取得失敗 [${awayRes.status}]`);
+
+  const homeData = await homeRes.json() as { standings: { table: HomeAwayTable[] }[] };
+  const awayData = await awayRes.json() as { standings: { table: HomeAwayTable[] }[] };
+
+  return {
+    home: homeData.standings[0]?.table ?? [],
+    away: awayData.standings[0]?.table ?? [],
+  };
 }
 
 /**

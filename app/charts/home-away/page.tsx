@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getStandingsByType } from "@/lib/football-api";
+import { getHomeAwayStandings } from "@/lib/football-api";
 import { calcHomeAwayStats } from "@/lib/chart-utils";
 import { JsonLd } from "@/components/JsonLd";
 import HomeAwayClient from "./HomeAwayClient";
@@ -40,19 +40,8 @@ export const metadata: Metadata = {
 };
 
 export default async function HomeAwayPage() {
-  const [homeData, awayData] = await Promise.all([
-    getStandingsByType("HOME"),
-    getStandingsByType("AWAY"),
-  ]);
-
-  const homeTable =
-    homeData.standings.find((s) => s.type === "HOME")?.table ??
-    homeData.standings[0]?.table ?? [];
-  const awayTable =
-    awayData.standings.find((s) => s.type === "AWAY")?.table ??
-    awayData.standings[0]?.table ?? [];
-
-  const stats = calcHomeAwayStats(homeTable, awayTable);
+  const { home, away } = await getHomeAwayStandings();
+  const stats = calcHomeAwayStats(home, away);
 
   return (
     <main className="min-h-screen bg-gray-50">

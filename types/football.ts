@@ -175,6 +175,27 @@ export interface PersonResponse {
   } | null;
 }
 
+// ─── HomeAwayTable ────────────────────────────────────────
+
+/** GET /competitions/PL/standings?standingType=HOME or AWAY の table 1行 */
+export type HomeAwayTable = {
+  position: number;
+  team: {
+    id: number;
+    name: string;
+    shortName: string;
+    crest: string;
+  };
+  playedGames: number;
+  won: number;
+  draw: number;
+  lost: number;
+  points: number;
+  goalsFor: number;
+  goalsAgainst: number;
+  goalDifference: number;
+};
+
 // ─── Chart ────────────────────────────────────────────────
 
 /** レースチャート用 チーム勝点推移 */
