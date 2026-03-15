@@ -16,7 +16,8 @@
 
 | エンドポイント | 関数名 | 用途 | revalidate |
 |--------------|--------|------|-----------|
-| `GET /competitions/PL/standings` | `getStandings()` | 順位表取得 | 3600秒（1時間） |
+| `GET /competitions/PL/standings` | `getStandings()` | 順位表取得（TOTAL） | 3600秒（1時間） |
+| `GET /competitions/PL/standings?standingType={type}` | `getStandingsByType(type)` | HOME / AWAY / TOTAL 個別取得 | 3600秒（1時間） |
 | `GET /competitions/PL/standings` + `GET /competitions/PL/matches` | `getStandingsWithForm()` | 順位表＋直近5試合フォームを付与 | 3600秒 / 1800秒 |
 | `GET /competitions/PL/matches` | `getMatches(options?)` | 試合一覧取得（節・ステータスで絞り込み可） | 1800秒（30分） |
 | `GET /competitions/PL/matches` | `getCurrentMatchday()` | 現在の節番号を取得（`getMatches()`経由） | 1800秒 |
@@ -24,6 +25,7 @@
 | `GET /persons/{id}` | `getPlayer(id)` | 選手詳細情報取得 | 86400秒（24時間） |
 
 > `getStandingsWithForm()` は standings と matches の2リクエストを `Promise.all` で並列実行する。
+> `getStandingsByType()` は H/A比較ページで HOME・AWAY を個別取得するために使用。無料プランでは `standingType` パラメータなしだと HOME/AWAY が返らないケースがある。
 > `getPlayer(id)` は `/persons/{id}` エンドポイントを使用。404の場合はページ側で `notFound()` を呼ぶ。
 
 ---

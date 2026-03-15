@@ -71,6 +71,22 @@ export async function getStandings(): Promise<StandingsResponse> {
 }
 
 /**
+ * standingType（TOTAL / HOME / AWAY）を指定して順位表を取得する。
+ * football-data.org 無料プランではパラメータなしで HOME/AWAY が返らない場合があるため
+ * HOME・AWAY は個別リクエストで取得する。
+ * ISR キャッシュ: 1時間（3600秒）
+ */
+export async function getStandingsByType(
+  type: "TOTAL" | "HOME" | "AWAY",
+): Promise<StandingsResponse> {
+  return fetchFootball<StandingsResponse>(
+    `/competitions/${PL_ID}/standings`,
+    3600,
+    { standingType: type },
+  );
+}
+
+/**
  * チームIDと終了済み試合リストから直近5試合のW/D/Lを計算する。
  */
 function computeForm(teamId: number, finishedMatches: Match[]): string[] {
