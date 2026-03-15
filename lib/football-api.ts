@@ -72,38 +72,79 @@ export async function getStandings(): Promise<StandingsResponse> {
 }
 
 /**
- * HOME と AWAY の順位表を並列取得して返す。
- * football-data.org 無料プランでは standingType パラメータなしだと
- * HOME/AWAY が TOTAL と同じデータになるため、個別フェッチで対応する。
- * ISR キャッシュ: 1時間（3600秒）
+ * 終了済み試合データからホーム・アウェイ別の成績を集計して返す。
+ * football-data.org 無料プランでは standingType パラメータが無視されるため、
+ * matches データから自前で H/A 成績を算出する。
+ * ISR キャッシュ: standings=3600秒 / matches=1800秒
  */
 export async function getHomeAwayStandings(): Promise<{
   home: HomeAwayTable[];
   away: HomeAwayTable[];
 }> {
-  const apiKey = process.env.FOOTBALL_DATA_API_KEY;
-  if (!apiKey) throw new Error("FOOTBALL_DATA_API_KEY が未設定です。");
-
-  const [homeRes, awayRes] = await Promise.all([
-    fetch(
-      `${BASE_URL}/competitions/${PL_ID}/standings?standingType=HOME`,
-      { headers: { "X-Auth-Token": apiKey }, next: { revalidate: 3600 } },
-    ),
-    fetch(
-      `${BASE_URL}/competitions/${PL_ID}/standings?standingType=AWAY`,
-      { headers: { "X-Auth-Token": apiKey }, next: { revalidate: 3600 } },
+  const [standingsData, matchesData] = await Promise.all([
+    fetchFootball<StandingsResponse>(`/competitions/${PL_ID}/standings`, 3600),
+    fetchFootball<MatchesResponse>(
+      `/competitions/${PL_ID}/matches`,
+      1800,
+      { status: "FINISHED" },
     ),
   ]);
 
-  if (!homeRes.ok) throw new Error(`HOME standings 取得失敗 [${homeRes.status}]`);
-  if (!awayRes.ok) throw new Error(`AWAY standings 取得失敗 [${awayRes.status}]`);
+  const totalTable = standingsData.standings[0]?.table ?? [];
+  const finishedMatches = matchesData.matches ?? [];
 
-  const homeData = await homeRes.json() as { standings: { table: HomeAwayTable[] }[] };
-  const awayData = await awayRes.json() as { standings: { table: HomeAwayTable[] }[] };
+  // チーム情報を TOTAL standings から取得し、H/A 集計用マップを初期化
+  const homeMap = new Map<number, HomeAwayTable>();
+  const awayMap = new Map<number, HomeAwayTable>();
+
+  for (const s of totalTable) {
+    const base: HomeAwayTable = {
+      position: 0,
+      team: s.team,
+      playedGames: 0, won: 0, draw: 0, lost: 0,
+      points: 0, goalsFor: 0, goalsAgainst: 0, goalDifference: 0,
+    };
+    homeMap.set(s.team.id, { ...base });
+    awayMap.set(s.team.id, { ...base });
+  }
+
+  // 終了済み試合から H/A 成績を集計
+  for (const match of finishedMatches) {
+    const hg = match.score.fullTime.home ?? 0;
+    const ag = match.score.fullTime.away ?? 0;
+
+    const h = homeMap.get(match.homeTeam.id);
+    if (h) {
+      h.playedGames++;
+      h.goalsFor += hg;
+      h.goalsAgainst += ag;
+      h.goalDifference += hg - ag;
+      if (hg > ag) { h.won++; h.points += 3; }
+      else if (hg === ag) { h.draw++; h.points += 1; }
+      else { h.lost++; }
+    }
+
+    const a = awayMap.get(match.awayTeam.id);
+    if (a) {
+      a.playedGames++;
+      a.goalsFor += ag;
+      a.goalsAgainst += hg;
+      a.goalDifference += ag - hg;
+      if (ag > hg) { a.won++; a.points += 3; }
+      else if (ag === hg) { a.draw++; a.points += 1; }
+      else { a.lost++; }
+    }
+  }
+
+  // 勝点降順 → 得失点差降順でソートし、順位を付与
+  const sortAndRank = (entries: HomeAwayTable[]): HomeAwayTable[] =>
+    [...entries]
+      .sort((a, b) => b.points - a.points || b.goalDifference - a.goalDifference)
+      .map((e, i) => ({ ...e, position: i + 1 }));
 
   return {
-    home: homeData.standings[0]?.table ?? [],
-    away: awayData.standings[0]?.table ?? [],
+    home: sortAndRank([...homeMap.values()]),
+    away: sortAndRank([...awayMap.values()]),
   };
 }
 
