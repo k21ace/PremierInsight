@@ -54,19 +54,19 @@ export default async function HomeAwayPage() {
               "@type": "ListItem",
               position: 1,
               name: "ホーム",
-              item: "https://premier-insight.vercel.app",
+              item: "https://premiernow.jp",
             },
             {
               "@type": "ListItem",
               position: 2,
               name: "分析",
-              item: "https://premier-insight.vercel.app/charts/race",
+              item: "https://premiernow.jp/charts/race",
             },
             {
               "@type": "ListItem",
               position: 3,
               name: "H/A比較",
-              item: "https://premier-insight.vercel.app/charts/home-away",
+              item: "https://premiernow.jp/charts/home-away",
             },
           ],
         }}

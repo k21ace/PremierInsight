@@ -57,13 +57,13 @@ export default async function PlayersPage() {
               "@type": "ListItem",
               position: 1,
               name: "ホーム",
-              item: "https://premier-insight.vercel.app",
+              item: "https://premiernow.jp",
             },
             {
               "@type": "ListItem",
               position: 2,
               name: "選手スタッツ",
-              item: "https://premier-insight.vercel.app/players",
+              item: "https://premiernow.jp/players",
             },
           ],
         }}

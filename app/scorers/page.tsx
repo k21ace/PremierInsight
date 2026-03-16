@@ -136,8 +136,8 @@ export default async function ScorersPage() {
           "@context": "https://schema.org",
           "@type": "BreadcrumbList",
           itemListElement: [
-            { "@type": "ListItem", position: 1, name: "ホーム", item: "https://premier-insight.vercel.app" },
-            { "@type": "ListItem", position: 2, name: "得点王ランキング", item: "https://premier-insight.vercel.app/scorers" },
+            { "@type": "ListItem", position: 1, name: "ホーム", item: "https://premiernow.jp" },
+            { "@type": "ListItem", position: 2, name: "得点王ランキング", item: "https://premiernow.jp/scorers" },
           ],
         }}
       />

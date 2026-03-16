@@ -207,8 +207,8 @@ export default async function StandingsPage() {
           "@context": "https://schema.org",
           "@type": "BreadcrumbList",
           itemListElement: [
-            { "@type": "ListItem", position: 1, name: "ホーム", item: "https://premier-insight.vercel.app" },
-            { "@type": "ListItem", position: 2, name: "順位表", item: "https://premier-insight.vercel.app/standings" },
+            { "@type": "ListItem", position: 1, name: "ホーム", item: "https://premiernow.jp" },
+            { "@type": "ListItem", position: 2, name: "順位表", item: "https://premiernow.jp/standings" },
           ],
         }}
       />

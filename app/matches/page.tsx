@@ -57,8 +57,8 @@ export default async function MatchesPage({
           "@context": "https://schema.org",
           "@type": "BreadcrumbList",
           itemListElement: [
-            { "@type": "ListItem", position: 1, name: "ホーム", item: "https://premier-insight.vercel.app" },
-            { "@type": "ListItem", position: 2, name: "試合結果・日程", item: "https://premier-insight.vercel.app/matches" },
+            { "@type": "ListItem", position: 1, name: "ホーム", item: "https://premiernow.jp" },
+            { "@type": "ListItem", position: 2, name: "試合結果・日程", item: "https://premiernow.jp/matches" },
           ],
         }}
       />

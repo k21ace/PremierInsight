@@ -129,19 +129,19 @@ export default async function TeamDetailPage({ params }: Props) {
               "@type": "ListItem",
               position: 1,
               name: "ホーム",
-              item: "https://premier-insight.vercel.app",
+              item: "https://premiernow.jp",
             },
             {
               "@type": "ListItem",
               position: 2,
               name: "チーム",
-              item: "https://premier-insight.vercel.app/teams",
+              item: "https://premiernow.jp/teams",
             },
             {
               "@type": "ListItem",
               position: 3,
               name: totalStanding.team.name,
-              item: `https://premier-insight.vercel.app/teams/${id}`,
+              item: `https://premiernow.jp/teams/${id}`,
             },
           ],
         }}

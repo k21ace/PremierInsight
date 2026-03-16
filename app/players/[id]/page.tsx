@@ -97,19 +97,19 @@ export default async function PlayerDetailPage({ params }: Props) {
               "@type": "ListItem",
               position: 1,
               name: "ホーム",
-              item: "https://premier-insight.vercel.app",
+              item: "https://premiernow.jp",
             },
             {
               "@type": "ListItem",
               position: 2,
               name: "Player",
-              item: "https://premier-insight.vercel.app/players",
+              item: "https://premiernow.jp/players",
             },
             {
               "@type": "ListItem",
               position: 3,
               name: player.name,
-              item: `https://premier-insight.vercel.app/players/${id}`,
+              item: `https://premiernow.jp/players/${id}`,
             },
           ],
         }}

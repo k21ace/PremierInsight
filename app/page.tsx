@@ -60,7 +60,7 @@ export default async function Home() {
           "@context": "https://schema.org",
           "@type": "WebSite",
           name: "PremierNow",
-          url: "https://premier-insight.vercel.app",
+          url: "https://premiernow.jp",
           description: "プレミアリーグのデータ分析サイト",
           inLanguage: "ja",
         }}

@@ -71,19 +71,19 @@ export default async function SimulatorPage() {
               "@type": "ListItem",
               position: 1,
               name: "ホーム",
-              item: "https://premier-insight.vercel.app",
+              item: "https://premiernow.jp",
             },
             {
               "@type": "ListItem",
               position: 2,
               name: "分析",
-              item: "https://premier-insight.vercel.app/charts/race",
+              item: "https://premiernow.jp/charts/race",
             },
             {
               "@type": "ListItem",
               position: 3,
               name: "順位予測",
-              item: "https://premier-insight.vercel.app/charts/simulator",
+              item: "https://premiernow.jp/charts/simulator",
             },
           ],
         }}

@@ -24,7 +24,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ?? "https://premier-insight.vercel.app",
+    process.env.NEXT_PUBLIC_SITE_URL ?? "https://premiernow.jp",
   ),
   title: "PremierNow",
   description: "プレミアリーグの今をデータで届ける。プレなうで最新情報をチェック。",

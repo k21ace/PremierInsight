@@ -59,13 +59,13 @@ export default async function TeamsPage() {
               "@type": "ListItem",
               position: 1,
               name: "ホーム",
-              item: "https://premier-insight.vercel.app",
+              item: "https://premiernow.jp",
             },
             {
               "@type": "ListItem",
               position: 2,
               name: "チーム",
-              item: "https://premier-insight.vercel.app/teams",
+              item: "https://premiernow.jp/teams",
             },
           ],
         }}

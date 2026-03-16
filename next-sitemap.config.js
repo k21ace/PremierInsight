@@ -4,7 +4,7 @@ const path = require("path");
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
   siteUrl:
-    process.env.NEXT_PUBLIC_SITE_URL || "https://premier-insight.vercel.app",
+    process.env.NEXT_PUBLIC_SITE_URL || "https://premiernow.jp",
   generateRobotsTxt: true,
   sitemapSize: 7000,
   robotsTxtOptions: {

@@ -77,7 +77,7 @@ export default function QuizClient({ quiz }: { quiz: Quiz }) {
     setTextInput("");
   }
 
-  const shareText = `【PLクイズ】${quiz.title}\n${score}/${total}問正解！\n#プレミアリーグ #PremierNow\nhttps://premier-insight.vercel.app/articles/quiz/${quiz.slug}`;
+  const shareText = `【PLクイズ】${quiz.title}\n${score}/${total}問正解！\n#プレミアリーグ #PremierNow\nhttps://premiernow.jp/articles/quiz/${quiz.slug}`;
 
   // ── 結果発表フェーズ ─────────────────────────────────
   if (isFinished) {
