@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getFeaturedArticles } from "@/lib/articles";
 import { getMatches, getUpcomingMatches } from "@/lib/football-api";
-import { convertToJSTShort, convertToJSTMedium } from "@/lib/utils";
+import { convertToJSTMedium } from "@/lib/utils";
 import { JsonLd } from "@/components/JsonLd";
 
 export const revalidate = 1800;
@@ -120,18 +120,18 @@ export default async function Home() {
             {upcomingMatches.length === 0 ? (
               <p className="text-sm text-gray-400">試合予定がありません。</p>
             ) : (
-              <div className="bg-white border border-gray-200 rounded shadow-sm divide-y divide-gray-100">
+              <div className="space-y-2">
                 {upcomingMatches.map((match) => (
-                  <div key={match.id} className="px-4 py-3 text-sm">
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-xs text-gray-400">
+                  <div key={match.id} className="bg-white border border-gray-100 rounded p-3 text-sm">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-xs text-gray-500">
                         {convertToJSTMedium(match.utcDate)}
                       </span>
                       <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded font-mono tabular-nums">
                         第{match.matchday}節
                       </span>
                     </div>
-                    <div className="flex items-center justify-center gap-3 mt-2">
+                    <div className="flex items-center justify-center gap-3">
                       <div className="flex items-center gap-1.5 min-w-0">
                         {match.homeTeam.crest && (
                           <img src={match.homeTeam.crest} alt="" className="w-5 h-5 object-contain shrink-0" />
@@ -169,29 +169,38 @@ export default async function Home() {
             {recentMatches.length === 0 ? (
               <p className="text-sm text-gray-400">試合データがありません。</p>
             ) : (
-              <div className="bg-white border border-gray-200 rounded shadow-sm divide-y divide-gray-100">
+              <div className="space-y-2">
                 {recentMatches.map((match) => (
-                  <div key={match.id} className="flex items-center justify-between px-4 py-3 text-sm">
-                    <div className="flex items-center gap-2 min-w-0">
-                      {match.homeTeam.crest && (
-                        <img src={match.homeTeam.crest} alt="" className="w-5 h-5 object-contain shrink-0" />
-                      )}
-                      <span className="text-gray-900 font-medium truncate">
-                        {match.homeTeam.shortName}
+                  <div key={match.id} className="bg-white border border-gray-100 rounded p-3 text-sm">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-xs text-gray-500">
+                        {convertToJSTMedium(match.utcDate)}
                       </span>
-                      <span className="font-mono tabular-nums text-gray-900 font-semibold shrink-0">
+                      <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded font-mono tabular-nums">
+                        第{match.matchday}節
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-center gap-3">
+                      <div className="flex items-center gap-1.5 min-w-0">
+                        {match.homeTeam.crest && (
+                          <img src={match.homeTeam.crest} alt="" className="w-5 h-5 object-contain shrink-0" />
+                        )}
+                        <span className="font-medium text-gray-900 truncate">
+                          {match.homeTeam.shortName}
+                        </span>
+                      </div>
+                      <span className="font-mono tabular-nums font-bold text-gray-900 shrink-0">
                         {match.score.fullTime.home} - {match.score.fullTime.away}
                       </span>
-                      <span className="text-gray-900 font-medium truncate">
-                        {match.awayTeam.shortName}
-                      </span>
-                      {match.awayTeam.crest && (
-                        <img src={match.awayTeam.crest} alt="" className="w-5 h-5 object-contain shrink-0" />
-                      )}
+                      <div className="flex items-center gap-1.5 min-w-0">
+                        <span className="font-medium text-gray-900 truncate">
+                          {match.awayTeam.shortName}
+                        </span>
+                        {match.awayTeam.crest && (
+                          <img src={match.awayTeam.crest} alt="" className="w-5 h-5 object-contain shrink-0" />
+                        )}
+                      </div>
                     </div>
-                    <span className="text-xs text-gray-400 shrink-0 ml-2">
-                      {convertToJSTShort(match.utcDate)}
-                    </span>
                   </div>
                 ))}
               </div>
