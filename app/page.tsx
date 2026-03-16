@@ -102,6 +102,14 @@ export default async function Home() {
               ))}
             </div>
           )}
+          <div className="mt-4 pt-4 border-t border-gray-100">
+            <Link
+              href="/articles/quiz"
+              className="text-sm text-violet-600 font-medium hover:underline"
+            >
+              クイズに挑戦する →
+            </Link>
+          </div>
         </section>
 
         {/* 試合情報 2カラム */}

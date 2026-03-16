@@ -22,6 +22,7 @@
 | [design.md](design.md) | デザインガイドライン（カラーパレット・タイポグラフィ・コンポーネント原則） |
 | [api.md](api.md) | football-data.org API仕様・エンドポイント一覧・エラーハンドリング |
 | [screens/index.md](screens/index.md) | 全画面のサマリー一覧 |
+| [screens/quiz.md](screens/quiz.md) | クイズ一覧・クイズ詳細 |
 | [screens/top.md](screens/top.md) | トップページ |
 | [screens/standings.md](screens/standings.md) | 順位表 |
 | [screens/matches.md](screens/matches.md) | 試合結果・日程 |

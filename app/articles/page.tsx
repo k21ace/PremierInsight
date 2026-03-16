@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { getAllArticles } from "@/lib/articles";
 import ArticlesView from "./ArticlesView";
 
@@ -42,6 +43,23 @@ export default function ArticlesPage() {
         <h1 className="text-xl font-semibold tracking-tight text-gray-900 mb-6">
           分析記事
         </h1>
+
+        {/* クイズ導線バナー */}
+        <div className="bg-violet-50 border border-violet-200 rounded p-4 mb-6 flex items-center justify-between">
+          <div>
+            <p className="text-sm font-medium text-violet-900">クイズで腕試し！</p>
+            <p className="text-xs text-violet-700 mt-1">
+              プレミアリーグクイズに挑戦してみよう
+            </p>
+          </div>
+          <Link
+            href="/articles/quiz"
+            className="text-sm text-violet-600 font-medium hover:underline shrink-0"
+          >
+            挑戦する →
+          </Link>
+        </div>
+
         <ArticlesView articles={articles} allTags={allTags} />
       </div>
     </main>
