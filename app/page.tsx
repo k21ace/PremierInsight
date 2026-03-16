@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getFeaturedArticles } from "@/lib/articles";
-import { getMatches } from "@/lib/football-api";
-import { convertToJSTShort } from "@/lib/utils";
+import { getMatches, getUpcomingMatches } from "@/lib/football-api";
+import { convertToJSTShort, convertToJSTMedium } from "@/lib/utils";
 import { JsonLd } from "@/components/JsonLd";
 
 export const revalidate = 1800;
@@ -38,9 +38,10 @@ export const metadata: Metadata = {
 };
 
 export default async function Home() {
-  const [featuredArticles, matchesData] = await Promise.all([
+  const [featuredArticles, matchesData, upcomingMatches] = await Promise.all([
     Promise.resolve(getFeaturedArticles()),
     getMatches({ status: "FINISHED" }),
+    getUpcomingMatches(3),
   ]);
 
   const recentMatches = [...(matchesData.matches ?? [])]
@@ -103,41 +104,101 @@ export default async function Home() {
           )}
         </section>
 
-        {/* 最新の試合結果 */}
-        <section>
-          <div className="flex items-center justify-between mb-4">
-            <p className="text-sm font-medium text-gray-500 uppercase tracking-wider">
-              最新の試合結果
-            </p>
-            <Link href="/matches" className="text-xs text-violet-600 hover:underline">
-              すべての試合を見る →
-            </Link>
-          </div>
-          {recentMatches.length === 0 ? (
-            <p className="text-sm text-gray-400">試合データがありません。</p>
-          ) : (
-            <div className="bg-white border border-gray-200 rounded shadow-sm divide-y divide-gray-100">
-              {recentMatches.map((match) => (
-                <div key={match.id} className="flex items-center justify-between px-4 py-3 text-sm">
-                  <div className="flex items-center gap-2 min-w-0">
-                    <span className="text-gray-900 font-medium truncate">
-                      {match.homeTeam.shortName}
-                    </span>
-                    <span className="font-mono tabular-nums text-gray-900 font-semibold shrink-0">
-                      {match.score.fullTime.home} - {match.score.fullTime.away}
-                    </span>
-                    <span className="text-gray-900 font-medium truncate">
-                      {match.awayTeam.shortName}
+        {/* 試合情報 2カラム */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+
+          {/* 次の試合（SP: 上、PC: 左） */}
+          <section className="order-first md:order-last">
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-sm font-medium text-gray-500 uppercase tracking-wider">
+                次の試合
+              </p>
+              <Link href="/matches" className="text-xs text-violet-600 hover:underline">
+                すべて見る →
+              </Link>
+            </div>
+            {upcomingMatches.length === 0 ? (
+              <p className="text-sm text-gray-400">試合予定がありません。</p>
+            ) : (
+              <div className="bg-white border border-gray-200 rounded shadow-sm divide-y divide-gray-100">
+                {upcomingMatches.map((match) => (
+                  <div key={match.id} className="px-4 py-3 text-sm">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-xs text-gray-400">
+                        {convertToJSTMedium(match.utcDate)}
+                      </span>
+                      <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded font-mono tabular-nums">
+                        第{match.matchday}節
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-center gap-3 mt-2">
+                      <div className="flex items-center gap-1.5 min-w-0">
+                        {match.homeTeam.crest && (
+                          <img src={match.homeTeam.crest} alt="" className="w-5 h-5 object-contain shrink-0" />
+                        )}
+                        <span className="font-medium text-gray-900 truncate">
+                          {match.homeTeam.shortName}
+                        </span>
+                      </div>
+                      <span className="text-gray-400 shrink-0 text-xs">vs</span>
+                      <div className="flex items-center gap-1.5 min-w-0">
+                        <span className="font-medium text-gray-900 truncate">
+                          {match.awayTeam.shortName}
+                        </span>
+                        {match.awayTeam.crest && (
+                          <img src={match.awayTeam.crest} alt="" className="w-5 h-5 object-contain shrink-0" />
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
+
+          {/* 直近の結果（SP: 下、PC: 右） */}
+          <section className="order-last md:order-first">
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-sm font-medium text-gray-500 uppercase tracking-wider">
+                直近の結果
+              </p>
+              <Link href="/matches" className="text-xs text-violet-600 hover:underline">
+                すべて見る →
+              </Link>
+            </div>
+            {recentMatches.length === 0 ? (
+              <p className="text-sm text-gray-400">試合データがありません。</p>
+            ) : (
+              <div className="bg-white border border-gray-200 rounded shadow-sm divide-y divide-gray-100">
+                {recentMatches.map((match) => (
+                  <div key={match.id} className="flex items-center justify-between px-4 py-3 text-sm">
+                    <div className="flex items-center gap-2 min-w-0">
+                      {match.homeTeam.crest && (
+                        <img src={match.homeTeam.crest} alt="" className="w-5 h-5 object-contain shrink-0" />
+                      )}
+                      <span className="text-gray-900 font-medium truncate">
+                        {match.homeTeam.shortName}
+                      </span>
+                      <span className="font-mono tabular-nums text-gray-900 font-semibold shrink-0">
+                        {match.score.fullTime.home} - {match.score.fullTime.away}
+                      </span>
+                      <span className="text-gray-900 font-medium truncate">
+                        {match.awayTeam.shortName}
+                      </span>
+                      {match.awayTeam.crest && (
+                        <img src={match.awayTeam.crest} alt="" className="w-5 h-5 object-contain shrink-0" />
+                      )}
+                    </div>
+                    <span className="text-xs text-gray-400 shrink-0 ml-2">
+                      {convertToJSTShort(match.utcDate)}
                     </span>
                   </div>
-                  <span className="text-xs text-gray-400 shrink-0 ml-4">
-                    {convertToJSTShort(match.utcDate)}
-                  </span>
-                </div>
-              ))}
-            </div>
-          )}
-        </section>
+                ))}
+              </div>
+            )}
+          </section>
+
+        </div>
 
       </div>
     </main>

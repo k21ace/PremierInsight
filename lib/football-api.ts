@@ -217,6 +217,35 @@ export async function getMatches(options?: {
 }
 
 /**
+ * 直近の未消化試合（SCHEDULED / TIMED）を取得する。
+ * 両ステータスを並行取得してマージし、試合日時の昇順で limit 件返す。
+ * ISR キャッシュ: 1800秒
+ */
+export async function getUpcomingMatches(limit = 3): Promise<Match[]> {
+  const [scheduledData, timedData] = await Promise.all([
+    fetchFootball<MatchesResponse>(`/competitions/${PL_ID}/matches`, 1800, { status: "SCHEDULED" }),
+    fetchFootball<MatchesResponse>(`/competitions/${PL_ID}/matches`, 1800, { status: "TIMED" }),
+  ]);
+
+  const merged = [
+    ...(scheduledData.matches ?? []),
+    ...(timedData.matches ?? []),
+  ];
+
+  // 重複除去（同一 id が両ステータスに含まれる場合）
+  const seen = new Set<number>();
+  const unique = merged.filter((m) => {
+    if (seen.has(m.id)) return false;
+    seen.add(m.id);
+    return true;
+  });
+
+  return unique
+    .sort((a, b) => new Date(a.utcDate).getTime() - new Date(b.utcDate).getTime())
+    .slice(0, limit);
+}
+
+/**
  * 現在の節（マッチデー）番号を取得する。
  * getMatches() のレスポンスに含まれる season.currentMatchday を返す。
  * 取得できない場合は matches 配列から推定する。
