@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getFeaturedArticles } from "@/lib/articles";
+import { quizzes } from "@/lib/quiz-data";
 import { getMatches, getUpcomingMatches } from "@/lib/football-api";
 import { convertToJSTMedium } from "@/lib/utils";
 import { JsonLd } from "@/components/JsonLd";
@@ -102,13 +103,40 @@ export default async function Home() {
               ))}
             </div>
           )}
-          <div className="mt-4 pt-4 border-t border-gray-100">
-            <Link
-              href="/articles/quiz"
-              className="text-sm text-violet-600 font-medium hover:underline"
-            >
-              クイズに挑戦する →
+        </section>
+
+        {/* ピックアップクイズ */}
+        <section>
+          <div className="flex items-center justify-between mb-4">
+            <p className="text-sm font-medium text-gray-500 uppercase tracking-wider">
+              ピックアップクイズ
+            </p>
+            <Link href="/articles/quiz" className="text-xs text-violet-600 hover:underline">
+              すべて見る →
             </Link>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {quizzes.slice(0, 2).map((quiz) => (
+              <Link
+                key={quiz.slug}
+                href={`/articles/quiz/${quiz.slug}`}
+                className="block bg-white border border-gray-200 rounded p-4 hover:border-violet-300 transition-colors"
+              >
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-xs font-medium bg-violet-100 text-violet-700 px-2 py-0.5 rounded">
+                    クイズ
+                  </span>
+                  <span className="text-xs text-gray-400">全{quiz.questions.length}問</span>
+                </div>
+                <p className="text-sm font-medium text-gray-900 leading-snug">
+                  {quiz.title}
+                </p>
+                <p className="text-xs text-gray-500 mt-1 line-clamp-2">
+                  {quiz.description}
+                </p>
+                <p className="text-xs text-violet-600 mt-3 font-medium">挑戦する →</p>
+              </Link>
+            ))}
           </div>
         </section>
 
