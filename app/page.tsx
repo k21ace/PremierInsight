@@ -39,7 +39,7 @@ export const metadata: Metadata = {
 };
 
 export default async function Home() {
-  const [featuredArticles, matchesData, upcomingMatches] = await Promise.all([
+  const [featuredArticles, matchesData, upcomingRaw] = await Promise.all([
     Promise.resolve(getFeaturedArticles()),
     getMatches({ status: "FINISHED" }),
     getUpcomingMatches(3),
@@ -48,6 +48,10 @@ export default async function Home() {
   const recentMatches = [...(matchesData.matches ?? [])]
     .sort((a, b) => new Date(b.utcDate).getTime() - new Date(a.utcDate).getTime())
     .slice(0, 3);
+
+  // 直近の結果に含まれる試合を次の試合から除外（重複防止）
+  const recentIds = new Set(recentMatches.map((m) => m.id));
+  const upcomingMatches = upcomingRaw.filter((m) => !recentIds.has(m.id));
 
   return (
     <main className="min-h-screen bg-gray-50">
@@ -61,32 +65,29 @@ export default async function Home() {
           inLanguage: "ja",
         }}
       />
-      <div className="max-w-3xl mx-auto px-4 py-8 space-y-8">
+      <div className="max-w-3xl mx-auto px-4 py-4 space-y-4">
 
         {/* ヒーローエリア */}
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-gray-900 mb-1">
+        <div className="py-2">
+          <h1 className="text-2xl font-semibold tracking-tight text-gray-900">
             PremierInsight
           </h1>
-          <p className="text-sm text-gray-500">
-            プレミアリーグのデータを日本語で分析・可視化するサイト
-          </p>
         </div>
 
         {/* ピックアップ記事 */}
         <section>
-          <p className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-4">
+          <p className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-3">
             ピックアップ記事
           </p>
           {featuredArticles.length === 0 ? (
             <p className="text-sm text-gray-400">記事を準備中です。</p>
           ) : (
-            <div className="space-y-3">
+            <div className="space-y-2">
               {featuredArticles.map((article) => (
                 <Link
                   key={article.slug}
                   href={`/articles/${article.slug}`}
-                  className="block bg-white border border-gray-200 rounded p-4 hover:border-violet-300 transition-colors cursor-pointer"
+                  className="block bg-white border border-gray-200 rounded p-3 hover:border-violet-300 transition-colors cursor-pointer"
                 >
                   <p className="font-medium text-gray-900 hover:text-violet-600">
                     {article.title}
@@ -107,7 +108,7 @@ export default async function Home() {
 
         {/* ピックアップクイズ */}
         <section>
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-3">
             <p className="text-sm font-medium text-gray-500 uppercase tracking-wider">
               ピックアップクイズ
             </p>
@@ -115,12 +116,12 @@ export default async function Home() {
               すべて見る →
             </Link>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {quizzes.slice(0, 2).map((quiz) => (
               <Link
                 key={quiz.slug}
                 href={`/articles/quiz/${quiz.slug}`}
-                className="block bg-white border border-gray-200 rounded p-4 hover:border-violet-300 transition-colors"
+                className="block bg-white border border-gray-200 rounded p-3 hover:border-violet-300 transition-colors"
               >
                 <div className="flex items-center gap-2 mb-2">
                   <span className="text-xs font-medium bg-violet-100 text-violet-700 px-2 py-0.5 rounded">
@@ -134,16 +135,16 @@ export default async function Home() {
                 <p className="text-xs text-gray-500 mt-1 line-clamp-2">
                   {quiz.description}
                 </p>
-                <p className="text-xs text-violet-600 mt-3 font-medium">挑戦する →</p>
+                <p className="text-xs text-violet-600 mt-2 font-medium">挑戦する →</p>
               </Link>
             ))}
           </div>
         </section>
 
         {/* 試合情報 2カラム */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
 
-          {/* 次の試合（SP: 上、PC: 左） */}
+          {/* 次の試合（SP: 上、PC: 右） */}
           <section className="order-first md:order-last">
             <div className="flex items-center justify-between mb-3">
               <p className="text-sm font-medium text-gray-500 uppercase tracking-wider">
@@ -158,8 +159,8 @@ export default async function Home() {
             ) : (
               <div className="space-y-2">
                 {upcomingMatches.map((match) => (
-                  <div key={match.id} className="bg-white border border-gray-100 rounded p-3 text-sm">
-                    <div className="flex items-center justify-between mb-2">
+                  <div key={match.id} className="bg-white border border-gray-100 rounded p-2 text-sm">
+                    <div className="flex items-center justify-between mb-1">
                       <span className="text-xs text-gray-500">
                         {convertToJSTMedium(match.utcDate)}
                       </span>
@@ -192,7 +193,7 @@ export default async function Home() {
             )}
           </section>
 
-          {/* 直近の結果（SP: 下、PC: 右） */}
+          {/* 直近の結果（SP: 下、PC: 左） */}
           <section className="order-last md:order-first">
             <div className="flex items-center justify-between mb-3">
               <p className="text-sm font-medium text-gray-500 uppercase tracking-wider">
@@ -207,8 +208,8 @@ export default async function Home() {
             ) : (
               <div className="space-y-2">
                 {recentMatches.map((match) => (
-                  <div key={match.id} className="bg-white border border-gray-100 rounded p-3 text-sm">
-                    <div className="flex items-center justify-between mb-2">
+                  <div key={match.id} className="bg-white border border-gray-100 rounded p-2 text-sm">
+                    <div className="flex items-center justify-between mb-1">
                       <span className="text-xs text-gray-500">
                         {convertToJSTMedium(match.utcDate)}
                       </span>
