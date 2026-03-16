@@ -9,7 +9,7 @@ type MatchInfoProps = {
   away: string;
   date: string;
   stadium: string;
-  matchday: number;
+  matchday: number | string;
 };
 
 function MatchInfo({ home, away, date, stadium, matchday }: MatchInfoProps) {
@@ -80,8 +80,8 @@ function PlayerCard({ name, team, point, children }: PlayerCardProps) {
 type ScorePredictionProps = {
   home: string;
   away: string;
-  homeScore: number;
-  awayScore: number;
+  homeScore: number | string;
+  awayScore: number | string;
   reason: string;
 };
 
