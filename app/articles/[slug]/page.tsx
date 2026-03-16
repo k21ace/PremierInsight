@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { MDXRemote } from "next-mdx-remote/rsc";
+import remarkGfm from "remark-gfm";
 import { getAllArticles, getArticleBySlug } from "@/lib/articles";
 import mdxComponents from "@/components/mdx/MdxComponents";
 import { JsonLd } from "@/components/JsonLd";
@@ -104,7 +105,11 @@ export default async function ArticleDetailPage({ params }: Props) {
 
         {/* 本文 */}
         <div className="bg-white border border-gray-200 rounded shadow-sm p-6 mb-6">
-          <MDXRemote source={article.content} components={mdxComponents} />
+          <MDXRemote
+            source={article.content}
+            components={mdxComponents}
+            options={{ mdxOptions: { remarkPlugins: [remarkGfm] } }}
+          />
         </div>
 
         {/* 前後ナビゲーション */}
