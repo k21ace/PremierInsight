@@ -4,12 +4,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const navLinks = [
+  { href: "/articles",    label: "記事",     activePrefix: "/articles" },
+  { href: "/charts/race", label: "分析",     activePrefix: "/charts" },
   { href: "/standings",   label: "順位表",   activePrefix: "/standings" },
   { href: "/matches",     label: "試合結果", activePrefix: "/matches" },
   { href: "/players",     label: "Player",   activePrefix: "/players" },
   { href: "/teams",       label: "チーム",   activePrefix: "/teams" },
-  { href: "/charts/race", label: "分析",     activePrefix: "/charts" },
-  { href: "/articles",    label: "記事",     activePrefix: "/articles" },
 ];
 
 export default function Header() {
