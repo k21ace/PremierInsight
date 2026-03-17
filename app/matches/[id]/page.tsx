@@ -47,7 +47,7 @@ interface TimelineEvent {
 }
 
 function buildTimeline(match: MatchDetail): TimelineEvent[] {
-  const { homeTeam, awayTeam } = match;
+  const { homeTeam } = match;
   const events: TimelineEvent[] = [];
 
   // 得点イベント
@@ -176,9 +176,12 @@ export default async function MatchDetailPage({
   const isLive = status === "IN_PLAY" || status === "LIVE" || status === "PAUSED";
   const isScheduled = status === "SCHEDULED" || status === "TIMED";
 
-  const homeScore = score.fullTime.home;
-  const awayScore = score.fullTime.away;
-  const winner = score.winner;
+  const homeScore = score.fullTime.home ?? 0;
+  const awayScore = score.fullTime.away ?? 0;
+
+  // 勝利チームのスコアを濃紺で強調、敗者はグレー、引き分けは両方グレー
+  const homeScoreClass = homeScore > awayScore ? "text-[#2d0a4e]" : homeScore < awayScore ? "text-gray-400" : "text-gray-700";
+  const awayScoreClass = awayScore > homeScore ? "text-[#2d0a4e]" : awayScore < homeScore ? "text-gray-400" : "text-gray-700";
 
   const timeline = buildTimeline(match);
 
@@ -233,20 +236,12 @@ export default async function MatchDetailPage({
             <div className="text-center min-w-[100px]">
               {isFinished || isLive ? (
                 <div className="flex items-center justify-center gap-2">
-                  <span
-                    className={`text-5xl font-bold font-mono tabular-nums ${
-                      winner === "HOME_TEAM" ? "text-[#2d0a4e]" : "text-gray-700"
-                    }`}
-                  >
-                    {homeScore ?? "—"}
+                  <span className={`text-5xl font-bold font-mono tabular-nums ${homeScoreClass}`}>
+                    {homeScore}
                   </span>
                   <span className="text-3xl font-light text-gray-400">–</span>
-                  <span
-                    className={`text-5xl font-bold font-mono tabular-nums ${
-                      winner === "AWAY_TEAM" ? "text-[#2d0a4e]" : "text-gray-700"
-                    }`}
-                  >
-                    {awayScore ?? "—"}
+                  <span className={`text-5xl font-bold font-mono tabular-nums ${awayScoreClass}`}>
+                    {awayScore}
                   </span>
                 </div>
               ) : (
@@ -285,16 +280,18 @@ export default async function MatchDetailPage({
         </section>
 
         {/* ─── セクション2: タイムライン ─── */}
-        {isScheduled && timeline.length === 0 ? (
-          <section className="bg-white border border-gray-200 rounded shadow-sm p-6">
-            <h2 className="text-sm font-semibold text-gray-700 mb-3">タイムライン</h2>
+        <section className="bg-white border border-gray-200 rounded shadow-sm p-4">
+          <h2 className="text-sm font-semibold text-gray-700 mb-3">タイムライン</h2>
+          {isScheduled ? (
             <p className="text-sm text-gray-400 text-center py-4">
               試合前のため詳細データはありません
             </p>
-          </section>
-        ) : timeline.length > 0 ? (
-          <section className="bg-white border border-gray-200 rounded shadow-sm p-4">
-            <h2 className="text-sm font-semibold text-gray-700 mb-3">タイムライン</h2>
+          ) : match.goals == null ? (
+            <div className="bg-gray-50 rounded p-4 text-sm text-gray-500 text-center">
+              <p>詳細イベントデータは準備中です。</p>
+              <p className="text-xs mt-1">得点者・カード情報は今後追加予定です。</p>
+            </div>
+          ) : timeline.length > 0 ? (
             <div className="space-y-1">
               {timeline.map((ev, i) => (
                 <div key={i} className="flex items-center gap-2 text-xs">
@@ -307,12 +304,10 @@ export default async function MatchDetailPage({
                       </>
                     )}
                   </div>
-
                   {/* 分数 */}
                   <div className="w-10 shrink-0 text-center font-mono tabular-nums text-gray-400">
                     {ev.minute}&apos;
                   </div>
-
                   {/* アウェイ側 */}
                   <div className="flex-1 flex items-center justify-start gap-1 text-left min-w-0">
                     {ev.side === "away" && (
@@ -325,8 +320,12 @@ export default async function MatchDetailPage({
                 </div>
               ))}
             </div>
-          </section>
-        ) : null}
+          ) : (
+            <p className="text-sm text-gray-400 text-center py-4">
+              イベントデータがありません
+            </p>
+          )}
+        </section>
 
         {/* ─── セクション3: チームスタッツ ─── */}
         {(isFinished || isLive) && (
