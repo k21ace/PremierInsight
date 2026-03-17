@@ -3,10 +3,12 @@
 import { useState, useMemo, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Instagram, Twitter, Youtube, Music2 } from "lucide-react";
 import type { Scorer, ScorersResponse } from "@/types/football";
 import type { PlayerSNS } from "@/lib/mock/player-sns";
 import { SEASONS, DEFAULT_SEASON } from "@/lib/seasons";
+import { getInitials } from "@/lib/formatting";
+import { getRankBadgeClass } from "@/lib/styling";
+import { SNSIcon } from "@/components/ui/SNSIcon";
 
 type SortKey = "goals" | "assists" | "goalsPlusAssists";
 
@@ -15,31 +17,6 @@ const SORT_OPTIONS: { key: SortKey; label: string }[] = [
   { key: "assists", label: "アシスト順" },
   { key: "goalsPlusAssists", label: "得点+A順" },
 ];
-
-function getInitials(name: string): string {
-  const parts = name.trim().split(" ");
-  if (parts.length >= 2) {
-    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-  }
-  return name.slice(0, 2).toUpperCase();
-}
-
-function getRankBadgeClass(rank: number): string {
-  if (rank === 1) return "bg-amber-400 text-white";
-  if (rank === 2) return "bg-gray-300 text-gray-600";
-  if (rank === 3) return "bg-amber-700 text-white";
-  return "";
-}
-
-function SNSIcon({ platform }: { platform: PlayerSNS["sns"][number]["platform"] }) {
-  const cls = "w-4 h-4";
-  switch (platform) {
-    case "instagram": return <Instagram className={cls} />;
-    case "x":        return <Twitter className={cls} />;
-    case "youtube":  return <Youtube className={cls} />;
-    case "tiktok":   return <Music2 className={cls} />;
-  }
-}
 
 interface Props {
   initialScorers: Scorer[];
@@ -266,7 +243,7 @@ export default function PlayersView({ initialScorers, snsMap }: Props) {
                             title={s.handle}
                             className="text-gray-400 hover:text-pn-blue transition-colors"
                           >
-                            <SNSIcon platform={s.platform} />
+                            <SNSIcon platform={s.platform} size="sm" />
                           </a>
                         ))}
                       </div>

@@ -1,41 +1,16 @@
-import type { Metadata } from "next";
 import { getScorers } from "@/lib/football-api";
 import { playerSNSData } from "@/lib/mock/player-sns";
 import type { PlayerSNS } from "@/lib/mock/player-sns";
 import { JsonLd } from "@/components/JsonLd";
 import PlayersView from "./PlayersView";
+import { createMetadata } from "@/lib/metadata";
 
-const OG_TITLE = "プレミアリーグ 選手スタッツ一覧 2025-26 | PremierNow";
-const OG_DESC =
-  "プレミアリーグ全選手の得点・アシスト・出場時間ランキング。";
-
-export const metadata: Metadata = {
-  title: OG_TITLE,
-  description: OG_DESC,
-  openGraph: {
-    title: OG_TITLE,
-    description: OG_DESC,
-    url: "/players",
-    siteName: "PremierNow",
-    images: [
-      {
-        url: `/api/og?title=${encodeURIComponent("プレミアリーグ 選手スタッツ一覧 2025-26")}`,
-        width: 1200,
-        height: 630,
-      },
-    ],
-    locale: "ja_JP",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: OG_TITLE,
-    description: OG_DESC,
-    images: [
-      `/api/og?title=${encodeURIComponent("プレミアリーグ 選手スタッツ一覧 2025-26")}`,
-    ],
-  },
-};
+export const metadata = createMetadata(
+  "プレミアリーグ 選手スタッツ一覧 2025-26 | PremierNow",
+  "プレミアリーグ全選手の得点・アシスト・出場時間ランキング。",
+  "/players",
+  "プレミアリーグ 選手スタッツ一覧 2025-26",
+);
 
 export default async function PlayersPage() {
   const data = await getScorers();

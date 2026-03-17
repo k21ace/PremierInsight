@@ -144,6 +144,7 @@ export default function RaceChartPC({
           <YAxis
             tick={{ fontSize: 11 }}
             width={40}
+            domain={[0, (dataMax: number) => Math.ceil(dataMax / 10) * 10 + 5]}
             label={{
               value: "勝点",
               angle: -90,

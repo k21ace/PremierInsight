@@ -1,48 +1,16 @@
-import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { getStandings } from "@/lib/football-api";
 import { JsonLd } from "@/components/JsonLd";
+import { createMetadata } from "@/lib/metadata";
+import { getZoneBorder } from "@/lib/styling";
 
-const OG_TITLE = "プレミアリーグ チーム一覧 2025-26 | PremierNow";
-const OG_DESC =
-  "プレミアリーグ全20クラブの順位・勝点・スタッツ一覧。各チームの詳細成績を確認。";
-
-export const metadata: Metadata = {
-  title: OG_TITLE,
-  description: OG_DESC,
-  openGraph: {
-    title: OG_TITLE,
-    description: OG_DESC,
-    url: "/teams",
-    siteName: "PremierNow",
-    images: [
-      {
-        url: `/api/og?title=${encodeURIComponent("プレミアリーグ チーム一覧 2025-26")}`,
-        width: 1200,
-        height: 630,
-      },
-    ],
-    locale: "ja_JP",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: OG_TITLE,
-    description: OG_DESC,
-    images: [
-      `/api/og?title=${encodeURIComponent("プレミアリーグ チーム一覧 2025-26")}`,
-    ],
-  },
-};
-
-function getZoneColor(position: number): string {
-  if (position <= 4) return "border-l-4 border-blue-500";
-  if (position === 5) return "border-l-4 border-orange-400";
-  if (position === 6) return "border-l-4 border-orange-200";
-  if (position >= 18) return "border-l-4 border-red-400";
-  return "border-l-4 border-transparent";
-}
+export const metadata = createMetadata(
+  "プレミアリーグ チーム一覧 2025-26 | PremierNow",
+  "プレミアリーグ全20クラブの順位・勝点・スタッツ一覧。各チームの詳細成績を確認。",
+  "/teams",
+  "プレミアリーグ チーム一覧 2025-26",
+);
 
 export default async function TeamsPage() {
   const data = await getStandings();
@@ -82,7 +50,7 @@ export default async function TeamsPage() {
           {table.map(({ position, team, points, won, draw, lost }) => (
             <Link key={team.id} href={`/teams/${team.id}`}>
               <div
-                className={`bg-white border border-gray-200 rounded shadow-sm p-4 flex flex-col items-center gap-2 hover:border-pn-blue hover:shadow transition-all ${getZoneColor(position)}`}
+                className={`bg-white border border-gray-200 rounded shadow-sm p-4 flex flex-col items-center gap-2 hover:border-pn-blue hover:shadow transition-all ${getZoneBorder(position)}`}
               >
                 <Image
                   src={team.crest}

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Instagram, Twitter, Youtube, Music2, ExternalLink } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import type { Scorer } from "@/types/football";
 import type { PersonResponse } from "@/types/football";
 import type { PlayerSNS } from "@/lib/mock/player-sns";
@@ -11,16 +11,10 @@ import type { PlayerDetailStats } from "@/lib/mock/player-stats";
 import type { PlayerCareer } from "@/lib/mock/player-career";
 import { SEASONS, DEFAULT_SEASON } from "@/lib/seasons";
 import { getFlagEmoji } from "@/lib/nationality-flag";
+import { getInitials } from "@/lib/formatting";
+import { SNSIcon } from "@/components/ui/SNSIcon";
 
 // ─── ユーティリティ ──────────────────────────────────────
-
-function getInitials(name: string): string {
-  const parts = name.trim().split(" ");
-  if (parts.length >= 2) {
-    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-  }
-  return name.slice(0, 2).toUpperCase();
-}
 
 function calcAge(dateOfBirth: string): number {
   const birth = new Date(dateOfBirth);
@@ -39,16 +33,6 @@ const PLATFORM_LABEL: Record<PlayerSNS["sns"][number]["platform"], string> = {
   youtube: "YouTube",
   tiktok: "TikTok",
 };
-
-function SNSIcon({ platform }: { platform: PlayerSNS["sns"][number]["platform"] }) {
-  const cls = "w-5 h-5";
-  switch (platform) {
-    case "instagram": return <Instagram className={cls} />;
-    case "x":        return <Twitter className={cls} />;
-    case "youtube":  return <Youtube className={cls} />;
-    case "tiktok":   return <Music2 className={cls} />;
-  }
-}
 
 function MetricCard({ label, value }: { label: string; value: string | number }) {
   return (

@@ -1,43 +1,17 @@
-import type { Metadata } from "next";
 import { getHomeAwayStandings } from "@/lib/football-api";
 import { calcHomeAwayStats } from "@/lib/chart-utils";
 import { JsonLd } from "@/components/JsonLd";
 import HomeAwayClient from "./HomeAwayClient";
+import { createMetadata } from "@/lib/metadata";
 
 export const revalidate = 3600;
 
-const OG_TITLE =
-  "プレミアリーグ ホーム vs アウェイ 成績比較 2025-26 | PremierNow";
-const OG_DESC =
-  "プレミアリーグ全チームのホームとアウェイの成績を比較。ホームに強いチーム・アウェイに強いチームの傾向が一目でわかります。";
-
-export const metadata: Metadata = {
-  title: OG_TITLE,
-  description: OG_DESC,
-  openGraph: {
-    title: OG_TITLE,
-    description: OG_DESC,
-    url: "/charts/home-away",
-    siteName: "PremierNow",
-    images: [
-      {
-        url: `/api/og?title=${encodeURIComponent("ホーム vs アウェイ 成績比較 2025-26")}`,
-        width: 1200,
-        height: 630,
-      },
-    ],
-    locale: "ja_JP",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: OG_TITLE,
-    description: OG_DESC,
-    images: [
-      `/api/og?title=${encodeURIComponent("ホーム vs アウェイ 成績比較 2025-26")}`,
-    ],
-  },
-};
+export const metadata = createMetadata(
+  "プレミアリーグ ホーム vs アウェイ 成績比較 2025-26 | PremierNow",
+  "プレミアリーグ全チームのホームとアウェイの成績を比較。ホームに強いチーム・アウェイに強いチームの傾向が一目でわかります。",
+  "/charts/home-away",
+  "ホーム vs アウェイ 成績比較 2025-26",
+);
 
 export default async function HomeAwayPage() {
   const { home, away } = await getHomeAwayStandings();

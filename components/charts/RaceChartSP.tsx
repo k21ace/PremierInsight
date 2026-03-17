@@ -116,6 +116,7 @@ export default function RaceChartSP({
           <YAxis
             tick={{ fontSize: 10 }}
             width={28}
+            domain={[0, (dataMax: number) => Math.ceil(dataMax / 10) * 10 + 5]}
             label={{ value: "" }}
           />
           <Tooltip

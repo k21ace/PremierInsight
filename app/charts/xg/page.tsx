@@ -1,42 +1,19 @@
-import type { Metadata } from "next";
 import {
   getUnderstatTeams,
   getUnderstatPlayers,
   calcTeamXgStats,
 } from "@/lib/understat";
 import XgClient from "./XgClient";
+import { createMetadata } from "@/lib/metadata";
 
 export const revalidate = 86400;
 
-const OG_TITLE = "プレミアリーグ xG（ゴール期待値）分析 2025-26 | PremierNow";
-const OG_DESC =
-  "プレミアリーグ全チーム・選手のxG（ゴール期待値）ランキング。決定力が高いチーム・選手を分析します。";
-
-export const metadata: Metadata = {
-  title: OG_TITLE,
-  description: OG_DESC,
-  openGraph: {
-    title: OG_TITLE,
-    description: OG_DESC,
-    url: "/charts/xg",
-    siteName: "PremierNow",
-    images: [
-      {
-        url: `/api/og?title=${encodeURIComponent("プレミアリーグ xG 分析 2025-26")}`,
-        width: 1200,
-        height: 630,
-      },
-    ],
-    locale: "ja_JP",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: OG_TITLE,
-    description: OG_DESC,
-    images: [`/api/og?title=${encodeURIComponent("プレミアリーグ xG 分析 2025-26")}`],
-  },
-};
+export const metadata = createMetadata(
+  "プレミアリーグ xG（ゴール期待値）分析 2025-26 | PremierNow",
+  "プレミアリーグ全チーム・選手のxG（ゴール期待値）ランキング。決定力が高いチーム・選手を分析します。",
+  "/charts/xg",
+  "プレミアリーグ xG 分析 2025-26",
+);
 
 export default async function XgPage() {
   try {

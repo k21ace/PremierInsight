@@ -1,39 +1,14 @@
-import type { Metadata } from "next";
 import { getMatches, getCurrentMatchday } from "@/lib/football-api";
 import MatchesView from "./MatchesView";
 import { JsonLd } from "@/components/JsonLd";
+import { createMetadata } from "@/lib/metadata";
 
-const OG_TITLE = "プレミアリーグ 試合結果・日程 2025-26 | PremierNow";
-const OG_DESC =
-  "プレミアリーグの最新試合結果と今後の日程。得点者・スコアをリアルタイムで確認。";
-
-export const metadata: Metadata = {
-  title: OG_TITLE,
-  description: OG_DESC,
-  openGraph: {
-    title: OG_TITLE,
-    description: OG_DESC,
-    url: "/matches",
-    siteName: "PremierNow",
-    images: [
-      {
-        url: `/api/og?title=${encodeURIComponent("プレミアリーグ 試合結果・日程 2025-26")}`,
-        width: 1200,
-        height: 630,
-      },
-    ],
-    locale: "ja_JP",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: OG_TITLE,
-    description: OG_DESC,
-    images: [
-      `/api/og?title=${encodeURIComponent("プレミアリーグ 試合結果・日程 2025-26")}`,
-    ],
-  },
-};
+export const metadata = createMetadata(
+  "プレミアリーグ 試合結果・日程 2025-26 | PremierNow",
+  "プレミアリーグの最新試合結果と今後の日程。得点者・スコアをリアルタイムで確認。",
+  "/matches",
+  "プレミアリーグ 試合結果・日程 2025-26",
+);
 
 export default async function MatchesPage({
   searchParams,

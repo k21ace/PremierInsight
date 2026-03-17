@@ -1,9 +1,10 @@
-import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getStandings, getMatches } from "@/lib/football-api";
 import { JsonLd } from "@/components/JsonLd";
 import TeamDetailClient, { type MatchSummary } from "./TeamDetailClient";
 import type { Match } from "@/types/football";
+import type { Metadata } from "next";
+import { createMetadata } from "@/lib/metadata";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -18,35 +19,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const standing = table.find((s) => s.team.id === teamId);
     if (!standing) return {};
 
-    const title = `${standing.team.name} 成績・スタッツ 2025-26 | PremierNow`;
-    const description = `${standing.team.name}のプレミアリーグ成績。順位・勝点・得失点・直近試合結果を確認。`;
-    return {
-      title,
-      description,
-      openGraph: {
-        title,
-        description,
-        url: `/teams/${id}`,
-        siteName: "PremierNow",
-        images: [
-          {
-            url: `/api/og?title=${encodeURIComponent(standing.team.name + " 成績 2025-26")}`,
-            width: 1200,
-            height: 630,
-          },
-        ],
-        locale: "ja_JP",
-        type: "website",
-      },
-      twitter: {
-        card: "summary_large_image",
-        title,
-        description,
-        images: [
-          `/api/og?title=${encodeURIComponent(standing.team.name + " 成績 2025-26")}`,
-        ],
-      },
-    };
+    return createMetadata(
+      `${standing.team.name} 成績・スタッツ 2025-26 | PremierNow`,
+      `${standing.team.name}のプレミアリーグ成績。順位・勝点・得失点・直近試合結果を確認。`,
+      `/teams/${id}`,
+      `${standing.team.name} 成績 2025-26`,
+    );
   } catch {
     return {};
   }

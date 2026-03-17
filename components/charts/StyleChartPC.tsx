@@ -94,7 +94,7 @@ interface StyleChartPCProps {
   teamStyles: TeamStyle[];
 }
 
-const MARGIN = { top: 10, right: 20, bottom: 30, left: 0 };
+const MARGIN = { top: 0, right: 20, bottom: 30, left: 0 };
 
 export default function StyleChartPC({ teamStyles }: StyleChartPCProps) {
   if (teamStyles.length === 0) return null;
@@ -108,7 +108,7 @@ export default function StyleChartPC({ teamStyles }: StyleChartPCProps) {
 
   return (
     <div>
-      <p className="text-xs text-gray-500 mb-2">
+      <p className="text-xs text-gray-500 mb-1">
         ※ 縦軸は上に行くほど失点が少ない（守備が良い）
       </p>
       <div style={{ height: 500 }}>

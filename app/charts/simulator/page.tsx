@@ -1,41 +1,15 @@
-import type { Metadata } from "next";
 import { getStandings, getMatches } from "@/lib/football-api";
 import { matchToSimulator } from "@/lib/simulator-utils";
 import { JsonLd } from "@/components/JsonLd";
 import SimulatorClient from "./SimulatorClient";
+import { createMetadata } from "@/lib/metadata";
 
-const OG_TITLE =
-  "プレミアリーグ 順位予測シミュレーター 2025-26 | PremierNow";
-const OG_DESC =
-  "残り試合の結果を予測して最終順位をシミュレーション。あなたの予測でプレミアリーグの順位はどう変わる？";
-
-export const metadata: Metadata = {
-  title: OG_TITLE,
-  description: OG_DESC,
-  openGraph: {
-    title: OG_TITLE,
-    description: OG_DESC,
-    url: "/charts/simulator",
-    siteName: "PremierNow",
-    images: [
-      {
-        url: `/api/og?title=${encodeURIComponent("順位予測シミュレーター 2025-26")}`,
-        width: 1200,
-        height: 630,
-      },
-    ],
-    locale: "ja_JP",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: OG_TITLE,
-    description: OG_DESC,
-    images: [
-      `/api/og?title=${encodeURIComponent("順位予測シミュレーター 2025-26")}`,
-    ],
-  },
-};
+export const metadata = createMetadata(
+  "プレミアリーグ 順位予測シミュレーター 2025-26 | PremierNow",
+  "残り試合の結果を予測して最終順位をシミュレーション。あなたの予測でプレミアリーグの順位はどう変わる？",
+  "/charts/simulator",
+  "順位予測シミュレーター 2025-26",
+);
 
 export default async function SimulatorPage() {
   const [standingsData, matchesData] = await Promise.all([

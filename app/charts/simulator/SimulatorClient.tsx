@@ -7,19 +7,12 @@ import {
   type SimulatorMatch,
 } from "@/lib/simulator-utils";
 import type { Standing } from "@/types/football";
+import { getZoneBorder } from "@/lib/styling";
 
 interface Props {
   standings: Standing[];
   allMatches: SimulatorMatch[];
   displayMatchdays: number[];
-}
-
-function getZoneBorder(position: number): string {
-  if (position <= 4) return "border-l-4 border-blue-500";
-  if (position === 5) return "border-l-4 border-orange-400";
-  if (position === 6) return "border-l-4 border-orange-200";
-  if (position >= 18) return "border-l-4 border-red-500";
-  return "border-l-4 border-transparent";
 }
 
 type Prediction = "H" | "D" | "A";

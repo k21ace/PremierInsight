@@ -12,6 +12,8 @@ import {
   Legend,
 } from "recharts";
 import type { Standing } from "@/types/football";
+import { ResultBadge } from "@/components/ui/ResultBadge";
+import { formatGD } from "@/lib/formatting";
 
 export interface MatchSummary {
   id: number;
@@ -56,25 +58,6 @@ function StatCard({
       </div>
     </div>
   );
-}
-
-function ResultBadge({ result }: { result: "W" | "D" | "L" }) {
-  const styles = {
-    W: "bg-green-600 text-white",
-    D: "bg-gray-400 text-white",
-    L: "bg-red-500 text-white",
-  };
-  return (
-    <span
-      className={`inline-flex items-center justify-center w-6 h-6 text-xs font-bold rounded-sm ${styles[result]}`}
-    >
-      {result}
-    </span>
-  );
-}
-
-function formatGD(n: number) {
-  return n > 0 ? `+${n}` : String(n);
 }
 
 function formatDate(utcDate: string) {

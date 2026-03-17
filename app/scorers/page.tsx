@@ -1,57 +1,17 @@
-import type { Metadata } from "next";
 import Image from "next/image";
 import { getScorers } from "@/lib/football-api";
 import type { Scorer } from "@/types/football";
 import { JsonLd } from "@/components/JsonLd";
+import { createMetadata } from "@/lib/metadata";
+import { getInitials } from "@/lib/formatting";
+import { getRankBadgeClass } from "@/lib/styling";
 
-const OG_TITLE = "プレミアリーグ 得点王ランキング 2025-26 | PremierNow";
-const OG_DESC =
-  "プレミアリーグの得点王・アシストランキング。最新のゴール数をランキングで確認。";
-
-export const metadata: Metadata = {
-  title: OG_TITLE,
-  description: OG_DESC,
-  openGraph: {
-    title: OG_TITLE,
-    description: OG_DESC,
-    url: "/scorers",
-    siteName: "PremierNow",
-    images: [
-      {
-        url: `/api/og?title=${encodeURIComponent("プレミアリーグ 得点王ランキング 2025-26")}`,
-        width: 1200,
-        height: 630,
-      },
-    ],
-    locale: "ja_JP",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: OG_TITLE,
-    description: OG_DESC,
-    images: [
-      `/api/og?title=${encodeURIComponent("プレミアリーグ 得点王ランキング 2025-26")}`,
-    ],
-  },
-};
-
-// 順位バッジのクラス（1〜3位のみ）
-function getRankBadgeClass(rank: number): string {
-  if (rank === 1) return "bg-amber-400 text-white";
-  if (rank === 2) return "bg-gray-300 text-gray-600";
-  if (rank === 3) return "bg-amber-700 text-white";
-  return "";
-}
-
-// 名前からイニシャル2文字を生成（例: "Erling Haaland" → "EH"）
-function getInitials(name: string): string {
-  const parts = name.trim().split(" ");
-  if (parts.length >= 2) {
-    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-  }
-  return name.slice(0, 2).toUpperCase();
-}
+export const metadata = createMetadata(
+  "プレミアリーグ 得点王ランキング 2025-26 | PremierNow",
+  "プレミアリーグの得点王・アシストランキング。最新のゴール数をランキングで確認。",
+  "/scorers",
+  "プレミアリーグ 得点王ランキング 2025-26",
+);
 
 function ScorerRow({ scorer, rank }: { scorer: Scorer; rank: number }) {
   const { player, team, goals, assists, playedMatches } = scorer;

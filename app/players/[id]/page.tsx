@@ -7,6 +7,7 @@ import { getPlayerCareer } from "@/lib/mock/player-career";
 import { JsonLd } from "@/components/JsonLd";
 import PlayerDetailClient from "./PlayerDetailClient";
 import type { Scorer } from "@/types/football";
+import { createMetadata } from "@/lib/metadata";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -17,35 +18,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   try {
     const player = await getPlayer(playerId);
-    const title = `${player.name} スタッツ 2025-26 | PremierNow`;
-    const description = `${player.name}（${player.currentTeam?.shortName ?? ""}）の得点・アシスト・シュート・パスなど詳細スタッツ。`;
-    return {
-      title,
-      description,
-      openGraph: {
-        title,
-        description,
-        url: `/players/${id}`,
-        siteName: "PremierNow",
-        images: [
-          {
-            url: `/api/og?title=${encodeURIComponent(player.name + " スタッツ 2025-26")}`,
-            width: 1200,
-            height: 630,
-          },
-        ],
-        locale: "ja_JP",
-        type: "profile",
-      },
-      twitter: {
-        card: "summary_large_image",
-        title,
-        description,
-        images: [
-          `/api/og?title=${encodeURIComponent(player.name + " スタッツ 2025-26")}`,
-        ],
-      },
-    };
+    return createMetadata(
+      `${player.name} スタッツ 2025-26 | PremierNow`,
+      `${player.name}（${player.currentTeam?.shortName ?? ""}）の得点・アシスト・シュート・パスなど詳細スタッツ。`,
+      `/players/${id}`,
+      `${player.name} スタッツ 2025-26`,
+      "profile",
+    );
   } catch {
     return {};
   }

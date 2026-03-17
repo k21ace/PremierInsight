@@ -1,83 +1,18 @@
-import type { Metadata } from "next";
 import Image from "next/image";
 import { getStandingsWithForm } from "@/lib/football-api";
 import type { Standing } from "@/types/football";
 import { JsonLd } from "@/components/JsonLd";
+import { createMetadata } from "@/lib/metadata";
+import { getZoneBorder } from "@/lib/styling";
+import { formatGD } from "@/lib/formatting";
+import { FormBadges } from "@/components/ui/ResultBadge";
 
-const OG_TITLE = "プレミアリーグ 順位表 2025-26 最新 | PremierNow";
-const OG_DESC =
-  "プレミアリーグの最新順位表。勝点・得失点差・直近5試合の結果をリアルタイムで確認。";
-
-export const metadata: Metadata = {
-  title: OG_TITLE,
-  description: OG_DESC,
-  openGraph: {
-    title: OG_TITLE,
-    description: OG_DESC,
-    url: "/standings",
-    siteName: "PremierNow",
-    images: [
-      {
-        url: `/api/og?title=${encodeURIComponent("プレミアリーグ 順位表 2025-26")}`,
-        width: 1200,
-        height: 630,
-      },
-    ],
-    locale: "ja_JP",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: OG_TITLE,
-    description: OG_DESC,
-    images: [
-      `/api/og?title=${encodeURIComponent("プレミアリーグ 順位表 2025-26")}`,
-    ],
-  },
-};
-
-// 順位帯ごとの左ボーダークラス
-function getZoneBorder(position: number): string {
-  if (position <= 4) return "border-l-4 border-blue-500";
-  if (position === 5) return "border-l-4 border-orange-400";
-  if (position === 6) return "border-l-4 border-orange-200";
-  if (position >= 18) return "border-l-4 border-red-500";
-  return "border-l-4 border-transparent";
-}
-
-// 得失点差を +n 形式で表示
-function formatGD(gd: number): string {
-  return gd > 0 ? `+${gd}` : String(gd);
-}
-
-// W/D/L バッジ
-function FormBadge({ result }: { result: string }) {
-  const styles: Record<string, string> = {
-    W: "bg-green-600 text-white",
-    D: "bg-gray-400 text-white",
-    L: "bg-red-500 text-white",
-  };
-  const style = styles[result] ?? "bg-gray-200 text-gray-500";
-  return (
-    <span
-      className={`inline-flex items-center justify-center w-6 h-6 text-xs font-bold rounded-sm ${style}`}
-    >
-      {result}
-    </span>
-  );
-}
-
-// 直近5試合バッジ列
-function FormBadges({ form }: { form: string[] }) {
-  if (form.length === 0) return <span className="text-gray-300 text-xs">—</span>;
-  return (
-    <span className="flex gap-0.5">
-      {form.map((r, i) => (
-        <FormBadge key={i} result={r} />
-      ))}
-    </span>
-  );
-}
+export const metadata = createMetadata(
+  "プレミアリーグ 順位表 2025-26 最新 | PremierNow",
+  "プレミアリーグの最新順位表。勝点・得失点差・直近5試合の結果をリアルタイムで確認。",
+  "/standings",
+  "プレミアリーグ 順位表 2025-26",
+);
 
 // ── PC: テーブル行 ─────────────────────────────────────────
 

@@ -1,42 +1,19 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { getFeaturedArticles } from "@/lib/articles";
 import { quizzes } from "@/lib/quiz-data";
 import { getMatches, getUpcomingMatches, getStandings, getScorers } from "@/lib/football-api";
 import { convertToJSTMedium } from "@/lib/utils";
 import { JsonLd } from "@/components/JsonLd";
+import { createMetadata } from "@/lib/metadata";
 
 export const revalidate = 1800;
 
-const OG_TITLE = "PremierNow - プレミアリーグ データ分析";
-const OG_DESC =
-  "プレミアリーグの順位表・試合結果・得点王・データ分析を日本語で。毎節更新。";
-
-export const metadata: Metadata = {
-  title: OG_TITLE,
-  description: OG_DESC,
-  openGraph: {
-    title: OG_TITLE,
-    description: OG_DESC,
-    url: "/",
-    siteName: "PremierNow",
-    images: [
-      {
-        url: `/api/og?title=${encodeURIComponent("PremierNow")}`,
-        width: 1200,
-        height: 630,
-      },
-    ],
-    locale: "ja_JP",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: OG_TITLE,
-    description: OG_DESC,
-    images: [`/api/og?title=${encodeURIComponent("PremierNow")}`],
-  },
-};
+export const metadata = createMetadata(
+  "PremierNow - プレミアリーグ データ分析",
+  "プレミアリーグの順位表・試合結果・得点王・データ分析を日本語で。毎節更新。",
+  "/",
+  "PremierNow",
+);
 
 export default async function Home() {
   const [featuredArticles, matchesData, upcomingRaw, standingsData, scorersData] =
