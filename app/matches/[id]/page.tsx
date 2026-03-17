@@ -56,21 +56,25 @@ function generateMatchSummary(match: Match): string[] {
   }
 
   // 前後半の流れ
+  const secondHalfGoals = (h + a) - (hh + ha);
+
   if (hh > ha && h === a) {
     points.push(`${match.homeTeam.shortName}が前半リードも後半に追いつかれる`);
   } else if (ha > hh && h === a) {
     points.push(`${match.awayTeam.shortName}が前半リードも後半に追いつかれる`);
   } else if (hh === 0 && ha === 0 && (h > 0 || a > 0)) {
-    points.push(`スコアレスの前半から後半に動く展開`);
-  } else if (hh > 0 || ha > 0) {
-    points.push(`前半スコア ${hh}-${ha} から後半に${h + a - hh - ha}得点が生まれる`);
+    points.push(`スコアレスの前半から後半に試合が動く展開`);
+  } else if (secondHalfGoals === 0 && (hh > 0 || ha > 0)) {
+    points.push(`前半の ${hh}-${ha} のまま試合終了`);
+  } else if (secondHalfGoals > 0 && (hh > 0 || ha > 0)) {
+    points.push(`前半 ${hh}-${ha} から後半にさらに${secondHalfGoals}得点が生まれる`);
   }
 
-  // クリーンシート
-  if (h === 0) {
-    points.push(`${match.awayTeam.shortName}がクリーンシートを達成`);
-  } else if (a === 0) {
-    points.push(`${match.homeTeam.shortName}がクリーンシートを達成`);
+  // クリーンシートは得点が入った場合のみ表示
+  if (h === 0 && a > 0) {
+    points.push(`${match.awayTeam.shortName}がクリーンシートで完封`);
+  } else if (a === 0 && h > 0) {
+    points.push(`${match.homeTeam.shortName}がクリーンシートで完封`);
   }
 
   // 大差
