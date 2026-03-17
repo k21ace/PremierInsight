@@ -97,7 +97,7 @@ export default function RaceChartSP({
       <ResponsiveContainer width="100%" height="100%">
         <LineChart
           data={chartData}
-          margin={{ top: 10, right: 20, left: 0, bottom: 10 }}
+          margin={{ top: 10, right: 30, left: 0, bottom: 10 }}
         >
           <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
           <XAxis
