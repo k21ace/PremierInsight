@@ -42,7 +42,7 @@ function SpLegend({
         padding: "12px 0 0",
       }}
     >
-      {(payload ?? []).map((entry, i) => (
+      {(payload ?? []).filter((e) => !String(e.value).includes("_pred")).map((entry, i) => (
         <span
           key={i}
           style={{

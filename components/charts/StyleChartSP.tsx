@@ -94,7 +94,7 @@ interface StyleChartSPProps {
   teamStyles: TeamStyle[];
 }
 
-const MARGIN = { top: 20, right: 40, bottom: 40, left: 10 };
+const MARGIN = { top: 10, right: 20, bottom: 30, left: 0 };
 
 export default function StyleChartSP({ teamStyles }: StyleChartSPProps) {
   if (teamStyles.length === 0) return null;
@@ -111,7 +111,7 @@ export default function StyleChartSP({ teamStyles }: StyleChartSPProps) {
       <p className="text-xs text-gray-500 mb-2">
         ※ 縦軸は上に行くほど失点が少ない（守備が良い）
       </p>
-      <ResponsiveContainer width="100%" height={360}>
+      <ResponsiveContainer width="100%" height={320}>
         <ScatterChart margin={MARGIN}>
           <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
           <XAxis
@@ -119,11 +119,12 @@ export default function StyleChartSP({ teamStyles }: StyleChartSPProps) {
             dataKey="goalsFor"
             domain={[Math.max(0, minGF - 5), maxGF + 5]}
             tick={{ fontSize: 10 }}
+            height={28}
             label={{
               value: "得点",
-              position: "insideBottomRight",
-              offset: -4,
-              fontSize: 10,
+              position: "insideBottom",
+              dy: 10,
+              fontSize: 11,
               fill: "#6b7280",
             }}
           />
@@ -133,13 +134,13 @@ export default function StyleChartSP({ teamStyles }: StyleChartSPProps) {
             reversed
             domain={['dataMin - 3', 'dataMax + 3']}
             tick={{ fontSize: 10 }}
-            width={30}
+            width={28}
             label={{
               value: "失点",
               angle: -90,
               position: "insideLeft",
-              dx: -5,
-              fontSize: 10,
+              dx: 12,
+              fontSize: 11,
               fill: "#6b7280",
             }}
           />

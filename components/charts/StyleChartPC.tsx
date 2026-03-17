@@ -94,7 +94,7 @@ interface StyleChartPCProps {
   teamStyles: TeamStyle[];
 }
 
-const MARGIN = { top: 24, right: 80, left: 10, bottom: 40 };
+const MARGIN = { top: 10, right: 20, bottom: 30, left: 0 };
 
 export default function StyleChartPC({ teamStyles }: StyleChartPCProps) {
   if (teamStyles.length === 0) return null;
@@ -120,10 +120,11 @@ export default function StyleChartPC({ teamStyles }: StyleChartPCProps) {
               dataKey="goalsFor"
               domain={[Math.max(0, minGF - 5), maxGF + 5]}
               tick={{ fontSize: 11 }}
+              height={28}
               label={{
-                value: "得点（攻撃力）",
-                position: "insideBottomRight",
-                offset: -4,
+                value: "得点",
+                position: "insideBottom",
+                dy: 10,
                 fontSize: 11,
                 fill: "#6b7280",
               }}
@@ -134,12 +135,12 @@ export default function StyleChartPC({ teamStyles }: StyleChartPCProps) {
               reversed
               domain={['dataMin - 3', 'dataMax + 3']}
               tick={{ fontSize: 11 }}
-              width={30}
+              width={28}
               label={{
                 value: "失点",
                 angle: -90,
                 position: "insideLeft",
-                dx: -5,
+                dx: 12,
                 fontSize: 11,
                 fill: "#6b7280",
               }}
