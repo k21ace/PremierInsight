@@ -94,7 +94,7 @@ interface StyleChartSPProps {
   teamStyles: TeamStyle[];
 }
 
-const MARGIN = { top: 20, right: 40, bottom: 40, left: 40 };
+const MARGIN = { top: 20, right: 40, bottom: 40, left: 10 };
 
 export default function StyleChartSP({ teamStyles }: StyleChartSPProps) {
   if (teamStyles.length === 0) return null;
@@ -133,12 +133,12 @@ export default function StyleChartSP({ teamStyles }: StyleChartSPProps) {
             reversed
             domain={['dataMin - 3', 'dataMax + 3']}
             tick={{ fontSize: 10 }}
-            width={32}
+            width={30}
             label={{
               value: "失点",
               angle: -90,
               position: "insideLeft",
-              offset: 10,
+              dx: -5,
               fontSize: 10,
               fill: "#6b7280",
             }}

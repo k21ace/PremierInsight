@@ -18,20 +18,26 @@ import {
 
 const SP_TICKS = [1, 5, 10, 15, 20, 25, 30, 35, 38];
 
-// ─── Custom Legend ────────────────────────────────────────
+// ─── Custom Legend（エンブレム＋カラーライン＋チーム名）──
 
 interface LegendEntry {
   value?: string;
   color?: string;
 }
 
-function SpLegend({ payload }: { payload?: LegendEntry[] }) {
+function SpLegend({
+  payload,
+  crestMap,
+}: {
+  payload?: LegendEntry[];
+  crestMap: Record<string, string>;
+}) {
   return (
     <div
       style={{
         display: "flex",
         flexWrap: "wrap",
-        gap: "8px 16px",
+        gap: "6px 12px",
         justifyContent: "center",
         padding: "12px 0 0",
       }}
@@ -47,10 +53,20 @@ function SpLegend({ payload }: { payload?: LegendEntry[] }) {
             color: "#555",
           }}
         >
+          {entry.value && crestMap[entry.value] && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={crestMap[entry.value]}
+              width={16}
+              height={16}
+              style={{ objectFit: "contain" }}
+              alt=""
+            />
+          )}
           <span
             style={{
               display: "inline-block",
-              width: 24,
+              width: 16,
               height: 3,
               background: entry.color,
               borderRadius: 2,
@@ -70,8 +86,14 @@ export default function RaceChartSP({
   activeTimelines,
   dramaticMoments,
 }: ChartPanelProps) {
+  // activeTimelines から TLA → crestUrl のマップを構築
+  const crestMap: Record<string, string> = {};
+  activeTimelines.forEach((tl) => {
+    crestMap[tl.teamShortName] = tl.crestUrl;
+  });
+
   return (
-    <div style={{ height: 420 }}>
+    <div style={{ height: 440 }}>
       <ResponsiveContainer width="100%" height="100%">
         <LineChart
           data={chartData}
@@ -106,11 +128,30 @@ export default function RaceChartSP({
           />
           <Legend
             verticalAlign="bottom"
-            height={60}
+            height={72}
             content={(props) => (
-              <SpLegend payload={props.payload as LegendEntry[]} />
+              <SpLegend
+                payload={props.payload as LegendEntry[]}
+                crestMap={crestMap}
+              />
             )}
           />
+
+          {/* 予測ライン（点線・半透明） */}
+          {activeTimelines.map((tl) => (
+            <Line
+              key={`${tl.teamId}_pred`}
+              type="monotone"
+              dataKey={`${tl.teamShortName}_pred`}
+              stroke={tl.color}
+              strokeWidth={1.5}
+              strokeDasharray="4 4"
+              strokeOpacity={0.5}
+              dot={false}
+              activeDot={{ r: 0 }}
+              legendType="none"
+            />
+          ))}
 
           {/* 実績ライン */}
           {activeTimelines.map((tl) => (
