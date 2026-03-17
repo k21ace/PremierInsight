@@ -261,7 +261,7 @@ export default async function Home() {
             ) : (
               <div className="space-y-2">
                 {upcomingMatches.map((match) => (
-                  <div key={match.id} className="bg-white border border-gray-100 rounded p-2 text-sm">
+                  <div key={match.id} className="bg-white border border-gray-100 rounded px-3 py-2">
                     <div className="flex items-center justify-between mb-1">
                       <span className="text-xs text-gray-500">
                         {convertToJSTMedium(match.utcDate)}
@@ -270,23 +270,23 @@ export default async function Home() {
                         第{match.matchday}節
                       </span>
                     </div>
-                    <div className="grid grid-cols-3 items-center gap-1 w-full">
-                      <div className="flex items-center justify-end gap-1.5 w-full min-w-0">
-                        <span className="text-sm font-medium text-gray-900 truncate">
+                    <div className="flex items-center justify-center gap-0 w-full">
+                      <div className="flex items-center justify-end gap-1.5 w-[120px] flex-shrink-0">
+                        <span className="text-xs font-medium text-gray-900 truncate text-right">
                           {match.homeTeam.shortName}
                         </span>
                         {match.homeTeam.crest && (
-                          <img src={match.homeTeam.crest} alt="" className="w-5 h-5 object-contain flex-shrink-0" />
+                          <img src={match.homeTeam.crest} alt="" className="w-[18px] h-[18px] object-contain flex-shrink-0" />
                         )}
                       </div>
-                      <div className="text-center flex-shrink-0 px-1">
-                        <span className="text-xs text-gray-400 font-medium">vs</span>
+                      <div className="w-[56px] text-center flex-shrink-0">
+                        <span className="text-xs text-gray-400">vs</span>
                       </div>
-                      <div className="flex items-center justify-start gap-1.5 w-full min-w-0">
+                      <div className="flex items-center justify-start gap-1.5 w-[120px] flex-shrink-0">
                         {match.awayTeam.crest && (
-                          <img src={match.awayTeam.crest} alt="" className="w-5 h-5 object-contain flex-shrink-0" />
+                          <img src={match.awayTeam.crest} alt="" className="w-[18px] h-[18px] object-contain flex-shrink-0" />
                         )}
-                        <span className="text-sm font-medium text-gray-900 truncate">
+                        <span className="text-xs font-medium text-gray-900 truncate">
                           {match.awayTeam.shortName}
                         </span>
                       </div>
@@ -312,7 +312,7 @@ export default async function Home() {
             ) : (
               <div className="space-y-2">
                 {recentMatches.map((match) => (
-                  <Link key={match.id} href={`/matches/${match.id}`} className="block bg-white border border-gray-100 rounded p-2 text-sm hover:border-gray-300 transition-colors">
+                  <Link key={match.id} href={`/matches/${match.id}`} className="block bg-white border border-gray-100 rounded px-3 py-2 hover:border-gray-300 transition-colors">
                     <div className="flex items-center justify-between mb-1">
                       <span className="text-xs text-gray-500">
                         {convertToJSTMedium(match.utcDate)}
@@ -321,27 +321,25 @@ export default async function Home() {
                         第{match.matchday}節
                       </span>
                     </div>
-                    <div className="grid grid-cols-3 items-center gap-1 w-full">
-                      <div className="flex items-center justify-end gap-1.5 w-full min-w-0">
-                        <span className="text-sm font-medium text-gray-900 truncate">
+                    <div className="flex items-center justify-center gap-0 w-full">
+                      <div className="flex items-center justify-end gap-1.5 w-[120px] flex-shrink-0">
+                        <span className="text-xs font-medium text-gray-900 truncate text-right">
                           {match.homeTeam.shortName}
                         </span>
                         {match.homeTeam.crest && (
-                          <img src={match.homeTeam.crest} alt="" className="w-5 h-5 object-contain flex-shrink-0" />
+                          <img src={match.homeTeam.crest} alt="" className="w-[18px] h-[18px] object-contain flex-shrink-0" />
                         )}
                       </div>
-                      <div className="text-center flex-shrink-0 px-1">
-                        <span className="font-mono font-bold text-gray-900 text-sm">
-                          {match.score.fullTime.home}
-                          <span className="mx-1 text-gray-400">-</span>
-                          {match.score.fullTime.away}
+                      <div className="w-[56px] text-center flex-shrink-0">
+                        <span className="font-mono font-bold text-sm text-gray-900">
+                          {match.score.fullTime.home} - {match.score.fullTime.away}
                         </span>
                       </div>
-                      <div className="flex items-center justify-start gap-1.5 w-full min-w-0">
+                      <div className="flex items-center justify-start gap-1.5 w-[120px] flex-shrink-0">
                         {match.awayTeam.crest && (
-                          <img src={match.awayTeam.crest} alt="" className="w-5 h-5 object-contain flex-shrink-0" />
+                          <img src={match.awayTeam.crest} alt="" className="w-[18px] h-[18px] object-contain flex-shrink-0" />
                         )}
-                        <span className="text-sm font-medium text-gray-900 truncate">
+                        <span className="text-xs font-medium text-gray-900 truncate">
                           {match.awayTeam.shortName}
                         </span>
                       </div>

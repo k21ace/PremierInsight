@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import type { Goal, Match, MatchStatus } from "@/types/football";
+import type { Match } from "@/types/football";
 
 const MAX_MATCHDAY = 38;
 
@@ -23,15 +23,6 @@ function formatDateHeader(utcDate: string): string {
   });
 }
 
-// UTC → JST 時刻（例: 22:00）
-function formatTime(utcDate: string): string {
-  return new Date(utcDate).toLocaleTimeString("ja-JP", {
-    timeZone: "Asia/Tokyo",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-}
-
 // 日付でグルーピング
 function groupByDate(matches: Match[]): [string, Match[]][] {
   const map = new Map<string, Match[]>();
@@ -43,135 +34,57 @@ function groupByDate(matches: Match[]): [string, Match[]][] {
   return Array.from(map.entries());
 }
 
-// ステータスバッジ
-function StatusBadge({ status }: { status: MatchStatus }) {
-  const config: Partial<Record<MatchStatus, { label: string; className: string }>> = {
-    FINISHED:  { label: "終了",   className: "bg-gray-100 text-gray-600" },
-    IN_PLAY:   { label: "試合中", className: "bg-green-100 text-green-700" },
-    LIVE:      { label: "試合中", className: "bg-green-100 text-green-700" },
-    PAUSED:    { label: "試合中", className: "bg-green-100 text-green-700" },
-    SCHEDULED: { label: "予定",   className: "bg-blue-50 text-blue-600" },
-    TIMED:     { label: "予定",   className: "bg-blue-50 text-blue-600" },
-    POSTPONED: { label: "延期",   className: "bg-red-50 text-red-600" },
-  };
-  const { label, className } = config[status] ?? { label: status, className: "bg-gray-100 text-gray-500" };
-  return (
-    <span className={`inline-block px-2 py-0.5 text-xs font-medium rounded ${className}`}>
-      {label}
-    </span>
-  );
-}
-
-// 得点者ラベル（OG・PK付き）
-function goalLabel(g: Goal): string {
-  const suffix = g.type === "OWN" ? " (OG)" : g.type === "PENALTY" ? " (PK)" : "";
-  const minute = g.minute != null ? ` ${g.minute}'` : "";
-  return `${g.scorer.name}${suffix}${minute}`;
-}
-
-// 試合カード
+// 試合カード（1行レイアウト）
 function MatchCard({ match }: { match: Match }) {
-  const { homeTeam, awayTeam, score, status, utcDate } = match;
-  const goals = match.goals ?? [];
+  const { homeTeam, awayTeam, score, status } = match;
   const isFinished = status === "FINISHED";
   const isLive = status === "IN_PLAY" || status === "LIVE" || status === "PAUSED";
 
-  // ホーム得点（ホームが決めたゴール + アウェイのOG）
-  const homeGoals = goals.filter(
-    (g) =>
-      (g.team.id === homeTeam.id && g.type !== "OWN") ||
-      (g.team.id === awayTeam.id && g.type === "OWN"),
-  );
-  // アウェイ得点（アウェイが決めたゴール + ホームのOG）
-  const awayGoals = goals.filter(
-    (g) =>
-      (g.team.id === awayTeam.id && g.type !== "OWN") ||
-      (g.team.id === homeTeam.id && g.type === "OWN"),
-  );
-
-  const linkLabel = isFinished ? "レポートを見る →" : "プレビューを見る →";
+  const statusLabel =
+    isFinished ? "終了" :
+    status === "POSTPONED" ? "延期" : "予定";
+  const statusClass =
+    isFinished ? "text-gray-400" :
+    status === "POSTPONED" ? "text-orange-500" : "text-[#00a8e8]";
+  const linkLabel = isFinished ? "レポート →" : "プレビュー →";
 
   return (
-    <div className="bg-white border border-gray-200 rounded px-3 py-2 hover:border-[#00a8e8] transition-colors">
-      {/* 時刻 + ステータス */}
-      <div className="flex items-center justify-between mb-1.5">
-        <span className="text-xs font-mono tabular-nums text-gray-500">
-          {formatTime(utcDate)}
-        </span>
-        <StatusBadge status={status} />
-      </div>
-
-      {/* ホーム ─ スコア ─ アウェイ */}
-      <div className="grid grid-cols-3 items-center gap-1 w-full">
-        {/* ホーム（右寄せ） */}
-        <div className="flex items-center justify-end gap-1.5 w-full min-w-0">
-          <span className="text-sm font-medium text-gray-900 leading-tight truncate">
+    <Link href={`/matches/${match.id}`}>
+      <div className="flex items-center bg-white border border-gray-100 rounded px-3 py-2 hover:border-[#00a8e8] transition-colors gap-2">
+        {/* ホーム（固定幅・右寄せ） */}
+        <div className="flex items-center justify-end gap-1 w-[90px] flex-shrink-0">
+          <span className="text-xs font-medium text-gray-900 truncate">
             {homeTeam.shortName}
           </span>
-          <Image
-            src={homeTeam.crest}
-            alt={homeTeam.name}
-            width={20}
-            height={20}
-            className="object-contain flex-shrink-0"
-          />
+          <Image src={homeTeam.crest} alt={homeTeam.name} width={16} height={16} className="object-contain flex-shrink-0" />
         </div>
 
-        {/* スコア（常に中央） */}
-        <div className="text-center flex-shrink-0 px-1">
+        {/* スコア（固定幅・中央） */}
+        <div className="w-[44px] text-center flex-shrink-0">
           {isFinished || isLive ? (
-            <span className="font-mono font-bold text-gray-900 text-sm tabular-nums">
-              {score.fullTime.home ?? "—"}
-              <span className="mx-1 text-gray-400">-</span>
-              {score.fullTime.away ?? "—"}
+            <span className="font-mono font-bold text-sm text-gray-900 tabular-nums">
+              {score.fullTime.home ?? "—"}-{score.fullTime.away ?? "—"}
             </span>
           ) : (
-            <span className="text-xs text-gray-400 font-medium">vs</span>
+            <span className="text-xs text-gray-400">vs</span>
           )}
         </div>
 
-        {/* アウェイ（左寄せ） */}
-        <div className="flex items-center justify-start gap-1.5 w-full min-w-0">
-          <Image
-            src={awayTeam.crest}
-            alt={awayTeam.name}
-            width={20}
-            height={20}
-            className="object-contain flex-shrink-0"
-          />
-          <span className="text-sm font-medium text-gray-900 leading-tight truncate">
+        {/* アウェイ（固定幅・左寄せ） */}
+        <div className="flex items-center justify-start gap-1 w-[90px] flex-shrink-0">
+          <Image src={awayTeam.crest} alt={awayTeam.name} width={16} height={16} className="object-contain flex-shrink-0" />
+          <span className="text-xs font-medium text-gray-900 truncate">
             {awayTeam.shortName}
           </span>
         </div>
-      </div>
 
-      {/* 得点者（試合終了時のみ） */}
-      {isFinished && (homeGoals.length > 0 || awayGoals.length > 0) && (
-        <div className="mt-1.5 flex gap-2 text-xs text-gray-400">
-          <div className="flex-1 text-right space-y-0.5">
-            {homeGoals.map((g, i) => (
-              <p key={i}>{goalLabel(g)}</p>
-            ))}
-          </div>
-          <div className="w-16 shrink-0" />
-          <div className="flex-1 text-left space-y-0.5">
-            {awayGoals.map((g, i) => (
-              <p key={i}>{goalLabel(g)}</p>
-            ))}
-          </div>
+        {/* 右端：ステータス＋リンク */}
+        <div className="flex items-center justify-end gap-2 flex-1 min-w-0">
+          <span className={`text-xs flex-shrink-0 ${statusClass}`}>{statusLabel}</span>
+          <span className="text-xs text-[#00a8e8] flex-shrink-0">{linkLabel}</span>
         </div>
-      )}
-
-      {/* 詳細リンク */}
-      <div className="mt-1 text-right">
-        <Link
-          href={`/matches/${match.id}`}
-          className="text-xs text-violet-600 hover:text-violet-800 transition-colors"
-        >
-          {linkLabel}
-        </Link>
       </div>
-    </div>
+    </Link>
   );
 }
 
