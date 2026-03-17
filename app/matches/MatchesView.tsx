@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { Goal, Match, MatchStatus } from "@/types/football";
 
@@ -88,6 +89,8 @@ function MatchCard({ match }: { match: Match }) {
       (g.team.id === homeTeam.id && g.type === "OWN"),
   );
 
+  const linkLabel = isFinished ? "レポートを見る →" : "プレビューを見る →";
+
   return (
     <div className="bg-white border border-gray-200 rounded shadow-sm p-4">
       {/* 時刻 + ステータス */}
@@ -156,6 +159,16 @@ function MatchCard({ match }: { match: Match }) {
           </div>
         </div>
       )}
+
+      {/* 詳細リンク */}
+      <div className="mt-3 text-right">
+        <Link
+          href={`/matches/${match.id}`}
+          className="text-xs text-violet-600 hover:text-violet-800 transition-colors"
+        >
+          {linkLabel}
+        </Link>
+      </div>
     </div>
   );
 }

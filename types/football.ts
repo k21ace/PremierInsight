@@ -91,8 +91,41 @@ export interface Score {
 export interface Goal {
   minute: number | null;
   scorer: { id: number; name: string };
+  assist: { id: number; name: string } | null;
   team: { id: number; name: string };
   type: "REGULAR" | "OWN" | "PENALTY";
+}
+
+/** カード情報 */
+export interface Booking {
+  minute: number | null;
+  team: { id: number; name: string };
+  player: { id: number; name: string };
+  card: "YELLOW" | "RED" | "YELLOW_RED";
+}
+
+/** 交代情報 */
+export interface Substitution {
+  minute: number | null;
+  team: { id: number; name: string };
+  playerOut: { id: number; name: string };
+  playerIn: { id: number; name: string };
+}
+
+/** 審判情報 */
+export interface Referee {
+  id: number;
+  name: string;
+  type: string;
+  nationality: string;
+}
+
+/** 試合詳細（GET /matches/{id} レスポンス） */
+export interface MatchDetail extends Match {
+  venue: string | null;
+  bookings: Booking[] | null;
+  substitutions: Substitution[] | null;
+  referees: Referee[] | null;
 }
 
 /** 試合情報 */

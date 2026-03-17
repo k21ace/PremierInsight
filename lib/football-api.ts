@@ -9,6 +9,7 @@
 import type {
   HomeAwayTable,
   Match,
+  MatchDetail,
   MatchesResponse,
   PersonResponse,
   ScorersResponse,
@@ -305,4 +306,14 @@ export async function getScorers(season?: number): Promise<ScorersResponse> {
  */
 export async function getPlayer(id: number): Promise<PersonResponse> {
   return fetchFootball<PersonResponse>(`/persons/${id}`, 86400);
+}
+
+/**
+ * 試合詳細情報を取得する（得点・カード・交代・審判を含む）。
+ * ISR キャッシュ: 5分（300秒）
+ *
+ * @param id - football-data.org の試合ID
+ */
+export async function getMatch(id: number): Promise<MatchDetail> {
+  return fetchFootball<MatchDetail>(`/matches/${id}`, 300);
 }

@@ -28,6 +28,7 @@
 | [screens/matches.md](screens/matches.md) | 試合結果・日程 |
 | [screens/scorers.md](screens/scorers.md) | 得点王ランキング |
 | [screens/players.md](screens/players.md) | 選手スタッツ一覧・選手詳細 |
+| [screens/match-detail.md](screens/match-detail.md) | マッチレポート（試合詳細） |
 | [screens/charts-race.md](screens/charts-race.md) | レースチャート |
 | [screens/charts-style.md](screens/charts-style.md) | スタイル分析（散布図） |
 | [screens/charts-xg.md](screens/charts-xg.md) | xG分析（Understat データ） |
