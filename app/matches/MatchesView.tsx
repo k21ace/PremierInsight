@@ -102,42 +102,44 @@ function MatchCard({ match }: { match: Match }) {
       </div>
 
       {/* ホーム ─ スコア ─ アウェイ */}
-      <div className="flex items-center gap-2">
-        {/* ホーム */}
-        <div className="flex-1 flex items-center justify-end gap-2 min-w-0">
-          <span className="text-sm font-medium text-gray-900 text-right leading-tight truncate">
+      <div className="grid grid-cols-3 items-center gap-1">
+        {/* ホーム（右寄せ） */}
+        <div className="flex items-center justify-end gap-1.5 min-w-0">
+          <span className="text-sm font-medium text-gray-900 truncate">
             {homeTeam.shortName}
           </span>
           <Image
             src={homeTeam.crest}
             alt={homeTeam.name}
-            width={28}
-            height={28}
-            className="object-contain shrink-0"
+            width={20}
+            height={20}
+            className="object-contain flex-shrink-0"
           />
         </div>
 
-        {/* スコア */}
-        <div className="w-20 text-center shrink-0">
+        {/* スコア（常に中央） */}
+        <div className="text-center">
           {isFinished || isLive ? (
-            <span className="text-2xl font-bold font-mono tabular-nums text-gray-900">
-              {score.fullTime.home ?? "—"}&nbsp;–&nbsp;{score.fullTime.away ?? "—"}
+            <span className="font-mono font-bold text-gray-900 text-sm tabular-nums">
+              {score.fullTime.home ?? "—"}
+              <span className="mx-1 text-gray-400">-</span>
+              {score.fullTime.away ?? "—"}
             </span>
           ) : (
-            <span className="text-base font-medium text-gray-400">vs</span>
+            <span className="text-xs text-gray-400 font-medium">vs</span>
           )}
         </div>
 
-        {/* アウェイ */}
-        <div className="flex-1 flex items-center justify-start gap-2 min-w-0">
+        {/* アウェイ（左寄せ） */}
+        <div className="flex items-center justify-start gap-1.5 min-w-0">
           <Image
             src={awayTeam.crest}
             alt={awayTeam.name}
-            width={28}
-            height={28}
-            className="object-contain shrink-0"
+            width={20}
+            height={20}
+            className="object-contain flex-shrink-0"
           />
-          <span className="text-sm font-medium text-gray-900 text-left leading-tight truncate">
+          <span className="text-sm font-medium text-gray-900 truncate">
             {awayTeam.shortName}
           </span>
         </div>
