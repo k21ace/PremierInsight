@@ -7,6 +7,7 @@ const chartTabs = [
   { href: "/charts/race",      label: "レースチャート" },
   { href: "/charts/style",     label: "スタイル分析" },
   { href: "/charts/home-away", label: "H/A比較" },
+  { href: "/charts/xg",        label: "xG分析" },
   { href: "/charts/simulator", label: "順位予測" },
 ];
 
