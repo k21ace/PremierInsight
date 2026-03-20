@@ -94,7 +94,7 @@ export default function PrivacyPage() {
                 rel="noopener noreferrer"
                 className="text-[#00a8e8] hover:underline"
               >
-                @PremierNow
+                @PremierNow_
               </a>
             </p>
           </section>
