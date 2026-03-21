@@ -3,7 +3,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
 import type { Match } from "@/types/football";
 import { getTeamShortNameJa } from "@/lib/translations";
 
@@ -70,18 +69,16 @@ function MatchCard({ match }: { match: Match }) {
   const { homeTeam, awayTeam, score, status } = match;
   const isFinished = status === "FINISHED";
   const isLive = status === "IN_PLAY" || status === "LIVE" || status === "PAUSED";
-  const router = useRouter();
 
   return (
-    <div
-      onClick={() => router.push(`/matches/${match.id}`)}
-      className="flex items-center justify-center bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded px-3 py-2 hover:border-[#00a8e8] dark:hover:border-[#00a8e8] transition-colors gap-2 cursor-pointer"
-    >
+    <div className="relative flex items-center justify-center bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded px-3 py-2 hover:border-[#00a8e8] dark:hover:border-[#00a8e8] transition-colors gap-2">
+      {/* カード全体のリンク（stretched link パターン） */}
+      <Link href={`/matches/${match.id}`} className="absolute inset-0" aria-label={`${homeTeam.name} vs ${awayTeam.name}`} />
+
       {/* ホーム（固定幅・右寄せ） */}
       <Link
         href={`/teams/${homeTeam.id}`}
-        onClick={(e) => e.stopPropagation()}
-        className="flex items-center justify-end gap-1 w-[90px] flex-shrink-0 hover:opacity-75 transition-opacity"
+        className="relative z-10 flex items-center justify-end gap-1 w-[90px] flex-shrink-0 hover:opacity-75 transition-opacity"
       >
         <div className="text-right leading-tight">
           <span className="text-xs font-medium text-gray-900 dark:text-gray-100 truncate block">
@@ -93,7 +90,7 @@ function MatchCard({ match }: { match: Match }) {
       </Link>
 
       {/* スコア（固定幅・中央） */}
-      <div className="w-[44px] text-center flex-shrink-0">
+      <div className="relative z-10 w-[44px] text-center flex-shrink-0">
         {isFinished || isLive ? (
           <span className="font-mono font-bold text-sm text-gray-900 dark:text-gray-100 tabular-nums">
             {score.fullTime.home ?? "—"}-{score.fullTime.away ?? "—"}
@@ -106,8 +103,7 @@ function MatchCard({ match }: { match: Match }) {
       {/* アウェイ（固定幅・左寄せ） */}
       <Link
         href={`/teams/${awayTeam.id}`}
-        onClick={(e) => e.stopPropagation()}
-        className="flex items-center justify-start gap-1 w-[90px] flex-shrink-0 hover:opacity-75 transition-opacity"
+        className="relative z-10 flex items-center justify-start gap-1 w-[90px] flex-shrink-0 hover:opacity-75 transition-opacity"
       >
         <Image src={awayTeam.crest} alt={awayTeam.name} width={16} height={16} className="object-contain flex-shrink-0" />
         <div className="leading-tight">

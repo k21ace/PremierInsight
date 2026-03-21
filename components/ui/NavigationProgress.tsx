@@ -20,6 +20,9 @@ export default function NavigationProgress() {
   // 内部リンクのクリックでオーバーレイを表示
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
+      // ミドルクリック・修飾キー付きクリックは新タブで開くためスキップ
+      if (e.button !== 0 || e.ctrlKey || e.metaKey || e.shiftKey) return;
+
       const anchor = (e.target as Element).closest("a[href]") as HTMLAnchorElement | null;
       if (!anchor) return;
 
