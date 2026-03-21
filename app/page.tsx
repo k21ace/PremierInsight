@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { getFeaturedArticles } from "@/lib/articles";
 import { quizzes } from "@/lib/quiz-data";
-import { getMatches, getUpcomingMatches, getStandings, getScorers } from "@/lib/football-api";
+import { getMatches, getUpcomingMatches } from "@/lib/football-api";
 import { convertToJSTMedium } from "@/lib/utils";
 import { JsonLd } from "@/components/JsonLd";
 import { createMetadata } from "@/lib/metadata";
+import TitleRaceChart from "@/components/TitleRaceChart";
 
 export const revalidate = 1800;
 
@@ -16,13 +17,11 @@ export const metadata = createMetadata(
 );
 
 export default async function Home() {
-  const [featuredArticles, matchesData, upcomingRaw, standingsData, scorersData] =
+  const [featuredArticles, matchesData, upcomingRaw] =
     await Promise.all([
       Promise.resolve(getFeaturedArticles()),
       getMatches({ status: "FINISHED" }),
       getUpcomingMatches(3),
-      getStandings(),
-      getScorers(),
     ]);
 
   const recentMatches = [...(matchesData.matches ?? [])]
@@ -31,17 +30,6 @@ export default async function Home() {
 
   const recentIds = new Set(recentMatches.map((m) => m.id));
   const upcomingMatches = upcomingRaw.filter((m) => !recentIds.has(m.id));
-
-  const table = standingsData.standings?.find((s) => s.type === "TOTAL")?.table ?? [];
-  const leader = table[0];
-  const second = table[1];
-  const relegationBorder = table[17];
-  const seventeenthPt = table[16]?.points;
-  const topAttack = [...table].sort((a, b) => b.goalsFor - a.goalsFor)[0];
-  const topScorer = scorersData.scorers?.[0];
-  const ptDiff = seventeenthPt != null && relegationBorder
-    ? seventeenthPt - relegationBorder.points
-    : null;
 
   return (
     <main className="min-h-screen bg-pn-bg">
@@ -58,117 +46,18 @@ export default async function Home() {
       <div className="max-w-3xl mx-auto px-4 py-4 space-y-4">
 
         {/* 1. 注目のデータ */}
-        {table.length > 0 && (
-          <section>
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2">
-                <span className="w-1 h-5 bg-[#00a8e8] rounded inline-block" />
-                <p className="text-sm font-semibold text-[#2d0a4e]">注目のデータ</p>
-              </div>
-              <Link href="/standings" className="text-xs text-[#00a8e8] hover:underline">
-                順位表を見る →
-              </Link>
+        <section>
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <span className="w-1 h-5 bg-[#00a8e8] rounded inline-block" />
+              <p className="text-sm font-semibold text-[#2d0a4e]">注目のデータ</p>
             </div>
-            <div className="grid grid-cols-2 gap-2 md:gap-3">
-
-              {/* 首位チーム */}
-              {leader && (
-                <Link
-                  href="/standings"
-                  className="block bg-white border border-gray-200 rounded p-4 border-l-4 border-l-[#00a8e8] hover:border-[#00a8e8] transition-colors cursor-pointer"
-                >
-                  <p className="text-xs text-gray-500 mb-1">👑 首位</p>
-                  <p className="text-4xl font-bold font-mono text-[#2d0a4e] leading-none">
-                    {leader.points}
-                    <span className="text-base font-normal ml-1">pt</span>
-                  </p>
-                  <div className="flex items-center gap-1 mt-2">
-                    {leader.team.crest && (
-                      <img src={leader.team.crest} alt="" className="w-4 h-4 object-contain shrink-0" />
-                    )}
-                    <p className="text-xs text-gray-700 font-medium truncate">
-                      {leader.team.shortName ?? leader.team.name}
-                    </p>
-                  </div>
-                  {second && (
-                    <p className="text-xs text-gray-500 mt-0.5 font-mono tabular-nums">
-                      2位と +{leader.points - second.points}pt差
-                    </p>
-                  )}
-                </Link>
-              )}
-
-              {/* 得点王 */}
-              {topScorer && (
-                <Link
-                  href="/players"
-                  className="block bg-white border border-gray-200 rounded p-4 border-l-4 border-l-[#f59e0b] hover:border-[#00a8e8] transition-colors cursor-pointer"
-                >
-                  <p className="text-xs text-gray-500 mb-1">⚽ 得点王</p>
-                  <p className="text-4xl font-bold font-mono text-[#2d0a4e] leading-none">
-                    {topScorer.goals}
-                    <span className="text-base font-normal ml-1">得点</span>
-                  </p>
-                  <p className="text-xs text-gray-700 font-medium mt-2 truncate">
-                    {topScorer.player.name}
-                  </p>
-                  {topScorer.team?.shortName && (
-                    <p className="text-xs text-gray-500 mt-0.5 truncate">
-                      {topScorer.team.shortName}
-                    </p>
-                  )}
-                </Link>
-              )}
-
-              {/* 最多得点チーム */}
-              {topAttack && (
-                <Link
-                  href="/charts/style"
-                  className="block bg-white border border-gray-200 rounded p-4 border-l-4 border-l-[#10b981] hover:border-[#00a8e8] transition-colors cursor-pointer"
-                >
-                  <p className="text-xs text-gray-500 mb-1">🔥 最多得点</p>
-                  <p className="text-4xl font-bold font-mono text-[#2d0a4e] leading-none">
-                    {topAttack.goalsFor}
-                    <span className="text-base font-normal ml-1">得点</span>
-                  </p>
-                  <div className="flex items-center gap-1 mt-2">
-                    {topAttack.team.crest && (
-                      <img src={topAttack.team.crest} alt="" className="w-4 h-4 object-contain shrink-0" />
-                    )}
-                    <p className="text-xs text-gray-700 font-medium truncate">
-                      {topAttack.team.shortName ?? topAttack.team.name}
-                    </p>
-                  </div>
-                  <p className="text-xs text-gray-500 mt-0.5">リーグ最多得点</p>
-                </Link>
-              )}
-
-              {/* 降格ライン */}
-              {relegationBorder && (
-                <Link
-                  href="/charts/race"
-                  className="block bg-white border border-gray-200 rounded p-4 border-l-4 border-l-[#ef4444] hover:border-[#00a8e8] transition-colors cursor-pointer"
-                >
-                  <p className="text-xs text-gray-500 mb-1">⚠️ 降格ライン</p>
-                  <p className="text-4xl font-bold font-mono text-[#ef4444] leading-none">
-                    {ptDiff != null ? `-${ptDiff}` : relegationBorder.points}
-                    <span className="text-base font-normal ml-1">pt</span>
-                  </p>
-                  <div className="flex items-center gap-1 mt-2">
-                    {relegationBorder.team.crest && (
-                      <img src={relegationBorder.team.crest} alt="" className="w-4 h-4 object-contain shrink-0" />
-                    )}
-                    <p className="text-xs text-gray-700 font-medium truncate">
-                      {relegationBorder.team.shortName ?? relegationBorder.team.name}
-                    </p>
-                  </div>
-                  <p className="text-xs text-gray-500 mt-0.5">現在18位・残留争い</p>
-                </Link>
-              )}
-
-            </div>
-          </section>
-        )}
+            <Link href="/standings" className="text-xs text-[#00a8e8] hover:underline">
+              順位表を見る →
+            </Link>
+          </div>
+          <TitleRaceChart />
+        </section>
 
         {/* 2. クイズ ＋ 記事（横2列） */}
         <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
