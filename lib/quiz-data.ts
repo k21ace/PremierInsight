@@ -175,7 +175,7 @@ export const quizzes: Quiz[] = [
   },
   {
     slug: "2025-26-season-quiz",
-    title: "2025-26プレミアリーグ 今シーズンクイズ",
+    title: "2025-26プレミアリーグ 知識クイズ（第30節時点）",
     description:
       "今シーズンのプレミアリーグをどれだけ知っている？全5問に挑戦！",
     publishedAt: "2026-03-16",
@@ -192,27 +192,33 @@ export const quizzes: Quiz[] = [
       },
       {
         id: 2,
-        question:
-          "今シーズンの得点王（第30節時点）の選手名をフルネームで答えてください",
-        type: "text",
-        correctAnswer: "Erling Haaland",
+        question: "今シーズンの得点王（第30節時点）は誰？",
+        type: "choice",
+        options: [
+          "Erling Haaland",
+          "Mohamed Salah",
+          "Cole Palmer",
+          "Alexander Isak",
+        ],
+        correctAnswer: "0",
         explanation:
           "ハーランドは22得点で得点王争いをリードしています。",
       },
       {
         id: 3,
-        question: "今シーズン最多得点チームはどこ？（第30節時点）",
+        question: "2025-26シーズン中に監督交代があったチームは何クラブ？（第30節時点）",
         type: "choice",
-        options: ["Arsenal", "Chelsea", "Man City", "Liverpool"],
-        correctAnswer: "0",
-        explanation: "アーセナルは61得点でリーグトップです。",
+        options: ["4", "5", "6", "8"],
+        correctAnswer: "2",
+        explanation:
+          "チェルシー（マレスカ→ローゼナー）など、第30節時点で6クラブが今シーズン中に監督を交代しています。",
       },
       {
         id: 4,
-        question:
-          "第30節時点でアーセナルとマンCの勝点差は何点？（数字で）",
-        type: "text",
-        correctAnswer: "9",
+        question: "第30節時点でアーセナルとマンCの勝点差は何点？",
+        type: "choice",
+        options: ["6", "7", "9", "11"],
+        correctAnswer: "2",
         explanation:
           "アーセナル70勝点、マンC61勝点で9点差です。",
       },
