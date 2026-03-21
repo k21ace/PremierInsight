@@ -259,3 +259,33 @@ const PLAYER_NAMES_JA: Record<string, string> = {
 export function getPlayerNameJa(englishName: string): string | null {
   return PLAYER_NAMES_JA[englishName] ?? null;
 }
+
+// ── Understat チーム名マッピング ────────────────────────────────
+
+/** football-data.org チームID → Understat title 対応表 */
+const UNDERSTAT_TEAM_TITLE: Record<number, string> = {
+  57:   "Arsenal",
+  58:   "Aston Villa",
+  61:   "Chelsea",
+  62:   "Everton",
+  63:   "Fulham",
+  64:   "Liverpool",
+  65:   "Manchester City",
+  66:   "Manchester United",
+  67:   "Newcastle United",
+  73:   "Tottenham",
+  76:   "Wolverhampton Wanderers",
+  338:  "Leicester",
+  340:  "Southampton",
+  349:  "Ipswich",
+  351:  "Nottingham Forest",
+  354:  "Crystal Palace",
+  397:  "Brighton",
+  402:  "Brentford",
+  563:  "West Ham",
+  1044: "Bournemouth",
+};
+
+export function getUnderstatTitle(teamId: number): string | null {
+  return UNDERSTAT_TEAM_TITLE[teamId] ?? null;
+}

@@ -14,6 +14,7 @@ import type {
   PersonResponse,
   ScorersResponse,
   StandingsResponse,
+  TeamInfo,
 } from "@/types/football";
 
 const BASE_URL = "https://api.football-data.org/v4";
@@ -379,6 +380,16 @@ export async function getTransferredPlayerIds(
   });
 
   return transferred;
+}
+
+/**
+ * チーム詳細情報を取得する（監督・スタジアムを含む）。
+ * ISR キャッシュ: 24時間（86400秒）
+ *
+ * @param id - football-data.org のチームID
+ */
+export async function getTeamInfo(id: number): Promise<TeamInfo> {
+  return fetchFootball<TeamInfo>(`/teams/${id}`, 86400);
 }
 
 /**

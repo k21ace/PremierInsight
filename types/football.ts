@@ -229,6 +229,27 @@ export type HomeAwayTable = {
   goalDifference: number;
 };
 
+// ─── TeamInfo ─────────────────────────────────────────────
+
+/** GET /teams/{id} レスポンス（監督・スタジアム含む） */
+export interface TeamInfo {
+  id: number;
+  name: string;
+  shortName: string;
+  tla: string;
+  crest: string;
+  venue: string | null;
+  coach: {
+    id: number;
+    name: string;
+    nationality: string;
+    contract: {
+      start: string;
+      until: string;
+    } | null;
+  } | null;
+}
+
 // ─── Chart ────────────────────────────────────────────────
 
 /** レースチャート用 チーム勝点推移 */
