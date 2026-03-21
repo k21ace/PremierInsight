@@ -249,7 +249,6 @@ const PLAYER_NAMES_JA: Record<string, string> = {
 
   // ─── 日本人選手（漢字表記） ───────────────────────────
   "Wataru Endo":           "遠藤 航",
-  "Kaoru Mitoma":          "三笘 薫",
   "Takehiro Tomiyasu":     "冨安 健洋",
   "Reo Hatate":            "旗手 怜央",
   "Daichi Kamada":         "鎌田 大地",
