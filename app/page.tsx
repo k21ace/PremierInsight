@@ -6,6 +6,8 @@ import { convertToJSTMedium } from "@/lib/utils";
 import { JsonLd } from "@/components/JsonLd";
 import { createMetadata } from "@/lib/metadata";
 import TitleRaceChart from "@/components/TitleRaceChart";
+import FeaturedMatchCard, { buildRecentMatches } from "@/components/FeaturedMatchCard";
+import { FEATURED_MATCH } from "@/lib/match-preview-data";
 
 export const revalidate = 1800;
 
@@ -30,6 +32,45 @@ export default async function Home() {
 
   const recentIds = new Set(recentMatches.map((m) => m.id));
   const upcomingMatches = upcomingRaw.filter((m) => !recentIds.has(m.id));
+
+  // 次の注目カード用フォームデータを計算
+  const allFinished = matchesData.matches ?? [];
+  const homeForm = allFinished
+    .filter(
+      (m) =>
+        m.homeTeam.id === FEATURED_MATCH.homeTeam.id ||
+        m.awayTeam.id === FEATURED_MATCH.homeTeam.id,
+    )
+    .sort((a, b) => new Date(b.utcDate).getTime() - new Date(a.utcDate).getTime())
+    .slice(0, 5)
+    .reverse()
+    .map((m) => {
+      const isHome = m.homeTeam.id === FEATURED_MATCH.homeTeam.id;
+      const h = m.score.fullTime.home ?? 0;
+      const a = m.score.fullTime.away ?? 0;
+      if (h === a) return "D";
+      return isHome ? (h > a ? "W" : "L") : (a > h ? "W" : "L");
+    });
+
+  const awayForm = allFinished
+    .filter(
+      (m) =>
+        m.homeTeam.id === FEATURED_MATCH.awayTeam.id ||
+        m.awayTeam.id === FEATURED_MATCH.awayTeam.id,
+    )
+    .sort((a, b) => new Date(b.utcDate).getTime() - new Date(a.utcDate).getTime())
+    .slice(0, 5)
+    .reverse()
+    .map((m) => {
+      const isHome = m.homeTeam.id === FEATURED_MATCH.awayTeam.id;
+      const h = m.score.fullTime.home ?? 0;
+      const a = m.score.fullTime.away ?? 0;
+      if (h === a) return "D";
+      return isHome ? (h > a ? "W" : "L") : (a > h ? "W" : "L");
+    });
+
+  const homeRecentMatches = buildRecentMatches(FEATURED_MATCH.homeTeam.id, allFinished);
+  const awayRecentMatches = buildRecentMatches(FEATURED_MATCH.awayTeam.id, allFinished);
 
   return (
     <main className="min-h-screen bg-pn-bg">
@@ -59,7 +100,16 @@ export default async function Home() {
           <TitleRaceChart />
         </section>
 
-        {/* 2. クイズ ＋ 記事（横2列） */}
+        {/* 2. 次の注目カード */}
+        <FeaturedMatchCard
+          config={FEATURED_MATCH}
+          homeForm={homeForm}
+          awayForm={awayForm}
+          homeRecentMatches={homeRecentMatches}
+          awayRecentMatches={awayRecentMatches}
+        />
+
+        {/* 3. クイズ ＋ 記事（横2列） */}
         <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
 
           {/* 左：ピックアップクイズ */}
@@ -132,7 +182,7 @@ export default async function Home() {
 
         </div>
 
-        {/* 3. 試合情報 2カラム */}
+        {/* 4. 試合情報 2カラム */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
 
           {/* 次の試合（SP: 上、PC: 右） */}

@@ -96,6 +96,10 @@ c:/ws/PremierNow/
 │   │       ├── page.tsx        # 順位予測シミュレーター（Server Component・ISR standings:3600秒/matches:1800秒）
 │   │       └── SimulatorClient.tsx # H/D/A予測入力・リアルタイム順位表・サマリー（Client Component）
 │   │
+│   ├── quiz/
+│   │   └── [matchId]/
+│   │       └── page.tsx        # 試合別クイズページ（/quiz/liverpool-vs-brighton など）
+│   │
 │   └── articles/
 │       ├── page.tsx            # 記事一覧（Server Component）
 │       ├── ArticlesView.tsx    # タグフィルター・カード一覧（Client Component）
@@ -108,6 +112,7 @@ c:/ws/PremierNow/
 │   ├── mdx/
 │   │   └── MdxComponents.tsx   # MDX用カスタムコンポーネント（h2/h3/p/ul/ol など）
 │   ├── JsonLd.tsx              # JSON-LD構造化データ出力コンポーネント
+│   ├── FeaturedMatchCard.tsx   # 次の注目カード（直近5試合・けが人・クイズリンク）
 │   └── charts/
 │       ├── chart-shared.tsx    # チャート共通型・buildChartData・CustomTooltip
 │       ├── RaceChartPC.tsx     # レースチャート PC版（500px・全機能）
@@ -125,6 +130,8 @@ c:/ws/PremierNow/
 │   ├── chart-utils.ts          # チャート用データ加工関数群
 │   ├── simulator-utils.ts      # シミュレーター用型・matchToSimulator・calcSimulation
 │   ├── team-colors.ts          # チームID → チームカラー定義
+│   ├── match-preview-data.ts   # 次の注目カード静的設定（チーム情報・けが人・出場停止）
+│   ├── match-quiz-data.ts      # 試合別クイズデータ（/quiz/[matchId] で使用）
 │   └── utils.ts                # 汎用ユーティリティ（UTC→JST変換など）
 │
 ├── types/
