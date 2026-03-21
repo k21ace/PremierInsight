@@ -97,6 +97,25 @@
 
 ---
 
+| `GET /matches/{id}` × N で注目カード | `getFeaturedMatchDetail(homeTeamId, awayTeamId)` | 注目カード用試合詳細取得（venue を含む） | 1800秒（検索）+ 300秒（detail） |
+
+---
+
+## Understat API（スクレイピング）
+
+| エンドポイント | 関数名 | 用途 | revalidate |
+|--------------|--------|------|-----------|
+| `https://understat.com/getLeagueData/EPL/{season}` | `getUnderstatTeams()` / `getUnderstatPlayers()` | チーム・選手の xG・xA データ | 86400秒 |
+| `https://understat.com/team/{teamName}/{season}` | `getTeamShots(teamTitle, season)` | チーム別シュート座標・xG データ | 3600秒 |
+
+**APIルート**:
+
+| エンドポイント | 用途 |
+|--------------|------|
+| `GET /api/understat/shots?team={title}&season={year}` | チームのシュートデータ JSON（クライアント向けプロキシ） |
+
+---
+
 ## エラーハンドリング方針
 
 `lib/football-api.ts` の共通フェッチ関数（`fetchFootball`）で以下を実装:

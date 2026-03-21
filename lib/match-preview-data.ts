@@ -111,93 +111,48 @@ export type FeaturedMatchStaticConfig = {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const FEATURED_MATCH_CONFIG: FeaturedMatchStaticConfig = {
-  homeTeamId: 62,  // Everton FC
-  awayTeamId: 61,  // Chelsea FC
-  quizSlug: "everton-vs-chelsea",
-  previewArticleSlug: "matchpreview-matchday32-everton-chelsea",
+  homeTeamId: 397, // Brighton & Hove Albion
+  awayTeamId: 64,  // Liverpool FC
+  quizSlug: "brighton-vs-liverpool",
+  previewArticleSlug: "matchpreview-matchday31-brighton-liverpool",
   homeInjuries: [
     {
-      playerName: "ティリック・ジョージ",
-      reason: "出場停止",
-      status: "suspension",
-      playerId: undefined, // Tyrique George
-    },
-    {
-      playerName: "ジェームズ・タルコウスキー",
-      reason: "軽い外傷",
+      playerName: "ジョアン・ペドロ",
+      reason: "大腿部の負傷",
       status: "injury",
       returnDate: "未定",
-      playerId: 3207, // James Tarkowski
+      playerId: undefined, // João Pedro
     },
     {
-      playerName: "ジャラッド・ブランスウェイト",
-      reason: "軽い外傷",
+      playerName: "ジャック・ヒンシェルウッド",
+      reason: "膝の負傷",
       status: "injury",
       returnDate: "未定",
-      playerId: 156714, // Jarrad Branthwaite
-    },
-    {
-      playerName: "チャーリー・アルカラス",
-      reason: "軽い外傷",
-      status: "injury",
-      returnDate: "4月中旬",
-      playerId: undefined, // Charly Alcaraz
-    },
-    {
-      playerName: "ジャック・グリーリッシュ",
-      reason: "足の骨折",
-      status: "injury",
-      returnDate: "6月上旬",
-      playerId: undefined, // Jack Grealish
+      playerId: undefined, // Jack Hinshelwood
     },
   ],
   awayInjuries: [
     {
-      playerName: "ブノワ・バディアシル",
-      reason: "病気",
+      playerName: "アリスター・マカリスター",
+      reason: "腹部の負傷",
       status: "injury",
       returnDate: "未定",
-      playerId: undefined, // Benoît Badiashile
+      playerId: undefined, // Alexis Mac Allister
     },
     {
-      playerName: "ジェイミー・バイノー＝ギッテンス",
-      reason: "ハムストリング損傷",
-      status: "injury",
-      returnDate: "未定",
-      playerId: undefined, // Jamie Bynoe-Gittens
-    },
-    {
-      playerName: "フィリップ・ヨルゲンセン",
-      reason: "鼠径部の負傷",
+      playerName: "コナー・ブラッドリー",
+      reason: "膝蓋骨の負傷",
       status: "injury",
       returnDate: "4月中旬",
-      playerId: undefined, // Filip Jörgensen
-    },
-    {
-      playerName: "レヴィ・コルウィル",
-      reason: "十字靭帯の負傷",
-      status: "injury",
-      returnDate: "5月下旬",
-    },
-    {
-      playerName: "リース・ジェームズ",
-      reason: "ハムストリング損傷",
-      status: "injury",
-      returnDate: "4月中旬",
-    },
-    {
-      playerName: "トレヴォー・チャロバー",
-      reason: "足首の負傷",
-      status: "injury",
-      returnDate: "5月上旬",
+      playerId: undefined, // Conor Bradley
     },
   ],
   scorePrediction: {
     homeGoals: 1,
     awayGoals: 2,
-    homeWinPct: 30,
+    homeWinPct: 25,
     drawPct: 25,
-    awayWinPct: 45,
-    comment: "CB不在のエバートン守備陣をパーマーが崩す。新スタジアムの熱気で前半は拮抗するも、後半チェルシーが質の差を見せる。",
+    awayWinPct: 50,
+    comment: "首位リバプールが敵地でも組織的な守備とサラーの個人技で勝点3を狙う。ブライトンも三苫の突破力で対抗するが、総合力の差が出る。",
   },
 };
