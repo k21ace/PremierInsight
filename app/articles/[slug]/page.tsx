@@ -65,7 +65,7 @@ export default async function ArticleDetailPage({ params }: Props) {
   const nextArticle = currentIndex > 0 ? allArticles[currentIndex - 1] : null;
 
   return (
-    <main className="min-h-screen bg-pn-bg">
+    <main className="min-h-screen bg-pn-bg dark:bg-gray-950">
       <JsonLd
         data={{
           "@context": "https://schema.org",
@@ -81,22 +81,22 @@ export default async function ArticleDetailPage({ params }: Props) {
       />
       <div className="max-w-3xl mx-auto px-4 py-6">
         {/* ヘッダー */}
-        <div className="bg-white border border-gray-200 rounded shadow-sm p-6 mb-6">
+        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded shadow-sm p-6 mb-6">
           <div className="flex flex-wrap gap-2 mb-3">
             {article.tags.map((tag) => (
               <span
                 key={tag}
-                className="px-2 py-0.5 text-xs bg-gray-100 text-gray-500 rounded"
+                className="px-2 py-0.5 text-xs bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 rounded"
               >
                 {tag}
               </span>
             ))}
           </div>
-          <h1 className="text-xl font-semibold tracking-tight text-gray-900 mb-3">
+          <h1 className="text-xl font-semibold tracking-tight text-gray-900 dark:text-gray-100 mb-3">
             {article.title}
           </h1>
-          <p className="text-sm text-gray-500 mb-4">{article.description}</p>
-          <div className="flex items-center gap-4 text-xs text-gray-400">
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">{article.description}</p>
+          <div className="flex items-center gap-4 text-xs text-gray-400 dark:text-gray-500">
             <span>{article.publishedAt}</span>
             <span>{article.readingTime}</span>
             {article.matchday && <span>第{article.matchday}節</span>}
@@ -104,7 +104,7 @@ export default async function ArticleDetailPage({ params }: Props) {
         </div>
 
         {/* 本文 */}
-        <div className="bg-white border border-gray-200 rounded shadow-sm p-6 mb-6">
+        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded shadow-sm p-6 mb-6">
           <MDXRemote
             source={article.content}
             components={mdxComponents}
@@ -118,10 +118,10 @@ export default async function ArticleDetailPage({ params }: Props) {
             {prevArticle && (
               <Link
                 href={`/articles/${prevArticle.slug}`}
-                className="block bg-white border border-gray-200 rounded shadow-sm p-4 hover:border-gray-400 transition-colors"
+                className="block bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded shadow-sm p-4 hover:border-gray-400 dark:hover:border-gray-500 transition-colors"
               >
-                <p className="text-xs text-gray-400 mb-1">← 前の記事</p>
-                <p className="text-sm font-medium text-gray-900 line-clamp-2">
+                <p className="text-xs text-gray-400 dark:text-gray-500 mb-1">← 前の記事</p>
+                <p className="text-sm font-medium text-gray-900 dark:text-gray-100 line-clamp-2">
                   {prevArticle.title}
                 </p>
               </Link>
@@ -131,10 +131,10 @@ export default async function ArticleDetailPage({ params }: Props) {
             {nextArticle && (
               <Link
                 href={`/articles/${nextArticle.slug}`}
-                className="block bg-white border border-gray-200 rounded shadow-sm p-4 hover:border-gray-400 transition-colors text-right"
+                className="block bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded shadow-sm p-4 hover:border-gray-400 dark:hover:border-gray-500 transition-colors text-right"
               >
-                <p className="text-xs text-gray-400 mb-1">次の記事 →</p>
-                <p className="text-sm font-medium text-gray-900 line-clamp-2">
+                <p className="text-xs text-gray-400 dark:text-gray-500 mb-1">次の記事 →</p>
+                <p className="text-sm font-medium text-gray-900 dark:text-gray-100 line-clamp-2">
                   {nextArticle.title}
                 </p>
               </Link>

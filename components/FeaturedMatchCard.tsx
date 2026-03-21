@@ -55,7 +55,7 @@ export function buildRecentMatches(
 
 function InjuryTable({ injuries }: { injuries: InjuryInfo[] }) {
   if (injuries.length === 0) {
-    return <p className="text-xs text-gray-400">報告なし</p>;
+    return <p className="text-xs text-gray-400 dark:text-gray-500">報告なし</p>;
   }
   return (
     <div className="space-y-1">
@@ -72,7 +72,7 @@ function InjuryTable({ injuries }: { injuries: InjuryInfo[] }) {
           />
           <div className="flex-1 min-w-0">
             <span className="font-medium text-gray-900 dark:text-gray-100">{inj.playerName}</span>
-            <span className="text-gray-400 ml-1">
+            <span className="text-gray-400 dark:text-gray-500 ml-1">
               {inj.reason}
               {inj.returnDate ? `（${inj.returnDate}）` : ""}
             </span>
@@ -111,14 +111,14 @@ function ScorePredictionSection({
       {/* 予想スコア */}
       <div className="flex items-center justify-center gap-4 mb-4">
         <div className="flex flex-col items-center gap-0.5">
-          <span className="text-[10px] text-gray-400">{homeShortName}</span>
+          <span className="text-[10px] text-gray-400 dark:text-gray-500">{homeShortName}</span>
           <span className="font-mono font-bold text-2xl text-gray-900 dark:text-gray-100 tabular-nums">
             {homeGoals}
           </span>
         </div>
         <span className="text-lg font-bold text-gray-300 dark:text-gray-600">–</span>
         <div className="flex flex-col items-center gap-0.5">
-          <span className="text-[10px] text-gray-400">{awayShortName}</span>
+          <span className="text-[10px] text-gray-400 dark:text-gray-500">{awayShortName}</span>
           <span className="font-mono font-bold text-2xl text-gray-900 dark:text-gray-100 tabular-nums">
             {awayGoals}
           </span>
@@ -172,7 +172,7 @@ function ScorePredictionSection({
 
 function RecentMatchList({ rows }: { rows: RecentMatchRow[] }) {
   if (rows.length === 0) {
-    return <p className="text-xs text-gray-400">データなし</p>;
+    return <p className="text-xs text-gray-400 dark:text-gray-500">データなし</p>;
   }
   return (
     <div className="space-y-1">
@@ -201,7 +201,7 @@ function RecentMatchList({ rows }: { rows: RecentMatchRow[] }) {
             <span className="w-4 h-4 flex-shrink-0" />
           )}
           {/* H/A + 相手名 */}
-          <span className="text-gray-400 flex-shrink-0">
+          <span className="text-gray-400 dark:text-gray-500 flex-shrink-0">
             {row.isHome ? "H" : "A"}
           </span>
           <span className="text-gray-700 dark:text-gray-300 truncate flex-1">{row.opponent}</span>
@@ -303,13 +303,13 @@ export default function FeaturedMatchCard({
         {/* ── 直近試合詳細（2列） ── */}
         <div className="grid grid-cols-2 gap-4 mb-5">
           <div>
-            <p className="text-[10px] font-medium text-gray-400 uppercase tracking-wider mb-1.5">
+            <p className="text-[10px] font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-1.5">
               {homeTeam.shortName} 直近5試合
             </p>
             <RecentMatchList rows={homeRecentMatches} />
           </div>
           <div>
-            <p className="text-[10px] font-medium text-gray-400 uppercase tracking-wider mb-1.5">
+            <p className="text-[10px] font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-1.5">
               {awayTeam.shortName} 直近5試合
             </p>
             <RecentMatchList rows={awayRecentMatches} />
@@ -320,7 +320,7 @@ export default function FeaturedMatchCard({
         <div className="grid grid-cols-2 gap-4 mb-5 pt-4 border-t border-gray-100 dark:border-gray-800">
           <div>
             <div className="flex items-center gap-1.5 mb-2">
-              <p className="text-[10px] font-medium text-gray-400 uppercase tracking-wider">
+              <p className="text-[10px] font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider">
                 {homeTeam.shortName}
               </p>
             </div>
@@ -328,7 +328,7 @@ export default function FeaturedMatchCard({
           </div>
           <div>
             <div className="flex items-center gap-1.5 mb-2">
-              <p className="text-[10px] font-medium text-gray-400 uppercase tracking-wider">
+              <p className="text-[10px] font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider">
                 {awayTeam.shortName}
               </p>
             </div>
@@ -337,7 +337,7 @@ export default function FeaturedMatchCard({
         </div>
 
         {/* 凡例 */}
-        <div className="flex items-center gap-3 mb-4 text-[10px] text-gray-400">
+        <div className="flex items-center gap-3 mb-4 text-[10px] text-gray-400 dark:text-gray-500">
           <span className="flex items-center gap-1">
             <span className="inline-block w-1.5 h-1.5 rounded-full bg-red-500" />
             けが
@@ -378,7 +378,7 @@ export default function FeaturedMatchCard({
               <p className="text-sm font-semibold text-gray-700 dark:text-gray-200">
                 マッチプレビュー →
               </p>
-              <p className="text-xs text-gray-400 mt-0.5">
+              <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
                 試合展望・分析
               </p>
             </div>
