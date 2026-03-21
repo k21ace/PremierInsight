@@ -11,10 +11,10 @@ const primaryNavLinks = [
 ];
 
 const leagueNavLinks = [
-  { href: "/standings", label: "順位表",   activePrefix: "/standings" },
-  { href: "/matches",   label: "試合結果", activePrefix: "/matches" },
-  { href: "/players",   label: "Player",   activePrefix: "/players" },
-  { href: "/teams",     label: "チーム",   activePrefix: "/teams" },
+  { href: "/standings", label: "順位表", activePrefix: "/standings" },
+  { href: "/matches",   label: "試合",   activePrefix: "/matches" },
+  { href: "/players",   label: "選手",   activePrefix: "/players" },
+  { href: "/teams",     label: "クラブ", activePrefix: "/teams" },
 ];
 
 const leaguePrefixes = ["/standings", "/matches", "/players", "/teams"];
@@ -24,7 +24,7 @@ export default function Header() {
   const isLeagueActive = leaguePrefixes.some((p) => pathname.startsWith(p));
 
   return (
-    <header className="overflow-x-hidden" style={{ backgroundColor: "#2d0a4e" }}>
+    <header className="overflow-x-hidden sticky top-0 z-50" style={{ backgroundColor: "#2d0a4e" }}>
       {/* 1行目: ロゴ */}
       <div className="max-w-5xl mx-auto px-4 pt-2 pb-1">
         <Link href="/" aria-label="PremierNow ホームへ">

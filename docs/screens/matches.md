@@ -5,14 +5,13 @@
 | 項目 | 内容 |
 |------|------|
 | 画面名 | 試合結果・日程 |
-| URL | `/matches` または `/matches?matchday=<n>` |
+| URL | `/matches` |
 | `page.tsx` | `app/matches/page.tsx` |
 | 関連コンポーネント | `app/matches/MatchesView.tsx` |
-| 目的 | 指定節（デフォルト: 現在節）の試合一覧を日付グルーピングで表示する |
+| 目的 | シーズン全試合を節ごとにグルーピングし、時系列（最新節が上）でスクロール表示する |
 
 ユーザーができること:
-- 現在節の試合結果・日程を確認
-- 「←」「→」ボタンで節を切り替えて過去/未来の試合を閲覧
+- シーズン全節の試合結果・日程を1ページでスクロール閲覧
 - 各試合の得点者・分・得点種別（PK/OG）を確認
 - 試合ステータス（終了/試合中/予定/延期）をバッジで確認
 - 「レポートを見る →」「プレビューを見る →」リンクで `/matches/[id]` へ遷移
@@ -35,10 +34,9 @@
 
 | 関数名 | エンドポイント | revalidate | 用途 |
 |--------|--------------|-----------|------|
-| `getCurrentMatchday()` | `GET /competitions/PL/matches` | 1800秒 | `?matchday` 未指定時に現在節を取得 |
-| `getMatches({ matchday: n })` | `GET /competitions/PL/matches?matchday=n` | 1800秒 | 指定節の試合一覧取得 |
+| `getMatches()` | `GET /competitions/PL/matches` | 1800秒 | シーズン全試合取得（380試合） |
 
-`searchParams.matchday` が指定されている場合は `getCurrentMatchday()` を呼ばず1リクエストのみ。
+引数なしで呼び出すため1リクエストのみ。
 
 ---
 
@@ -72,9 +70,7 @@
 
 | コンポーネント | state名 | 型 | 初期値 | 役割 |
 |-------------|---------|-----|-------|------|
-| `MatchesView` | — | — | — | state なし（節切り替えは `router.push` + searchParams で管理） |
-
-節切り替えは `useRouter().push(`/matches?matchday=${n}`)` で URL を更新し、Server Component 側で再フェッチ。
+| `MatchesView` | — | — | — | state なし（全試合を props で受け取り、クライアント側でグルーピング） |
 
 ---
 
@@ -92,5 +88,4 @@
 
 ## 7. 既知の課題・TODO
 
-- 節切り替えボタンを押すたびにページ全体がリロードされる（Server Component のISR再フェッチ）。ローディング表示は未実装
-- `getCurrentMatchday()` は FINISHED 試合の最大節番号を返すため、シーズン開始直後（試合未消化時）は正しくない可能性がある
+- 全380試合を一括ロードするためページサイズが大きい（ISRキャッシュで対応）

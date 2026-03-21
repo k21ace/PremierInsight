@@ -2,11 +2,9 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import type { Match } from "@/types/football";
 import { getTeamShortNameJa } from "@/lib/translations";
-
-const MAX_MATCHDAY = 38;
 
 // UTC → JST 日付キー（グルーピング用）
 function toJSTDateKey(utcDate: string): string {
@@ -33,6 +31,37 @@ function groupByDate(matches: Match[]): [string, Match[]][] {
     map.get(key)!.push(match);
   }
   return Array.from(map.entries());
+}
+
+// matchday でグルーピング（昇順: 古い節が先頭）
+function groupByMatchday(matches: Match[]): [number, Match[]][] {
+  const map = new Map<number, Match[]>();
+  for (const match of matches) {
+    const md = match.matchday ?? 0;
+    if (!map.has(md)) map.set(md, []);
+    map.get(md)!.push(match);
+  }
+  return Array.from(map.entries()).sort(([a], [b]) => a - b);
+}
+
+// 直近の節番号を算出（IN_PLAY優先 → 最大FINISHED節）
+function resolveCurrentMatchday(matches: Match[]): number {
+  const inPlay = matches.find(
+    (m) => m.status === "IN_PLAY" || m.status === "LIVE" || m.status === "PAUSED",
+  );
+  if (inPlay) return inPlay.matchday ?? 1;
+
+  const finished = matches
+    .filter((m) => m.status === "FINISHED")
+    .map((m) => m.matchday ?? 0);
+  if (finished.length > 0) return Math.max(...finished);
+
+  const scheduled = matches
+    .filter((m) => m.status === "SCHEDULED" || m.status === "TIMED")
+    .map((m) => m.matchday ?? 0);
+  if (scheduled.length > 0) return Math.min(...scheduled);
+
+  return 1;
 }
 
 // 試合カード（1行レイアウト）
@@ -99,60 +128,47 @@ function MatchCard({ match }: { match: Match }) {
 
 interface MatchesViewProps {
   matches: Match[];
-  matchday: number;
 }
 
-export default function MatchesView({ matches, matchday }: MatchesViewProps) {
-  const router = useRouter();
-  const grouped = groupByDate(matches);
+export default function MatchesView({ matches }: MatchesViewProps) {
+  const groupedByMatchday = groupByMatchday(matches);
+  const currentMatchday = resolveCurrentMatchday(matches);
+
+  useEffect(() => {
+    const el = document.getElementById(`matchday-${currentMatchday}`);
+    if (el) el.scrollIntoView({ behavior: "instant", block: "start" });
+  }, [currentMatchday]);
 
   return (
-    <div>
-      {/* 節切り替えナビ */}
-      <div className="flex items-center justify-center gap-4 mb-6">
-        <button
-          onClick={() => router.push(`/matches?matchday=${matchday - 1}`)}
-          disabled={matchday <= 1}
-          className="px-3 py-1.5 text-sm text-gray-500 hover:text-gray-900 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-          aria-label="前の節"
-        >
-          ←
-        </button>
-        <span className="text-sm font-semibold text-gray-900 w-16 text-center">
-          第&thinsp;<span className="font-mono tabular-nums">{matchday}</span>&thinsp;節
-        </span>
-        <button
-          onClick={() => router.push(`/matches?matchday=${matchday + 1}`)}
-          disabled={matchday >= MAX_MATCHDAY}
-          className="px-3 py-1.5 text-sm text-gray-500 hover:text-gray-900 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-          aria-label="次の節"
-        >
-          →
-        </button>
-      </div>
-
-      {/* 試合なし */}
-      {grouped.length === 0 && (
-        <p className="text-center text-gray-500 text-sm py-12">
-          この節の試合情報がありません。
-        </p>
-      )}
-
-      {/* 日付ごとにグルーピング */}
-      <div className="space-y-4">
-        {grouped.map(([dateKey, dayMatches]) => (
-          <section key={dateKey}>
-            <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 pb-1 border-b border-gray-200">
-              {formatDateHeader(dayMatches[0].utcDate)}
+    <div className="space-y-8">
+      {groupedByMatchday.map(([matchday, mdMatches]) => {
+        const groupedByDate = groupByDate(mdMatches);
+        return (
+          <section key={matchday} id={`matchday-${matchday}`}>
+            {/* 節ヘッダー */}
+            <h2 className="text-sm font-bold text-gray-700 mb-3 flex items-center gap-2">
+              <span className="font-mono tabular-nums">第{matchday}節</span>
+              <span className="flex-1 border-t border-gray-200" />
             </h2>
-            <div className="space-y-2">
-              {dayMatches.map((match) => (
-                <MatchCard key={match.id} match={match} />
+
+            {/* 日付ごとにグルーピング */}
+            <div className="space-y-4">
+              {groupedByDate.map(([dateKey, dayMatches]) => (
+                <div key={dateKey}>
+                  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 pb-1 border-b border-gray-100">
+                    {formatDateHeader(dayMatches[0].utcDate)}
+                  </p>
+                  <div className="space-y-2">
+                    {dayMatches.map((match) => (
+                      <MatchCard key={match.id} match={match} />
+                    ))}
+                  </div>
+                </div>
               ))}
             </div>
           </section>
-        ))}
-      </div>
+        );
+      })}
     </div>
   );
 }

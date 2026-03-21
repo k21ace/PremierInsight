@@ -1,4 +1,4 @@
-import { getMatches, getCurrentMatchday } from "@/lib/football-api";
+import { getMatches } from "@/lib/football-api";
 import MatchesView from "./MatchesView";
 import { JsonLd } from "@/components/JsonLd";
 import { createMetadata } from "@/lib/metadata";
@@ -10,20 +10,8 @@ export const metadata = createMetadata(
   "プレミアリーグ 試合結果・日程 2025-26",
 );
 
-export default async function MatchesPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ matchday?: string }>;
-}) {
-  const { matchday: matchdayParam } = await searchParams;
-
-  // matchdayParam が有効な整数なら使用、なければ現在の節を取得
-  const parsed = matchdayParam ? parseInt(matchdayParam, 10) : NaN;
-  const selectedMatchday = !isNaN(parsed)
-    ? Math.max(1, Math.min(38, parsed))
-    : await getCurrentMatchday();
-
-  const data = await getMatches({ matchday: selectedMatchday });
+export default async function MatchesPage() {
+  const data = await getMatches();
 
   return (
     <main className="min-h-screen bg-pn-bg">
@@ -44,10 +32,7 @@ export default async function MatchesPage({
             {data.resultSet.first.slice(0, 4)}–{data.resultSet.last.slice(2, 4)}
           </span>
         </h1>
-        <MatchesView
-          matches={data.matches}
-          matchday={selectedMatchday}
-        />
+        <MatchesView matches={data.matches} />
       </div>
     </main>
   );
