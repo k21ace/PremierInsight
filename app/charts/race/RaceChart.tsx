@@ -26,12 +26,29 @@ const PROB_TOOLTIP_TEXT =
 
 function InfoTooltip() {
   const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
+  const [tooltipLeft, setTooltipLeft] = useState(0);
+  const [tooltipTop, setTooltipTop] = useState(0);
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const btnRef = useRef<HTMLButtonElement>(null);
+
+  const TOOLTIP_W = 288; // w-72
+  const MARGIN = 8;
+
+  function openTooltip() {
+    if (btnRef.current) {
+      const rect = btnRef.current.getBoundingClientRect();
+      const centered = rect.left + rect.width / 2 - TOOLTIP_W / 2;
+      const clamped = Math.max(MARGIN, Math.min(centered, window.innerWidth - TOOLTIP_W - MARGIN));
+      setTooltipLeft(clamped);
+      setTooltipTop(rect.bottom + 6);
+    }
+    setOpen(true);
+  }
 
   useEffect(() => {
     if (!open) return;
     function handleClick(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) {
+      if (wrapRef.current && !wrapRef.current.contains(e.target as Node)) {
         setOpen(false);
       }
     }
@@ -40,17 +57,21 @@ function InfoTooltip() {
   }, [open]);
 
   return (
-    <div ref={ref} className="relative inline-flex items-center">
+    <div ref={wrapRef} className="relative inline-flex items-center">
       <button
+        ref={btnRef}
         type="button"
-        onClick={() => setOpen((v) => !v)}
+        onClick={() => (open ? setOpen(false) : openTooltip())}
         className="flex items-center justify-center w-4 h-4 rounded-full border border-gray-300 dark:border-gray-600 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 hover:border-gray-400 transition-colors text-[10px] font-semibold leading-none"
         aria-label="確率の計算方法"
       >
         i
       </button>
       {open && (
-        <div className="absolute left-0 top-6 z-20 w-72 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded shadow-sm p-3 text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
+        <div
+          style={{ left: tooltipLeft, top: tooltipTop, width: TOOLTIP_W }}
+          className="fixed z-50 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded shadow-sm p-3 text-xs text-gray-600 dark:text-gray-400 leading-relaxed"
+        >
           <p className="font-semibold text-gray-800 dark:text-gray-200 mb-1">確率の計算方法</p>
           <p>{PROB_TOOLTIP_TEXT}</p>
         </div>
@@ -83,14 +104,14 @@ function ProbabilityBar({ entries, label }: { entries: ProbEntry[]; label: strin
           順位表 →
         </Link>
       </div>
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-1.5">
         {sorted.map((e) => (
           <div
             key={e.teamId}
-            className="flex items-center gap-1.5 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded px-2.5 py-1.5 shadow-sm"
+            className="flex items-center gap-1 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded px-2 py-1 shadow-sm"
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={e.crestUrl} alt="" width={18} height={18} className="object-contain shrink-0" />
+            <img src={e.crestUrl} alt="" width={16} height={16} className="object-contain shrink-0" />
             <span className="text-xs font-medium text-gray-700 dark:text-gray-300">{e.teamShortName}</span>
             <span
               className="text-xs font-mono tabular-nums font-semibold"

@@ -112,7 +112,7 @@ export default async function Home() {
       },
       utcDate: featuredMatchDetail.utcDate,
       matchday: featuredMatchDetail.matchday,
-      venue: featuredMatchDetail.venue ?? "エバートン・スタジアム",
+      venue: featuredMatchDetail.venue ?? "ヒルディッキンソン・スタジアム",
       status: featuredMatchDetail.status,
       liveScore: featuredMatchDetail.score,
       goals: featuredMatchDetail.goals ?? [],

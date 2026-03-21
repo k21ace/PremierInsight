@@ -212,6 +212,6 @@ export const FEATURED_MATCH_CONFIG: FeaturedMatchStaticConfig = {
     homeWinPct: 25,
     drawPct: 30,
     awayWinPct: 45,
-    comment: "チェルシーがコール・パーマーの創造性を軸に敵地エバートンに乗り込む。エバートンは堅守速攻で対抗するが、チェルシーの攻撃力が上回る見込み。",
+    comment: "リバプールが勝ち点を落とした今、CL圏獲得に向けチェルシーは意地でも勝利が欲しい一戦。対するエバートンも勝てばCL圏争いが現実的になる。ホームで勝ち点を積み重ねたい。",
   },
 };
