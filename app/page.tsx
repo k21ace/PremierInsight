@@ -1,14 +1,14 @@
 import Link from "next/link";
 import { getFeaturedArticles } from "@/lib/articles";
 import { quizzes } from "@/lib/quiz-data";
-import { getMatches, getUpcomingMatches } from "@/lib/football-api";
+import { getMatches, getUpcomingMatches, getFeaturedMatchDetail } from "@/lib/football-api";
 import { convertToJSTMedium } from "@/lib/utils";
 import { calcPointsTimeline } from "@/lib/chart-utils";
 import { JsonLd } from "@/components/JsonLd";
 import { createMetadata } from "@/lib/metadata";
 import TitleRaceChart from "@/components/TitleRaceChart";
 import FeaturedMatchCard, { buildRecentMatches } from "@/components/FeaturedMatchCard";
-import { FEATURED_MATCH } from "@/lib/match-preview-data";
+import { FEATURED_MATCH_CONFIG, type FeaturedMatchConfig } from "@/lib/match-preview-data";
 
 export const revalidate = 1800;
 
@@ -20,11 +20,15 @@ export const metadata = createMetadata(
 );
 
 export default async function Home() {
-  const [featuredArticles, matchesData, upcomingRaw] =
+  const [featuredArticles, matchesData, upcomingRaw, featuredMatchDetail] =
     await Promise.all([
       Promise.resolve(getFeaturedArticles()),
       getMatches({ status: "FINISHED" }),
       getUpcomingMatches(3),
+      getFeaturedMatchDetail(
+        FEATURED_MATCH_CONFIG.homeTeamId,
+        FEATURED_MATCH_CONFIG.awayTeamId,
+      ),
     ]);
 
   const timelines = calcPointsTimeline(matchesData.matches ?? []);
@@ -36,44 +40,63 @@ export default async function Home() {
   const recentIds = new Set(recentMatches.map((m) => m.id));
   const upcomingMatches = upcomingRaw.filter((m) => !recentIds.has(m.id));
 
-  // 次の注目カード用フォームデータを計算
+  // 次の注目カード: API データと injuries をマージ
   const allFinished = matchesData.matches ?? [];
-  const homeForm = allFinished
-    .filter(
-      (m) =>
-        m.homeTeam.id === FEATURED_MATCH.homeTeam.id ||
-        m.awayTeam.id === FEATURED_MATCH.homeTeam.id,
-    )
-    .sort((a, b) => new Date(b.utcDate).getTime() - new Date(a.utcDate).getTime())
-    .slice(0, 5)
-    .reverse()
-    .map((m) => {
-      const isHome = m.homeTeam.id === FEATURED_MATCH.homeTeam.id;
-      const h = m.score.fullTime.home ?? 0;
-      const a = m.score.fullTime.away ?? 0;
-      if (h === a) return "D";
-      return isHome ? (h > a ? "W" : "L") : (a > h ? "W" : "L");
-    });
+  let featuredMatch: FeaturedMatchConfig | null = null;
+  let homeForm: string[] = [];
+  let awayForm: string[] = [];
+  let homeRecentMatches: ReturnType<typeof buildRecentMatches> = [];
+  let awayRecentMatches: ReturnType<typeof buildRecentMatches> = [];
 
-  const awayForm = allFinished
-    .filter(
-      (m) =>
-        m.homeTeam.id === FEATURED_MATCH.awayTeam.id ||
-        m.awayTeam.id === FEATURED_MATCH.awayTeam.id,
-    )
-    .sort((a, b) => new Date(b.utcDate).getTime() - new Date(a.utcDate).getTime())
-    .slice(0, 5)
-    .reverse()
-    .map((m) => {
-      const isHome = m.homeTeam.id === FEATURED_MATCH.awayTeam.id;
-      const h = m.score.fullTime.home ?? 0;
-      const a = m.score.fullTime.away ?? 0;
-      if (h === a) return "D";
-      return isHome ? (h > a ? "W" : "L") : (a > h ? "W" : "L");
-    });
+  if (featuredMatchDetail) {
+    const homeId = featuredMatchDetail.homeTeam.id;
+    const awayId = featuredMatchDetail.awayTeam.id;
 
-  const homeRecentMatches = buildRecentMatches(FEATURED_MATCH.homeTeam.id, allFinished);
-  const awayRecentMatches = buildRecentMatches(FEATURED_MATCH.awayTeam.id, allFinished);
+    homeForm = allFinished
+      .filter((m) => m.homeTeam.id === homeId || m.awayTeam.id === homeId)
+      .sort((a, b) => new Date(b.utcDate).getTime() - new Date(a.utcDate).getTime())
+      .slice(0, 5)
+      .reverse()
+      .map((m) => {
+        const isHome = m.homeTeam.id === homeId;
+        const h = m.score.fullTime.home ?? 0;
+        const a = m.score.fullTime.away ?? 0;
+        if (h === a) return "D";
+        return isHome ? (h > a ? "W" : "L") : (a > h ? "W" : "L");
+      });
+
+    awayForm = allFinished
+      .filter((m) => m.homeTeam.id === awayId || m.awayTeam.id === awayId)
+      .sort((a, b) => new Date(b.utcDate).getTime() - new Date(a.utcDate).getTime())
+      .slice(0, 5)
+      .reverse()
+      .map((m) => {
+        const isHome = m.homeTeam.id === awayId;
+        const h = m.score.fullTime.home ?? 0;
+        const a = m.score.fullTime.away ?? 0;
+        if (h === a) return "D";
+        return isHome ? (h > a ? "W" : "L") : (a > h ? "W" : "L");
+      });
+
+    homeRecentMatches = buildRecentMatches(homeId, allFinished);
+    awayRecentMatches = buildRecentMatches(awayId, allFinished);
+
+    featuredMatch = {
+      matchId: FEATURED_MATCH_CONFIG.quizSlug,
+      homeTeam: {
+        ...featuredMatchDetail.homeTeam,
+        injuries: FEATURED_MATCH_CONFIG.homeInjuries,
+      },
+      awayTeam: {
+        ...featuredMatchDetail.awayTeam,
+        injuries: FEATURED_MATCH_CONFIG.awayInjuries,
+      },
+      utcDate: featuredMatchDetail.utcDate,
+      matchday: featuredMatchDetail.matchday,
+      venue: featuredMatchDetail.venue ?? "未定",
+      quizSlug: FEATURED_MATCH_CONFIG.quizSlug,
+    };
+  }
 
   return (
     <main className="min-h-screen bg-pn-bg">
@@ -104,13 +127,15 @@ export default async function Home() {
         </section>
 
         {/* 2. 次の注目カード */}
-        <FeaturedMatchCard
-          config={FEATURED_MATCH}
-          homeForm={homeForm}
-          awayForm={awayForm}
-          homeRecentMatches={homeRecentMatches}
-          awayRecentMatches={awayRecentMatches}
-        />
+        {featuredMatch && (
+          <FeaturedMatchCard
+            config={featuredMatch}
+            homeForm={homeForm}
+            awayForm={awayForm}
+            homeRecentMatches={homeRecentMatches}
+            awayRecentMatches={awayRecentMatches}
+          />
+        )}
 
         {/* 3. クイズ ＋ 記事（横2列） */}
         <div className="flex flex-col gap-4 md:grid md:grid-cols-2">

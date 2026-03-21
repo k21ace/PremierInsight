@@ -317,3 +317,39 @@ export async function getPlayer(id: number): Promise<PersonResponse> {
 export async function getMatch(id: number): Promise<MatchDetail> {
   return fetchFootball<MatchDetail>(`/matches/${id}`, 300);
 }
+
+/**
+ * 指定したホーム/アウェイのチームIDで次の試合を検索し、詳細（venue を含む）を返す。
+ * SCHEDULED・TIMED ステータスの試合を対象に探索する。
+ * 見つからない場合は null を返す。
+ *
+ * SCHEDULED/TIMED の fetch は getUpcomingMatches() と同じURLのため、
+ * Next.js のリクエストメモ化により同一レンダリング内では実際のHTTPリクエストは発生しない。
+ *
+ * ISR キャッシュ: 1800秒（SCHEDULED/TIMED）+ 300秒（match detail）
+ *
+ * @param homeTeamId - ホームチームの football-data.org チームID
+ * @param awayTeamId - アウェイチームの football-data.org チームID
+ */
+export async function getFeaturedMatchDetail(
+  homeTeamId: number,
+  awayTeamId: number,
+): Promise<MatchDetail | null> {
+  const [scheduledData, timedData] = await Promise.all([
+    fetchFootball<MatchesResponse>(`/competitions/${PL_ID}/matches`, 1800, { status: "SCHEDULED" }),
+    fetchFootball<MatchesResponse>(`/competitions/${PL_ID}/matches`, 1800, { status: "TIMED" }),
+  ]);
+
+  const all = [
+    ...(scheduledData.matches ?? []),
+    ...(timedData.matches ?? []),
+  ];
+
+  const match = all.find(
+    (m) => m.homeTeam.id === homeTeamId && m.awayTeam.id === awayTeamId,
+  );
+
+  if (!match) return null;
+
+  return getMatch(match.id);
+}

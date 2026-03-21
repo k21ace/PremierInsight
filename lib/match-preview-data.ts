@@ -3,6 +3,9 @@
  *
  * ※ けが人・出場停止情報は試合直前に手動で更新してください。
  *    football-data.org 無料プランでは負傷者情報は提供されないため静的管理です。
+ *
+ * utcDate / venue / homeTeam / awayTeam は football-data.org API から自動取得します。
+ * 更新時は homeTeamId / awayTeamId と injuries のみ変更してください。
  */
 
 export type InjuryInfo = {
@@ -16,8 +19,9 @@ export type InjuryInfo = {
   returnDate?: string;
 };
 
+/** football-data.org API から取得した試合データと injuries をマージした型（FeaturedMatchCard の Props） */
 export type FeaturedMatchConfig = {
-  /** URL パラメータ用 ID（例: "liverpool-vs-brighton"） */
+  /** URL パラメータ用 ID（例: "brighton-vs-liverpool"） */
   matchId: string;
   homeTeam: {
     /** football-data.org チーム ID */
@@ -42,59 +46,91 @@ export type FeaturedMatchConfig = {
   quizSlug: string;
 };
 
+/** 静的管理が必要な設定のみを保持する型 */
+export type FeaturedMatchStaticConfig = {
+  /** ホームチームの football-data.org チームID */
+  homeTeamId: number;
+  /** アウェイチームの football-data.org チームID */
+  awayTeamId: number;
+  /** /quiz/[slug] 用スラッグ */
+  quizSlug: string;
+  /** ホームチームの負傷者・出場停止情報 */
+  homeInjuries: InjuryInfo[];
+  /** アウェイチームの負傷者・出場停止情報 */
+  awayInjuries: InjuryInfo[];
+};
+
 // ─────────────────────────────────────────────────────────────────────────────
-// 次の注目カード設定
+// 次の注目カード設定（手動更新が必要な項目のみ）
+// utcDate / venue / チーム名 / エンブレムは API から自動取得されます
 // ─────────────────────────────────────────────────────────────────────────────
 
-export const FEATURED_MATCH: FeaturedMatchConfig = {
-  matchId: "liverpool-vs-brighton",
-  homeTeam: {
-    id: 64,
-    name: "Liverpool FC",
-    shortName: "Liverpool",
-    crest: "https://crests.football-data.org/64.png",
-    injuries: [
-      {
-        playerName: "ディオゴ・ジョタ",
-        reason: "太もも",
-        status: "injury",
-        returnDate: "未定",
-      },
-      {
-        playerName: "コナー・ブラッドリー",
-        reason: "膝",
-        status: "injury",
-        returnDate: "未定",
-      },
-    ],
-  },
-  awayTeam: {
-    id: 397,
-    name: "Brighton & Hove Albion FC",
-    shortName: "Brighton",
-    crest: "https://crests.football-data.org/397.png",
-    injuries: [
-      {
-        playerName: "ソリー・マーチ",
-        reason: "膝（ACL）",
-        status: "injury",
-        returnDate: "シーズン終了",
-      },
-      {
-        playerName: "ヤン・パウル・ファン・ヘッケ",
-        reason: "ハムストリング",
-        status: "injury",
-        returnDate: "未定",
-      },
-      {
-        playerName: "タリク・ランプティ",
-        reason: "累積警告（5枚）",
-        status: "suspension",
-      },
-    ],
-  },
-  utcDate: "2026-03-22T15:00:00Z",
-  matchday: 30,
-  venue: "Anfield",
-  quizSlug: "liverpool-vs-brighton",
+export const FEATURED_MATCH_CONFIG: FeaturedMatchStaticConfig = {
+  homeTeamId: 397, // Brighton & Hove Albion FC
+  awayTeamId: 64,  // Liverpool FC
+  quizSlug: "brighton-vs-liverpool",
+  homeInjuries: [
+    {
+      playerName: "アダム・ウェブスター",
+      reason: "膝の負傷",
+      status: "injury",
+      returnDate: "4月上旬",
+    },
+    {
+      playerName: "ステファノス・チマス",
+      reason: "十字靭帯の負傷",
+      status: "injury",
+      returnDate: "8月上旬",
+    },
+  ],
+  awayInjuries: [
+    {
+      playerName: "ジョー・ゴメス",
+      reason: "軽い外傷",
+      status: "injury",
+      returnDate: "未定",
+    },
+    {
+      playerName: "アリソン・ベッカー",
+      reason: "筋肉損傷",
+      status: "injury",
+      returnDate: "4月上旬",
+    },
+    {
+      playerName: "コナー・ブラッドリー",
+      reason: "膝の負傷",
+      status: "injury",
+      returnDate: "今季復帰なし",
+    },
+    {
+      playerName: "ジョバンニ・レオーニ",
+      reason: "十字靭帯の負傷",
+      status: "injury",
+      returnDate: "8月上旬",
+    },
+    {
+      playerName: "ステファン・バイチェティッチ",
+      reason: "ハムストリング損傷",
+      status: "injury",
+      returnDate: "5月上旬",
+    },
+    {
+      playerName: "遠藤航",
+      reason: "足首の骨折",
+      status: "injury",
+      returnDate: "5月上旬",
+    },
+    {
+      playerName: "アレクサンダー・イサク",
+      reason: "脚の骨折",
+      status: "injury",
+      returnDate: "4月中旬",
+    },
+    {
+      playerName: "モハメド・サラー",
+      reason: "筋肉損傷",
+      status: "injury",
+      returnDate: "4月下旬",
+    },
+  ],
 };

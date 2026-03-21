@@ -13,7 +13,7 @@
 - ピックアップ記事（`featured: true`）を最大3件確認し、記事詳細へ遷移
 - 直近3試合の結果（チーム名・スコア・日時）を確認
 - 「すべての試合を見る →」から `/matches` へ遷移
-- 次の注目カード（リバプール vs ブライトン）で両チームの直近5試合フォーム・けが人・出場停止を確認
+- 次の注目カードで両チームの直近5試合フォーム・けが人・出場停止を確認（試合情報はAPIから自動取得）
 - 注目カードのクイズリンクから `/quiz/[matchId]` へ遷移
 
 ---
@@ -35,9 +35,11 @@
 |--------|--------------|-----------|------|
 | `getFeaturedArticles()` | ファイルシステム（`content/articles/*.mdx`） | — | `featured: true` の記事を最大3件取得 |
 | `getMatches({ status: "FINISHED" })` | `GET /competitions/PL/matches?status=FINISHED` | 1800秒 | 終了済み試合一覧を取得し、最新3件・次の注目カードのフォームを表示 |
-| `getUpcomingMatches(3)` | `GET /competitions/PL/matches?status=SCHEDULED|TIMED` | 1800秒 | 直近3件の予定試合を取得 |
+| `getUpcomingMatches(3)` | `GET /competitions/PL/matches?status=SCHEDULED\|TIMED` | 1800秒 | 直近3件の予定試合を取得 |
+| `getFeaturedMatchDetail(homeTeamId, awayTeamId)` | `GET /competitions/PL/matches?status=SCHEDULED\|TIMED` + `GET /matches/{id}` | 1800秒 + 300秒 | 注目カードの試合詳細（utcDate・venue・チーム名）を自動取得。SCHEDULED/TIMED fetch は getUpcomingMatches と同一URLのためリクエストメモ化により重複なし |
 
-注目カードのけが人・出場停止情報は `lib/match-preview-data.ts` で静的管理（football-data.org 無料プランでは負傷者情報なし）。
+注目カードの **けが人・出場停止情報のみ** `lib/match-preview-data.ts` の `FEATURED_MATCH_CONFIG` で静的管理（football-data.org 無料プランでは負傷者情報なし）。
+utcDate・venue・homeTeam・awayTeam は API から自動取得するため、手動での入力ミスは発生しない。
 
 `Promise.all` で並列フェッチしている（ただし `getFeaturedArticles` はファイルシステム読み込みのため同期）。
 

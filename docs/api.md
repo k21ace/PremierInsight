@@ -24,6 +24,7 @@
 | `GET /competitions/PL/scorers` | `getScorers()` | 得点王ランキング取得 | 21600秒（6時間） |
 | `GET /persons/{id}` | `getPlayer(id)` | 選手詳細情報取得 | 86400秒（24時間） |
 | `GET /matches/{id}` | `getMatch(id)` | 試合詳細取得（得点・カード・交代・審判） | 300秒（5分） |
+| `GET /competitions/PL/matches?status=SCHEDULED` + `TIMED` + `GET /matches/{id}` | `getFeaturedMatchDetail(homeTeamId, awayTeamId)` | 次の注目カード用試合詳細取得（venue を含む） | 1800秒（検索）+ 300秒（detail） |
 
 > `getStandingsWithForm()` は standings と matches の2リクエストを `Promise.all` で並列実行する。
 > `getStandingsByType()` は H/A比較ページで HOME・AWAY を個別取得するために使用。無料プランでは `standingType` パラメータなしだと HOME/AWAY が返らないケースがある。
