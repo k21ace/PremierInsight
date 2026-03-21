@@ -48,6 +48,23 @@ export type FeaturedMatchConfig = {
   venue: string;
   /** /quiz/[matchId] の matchId に対応 */
   quizSlug: string;
+  /** スコア予想 */
+  scorePrediction?: ScorePrediction;
+};
+
+export type ScorePrediction = {
+  /** ホームチームの予想得点 */
+  homeGoals: number;
+  /** アウェイチームの予想得点 */
+  awayGoals: number;
+  /** ホーム勝利確率（0〜100） */
+  homeWinPct: number;
+  /** 引き分け確率（0〜100） */
+  drawPct: number;
+  /** アウェイ勝利確率（0〜100） */
+  awayWinPct: number;
+  /** 予想の根拠・コメント */
+  comment?: string;
 };
 
 /** 静的管理が必要な設定のみを保持する型 */
@@ -62,6 +79,8 @@ export type FeaturedMatchStaticConfig = {
   homeInjuries: InjuryInfo[];
   /** アウェイチームの負傷者・出場停止情報 */
   awayInjuries: InjuryInfo[];
+  /** スコア予想 */
+  scorePrediction?: ScorePrediction;
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -146,4 +165,12 @@ export const FEATURED_MATCH_CONFIG: FeaturedMatchStaticConfig = {
       sourceUrl: "https://lscj.seesaa.net/article/520252219.html",
     },
   ],
+  scorePrediction: {
+    homeGoals: 1,
+    awayGoals: 2,
+    homeWinPct: 25,
+    drawPct: 22,
+    awayWinPct: 53,
+    comment: "首位リバプールが安定した守備とカウンターで制する。サラー欠場もジョタがフォローか。三苫の復帰がブライトンの鍵。",
+  },
 };

@@ -16,7 +16,9 @@ export const metadata = createMetadata(
   "PremierNow - プレミアリーグ データ分析",
   "プレミアリーグの順位表・試合結果・得点王・データ分析を日本語で。毎節更新。",
   "/",
-  "PremierNow",
+  undefined,
+  "website",
+  "/og-home.png",
 );
 
 export default async function Home() {
@@ -95,6 +97,7 @@ export default async function Home() {
       matchday: featuredMatchDetail.matchday,
       venue: featuredMatchDetail.venue ?? "アメックス・スタジアム",
       quizSlug: FEATURED_MATCH_CONFIG.quizSlug,
+      scorePrediction: FEATURED_MATCH_CONFIG.scorePrediction,
     };
   }
 

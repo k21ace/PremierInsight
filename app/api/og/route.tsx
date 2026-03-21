@@ -15,56 +15,111 @@ export async function GET(request: NextRequest) {
           height: "630px",
           display: "flex",
           flexDirection: "column",
-          backgroundColor: "#ffffff",
-          padding: "60px",
+          backgroundColor: "#2d0a4e",
+          padding: "64px",
         }}
       >
-        {/* サイト名（左上） */}
+        {/* 上部アクセントライン */}
         <div
           style={{
             display: "flex",
-            color: "#7c3aed",
-            fontSize: 24,
-            fontWeight: 700,
+            width: "80px",
+            height: "5px",
+            backgroundColor: "#00a8e8",
+            borderRadius: "3px",
+            marginBottom: "36px",
           }}
-        >
-          PremierNow
-        </div>
+        />
 
-        {/* タイトル（中央） */}
+        {/* タイトル */}
         <div
           style={{
             flex: 1,
             display: "flex",
             alignItems: "center",
-            color: "#111827",
-            fontSize: 48,
-            fontWeight: 700,
-            lineHeight: 1.3,
           }}
         >
-          <span style={{ maxWidth: "1000px" }}>{title}</span>
+          <span
+            style={{
+              color: "#ffffff",
+              fontSize: 72,
+              fontWeight: 700,
+              lineHeight: 1.25,
+              maxWidth: "1000px",
+            }}
+          >
+            {title}
+          </span>
         </div>
 
-        {/* 下部：説明 ＋ アクセントライン */}
+        {/* 下部：サイト名 ＋ 説明 */}
         <div
           style={{
             display: "flex",
             justifyContent: "space-between",
-            alignItems: "center",
+            alignItems: "flex-end",
+            borderTop: "1px solid #3a2a6a",
+            paddingTop: "28px",
           }}
         >
-          <span style={{ color: "#6b7280", fontSize: 20 }}>
-            プレミアリーグ データ分析サイト
-          </span>
           <div
             style={{
-              width: 120,
-              height: 6,
-              backgroundColor: "#7c3aed",
-              borderRadius: 3,
+              display: "flex",
+              flexDirection: "column",
+              gap: "6px",
             }}
-          />
+          >
+            <span
+              style={{
+                color: "#00a8e8",
+                fontSize: 28,
+                fontWeight: 700,
+              }}
+            >
+              PremierNow
+            </span>
+            <span
+              style={{
+                color: "#7a8fc0",
+                fontSize: 22,
+              }}
+            >
+              プレミアリーグ データ分析サイト
+            </span>
+          </div>
+          {/* デコレーション */}
+          <div
+            style={{
+              display: "flex",
+              gap: "8px",
+              alignItems: "center",
+            }}
+          >
+            <div
+              style={{
+                width: "12px",
+                height: "12px",
+                backgroundColor: "#00a8e8",
+                borderRadius: "50%",
+              }}
+            />
+            <div
+              style={{
+                width: "8px",
+                height: "8px",
+                backgroundColor: "#3a2a6a",
+                borderRadius: "50%",
+              }}
+            />
+            <div
+              style={{
+                width: "8px",
+                height: "8px",
+                backgroundColor: "#3a2a6a",
+                borderRadius: "50%",
+              }}
+            />
+          </div>
         </div>
       </div>
     ),

@@ -20,6 +20,18 @@ const BASE_URL = "https://api.football-data.org/v4";
 /** Premier League の competition code */
 const PL_ID = "PL";
 
+// ─── チーム名正規化 ────────────────────────────────────────
+
+/** API が返す shortName を表示用に正規化するマップ */
+const SHORT_NAME_OVERRIDES: Record<string, string> = {
+  "Brighton Hove": "Brighton",
+};
+
+function normalizeTeam<T extends { shortName: string }>(team: T): T {
+  const shortName = SHORT_NAME_OVERRIDES[team.shortName] ?? team.shortName;
+  return shortName === team.shortName ? team : { ...team, shortName };
+}
+
 // ─── 内部ユーティリティ ────────────────────────────────────
 
 /**
@@ -66,10 +78,17 @@ async function fetchFootball<T>(
  * ISR キャッシュ: 1時間（3600秒）
  */
 export async function getStandings(): Promise<StandingsResponse> {
-  return fetchFootball<StandingsResponse>(
+  const data = await fetchFootball<StandingsResponse>(
     `/competitions/${PL_ID}/standings`,
     3600,
   );
+  return {
+    ...data,
+    standings: data.standings.map((group) => ({
+      ...group,
+      table: group.table.map((s) => ({ ...s, team: normalizeTeam(s.team) })),
+    })),
+  };
 }
 
 /**
@@ -101,7 +120,7 @@ export async function getHomeAwayStandings(): Promise<{
   for (const s of totalTable) {
     const base: HomeAwayTable = {
       position: 0,
-      team: s.team,
+      team: normalizeTeam(s.team),
       playedGames: 0, won: 0, draw: 0, lost: 0,
       points: 0, goalsFor: 0, goalsAgainst: 0, goalDifference: 0,
     };
@@ -184,6 +203,7 @@ export async function getStandingsWithForm(): Promise<StandingsResponse> {
     ...group,
     table: group.table.map((standing) => ({
       ...standing,
+      team: normalizeTeam(standing.team),
       form: computeForm(standing.team.id, finishedMatches),
     })),
   }));
@@ -210,11 +230,19 @@ export async function getMatches(options?: {
     params.status = options.status;
   }
 
-  return fetchFootball<MatchesResponse>(
+  const data = await fetchFootball<MatchesResponse>(
     `/competitions/${PL_ID}/matches`,
     1800,
     params,
   );
+  return {
+    ...data,
+    matches: (data.matches ?? []).map((m) => ({
+      ...m,
+      homeTeam: normalizeTeam(m.homeTeam),
+      awayTeam: normalizeTeam(m.awayTeam),
+    })),
+  };
 }
 
 /**
@@ -243,7 +271,12 @@ export async function getUpcomingMatches(limit = 3): Promise<Match[]> {
 
   return unique
     .sort((a, b) => new Date(a.utcDate).getTime() - new Date(b.utcDate).getTime())
-    .slice(0, limit);
+    .slice(0, limit)
+    .map((m) => ({
+      ...m,
+      homeTeam: normalizeTeam(m.homeTeam),
+      awayTeam: normalizeTeam(m.awayTeam),
+    }));
 }
 
 /**
@@ -315,7 +348,12 @@ export async function getPlayer(id: number): Promise<PersonResponse> {
  * @param id - football-data.org の試合ID
  */
 export async function getMatch(id: number): Promise<MatchDetail> {
-  return fetchFootball<MatchDetail>(`/matches/${id}`, 300);
+  const data = await fetchFootball<MatchDetail>(`/matches/${id}`, 300);
+  return {
+    ...data,
+    homeTeam: normalizeTeam(data.homeTeam),
+    awayTeam: normalizeTeam(data.awayTeam),
+  };
 }
 
 /**

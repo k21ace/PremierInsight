@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { FormBadges } from "@/components/ui/ResultBadge";
 import { convertToJSTMedium } from "@/lib/utils";
-import type { FeaturedMatchConfig, InjuryInfo } from "@/lib/match-preview-data";
+import type { FeaturedMatchConfig, InjuryInfo, ScorePrediction } from "@/lib/match-preview-data";
 import type { Match } from "@/types/football";
 
 type Props = {
@@ -88,6 +88,83 @@ function InjuryTable({ injuries }: { injuries: InjuryInfo[] }) {
           </div>
         </div>
       ))}
+    </div>
+  );
+}
+
+function ScorePredictionSection({
+  prediction,
+  homeShortName,
+  awayShortName,
+}: {
+  prediction: ScorePrediction;
+  homeShortName: string;
+  awayShortName: string;
+}) {
+  const { homeGoals, awayGoals, homeWinPct, drawPct, awayWinPct, comment } = prediction;
+  return (
+    <div className="mb-5">
+      <p className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">
+        スコア予想
+      </p>
+      {/* 予想スコア */}
+      <div className="flex items-center justify-center gap-4 mb-4">
+        <div className="flex flex-col items-center gap-0.5">
+          <span className="text-[10px] text-gray-400">{homeShortName}</span>
+          <span className="font-mono font-bold text-2xl text-gray-900 dark:text-gray-100 tabular-nums">
+            {homeGoals}
+          </span>
+        </div>
+        <span className="text-lg font-bold text-gray-300 dark:text-gray-600">–</span>
+        <div className="flex flex-col items-center gap-0.5">
+          <span className="text-[10px] text-gray-400">{awayShortName}</span>
+          <span className="font-mono font-bold text-2xl text-gray-900 dark:text-gray-100 tabular-nums">
+            {awayGoals}
+          </span>
+        </div>
+      </div>
+      {/* 勝敗確率バー */}
+      <div className="space-y-1 mb-3">
+        <div className="flex items-center gap-2 text-[10px]">
+          <span className="w-12 text-right text-gray-500 dark:text-gray-400 shrink-0">{homeShortName}</span>
+          <div className="flex-1 h-2 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-violet-500 rounded-full"
+              style={{ width: `${homeWinPct}%` }}
+            />
+          </div>
+          <span className="w-8 font-mono tabular-nums text-gray-700 dark:text-gray-300 shrink-0">
+            {homeWinPct}%
+          </span>
+        </div>
+        <div className="flex items-center gap-2 text-[10px]">
+          <span className="w-12 text-right text-gray-500 dark:text-gray-400 shrink-0">引分</span>
+          <div className="flex-1 h-2 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-gray-400 rounded-full"
+              style={{ width: `${drawPct}%` }}
+            />
+          </div>
+          <span className="w-8 font-mono tabular-nums text-gray-700 dark:text-gray-300 shrink-0">
+            {drawPct}%
+          </span>
+        </div>
+        <div className="flex items-center gap-2 text-[10px]">
+          <span className="w-12 text-right text-gray-500 dark:text-gray-400 shrink-0">{awayShortName}</span>
+          <div className="flex-1 h-2 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-blue-500 rounded-full"
+              style={{ width: `${awayWinPct}%` }}
+            />
+          </div>
+          <span className="w-8 font-mono tabular-nums text-gray-700 dark:text-gray-300 shrink-0">
+            {awayWinPct}%
+          </span>
+        </div>
+      </div>
+      {comment && (
+        <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">{comment}</p>
+      )}
     </div>
   );
 }
@@ -194,6 +271,15 @@ export default function FeaturedMatchCard({
             </span>
           </div>
         </div>
+
+        {/* ── スコア予想 ── */}
+        {config.scorePrediction && (
+          <ScorePredictionSection
+            prediction={config.scorePrediction}
+            homeShortName={homeTeam.shortName}
+            awayShortName={awayTeam.shortName}
+          />
+        )}
 
         {/* ── フォーム比較 ── */}
         <div className="mb-5">
