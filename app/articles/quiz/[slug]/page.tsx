@@ -34,20 +34,20 @@ export default async function QuizDetailPage({ params }: Props) {
   if (!quiz) notFound();
 
   return (
-    <main className="min-h-screen bg-pn-bg">
+    <main className="min-h-screen bg-pn-bg dark:bg-gray-950">
       <div className="max-w-2xl mx-auto px-4 py-6">
         <div className="mb-4">
           <Link
             href="/articles/quiz"
-            className="text-xs text-gray-400 hover:text-gray-600"
+            className="text-xs text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
           >
             ← クイズ一覧
           </Link>
         </div>
-        <h1 className="text-xl font-semibold tracking-tight text-gray-900 mb-2">
+        <h1 className="text-xl font-semibold tracking-tight text-gray-900 dark:text-gray-100 mb-2">
           {quiz.title}
         </h1>
-        <p className="text-sm text-gray-500 mb-6">{quiz.description}</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">{quiz.description}</p>
         <QuizClient quiz={quiz} />
       </div>
     </main>

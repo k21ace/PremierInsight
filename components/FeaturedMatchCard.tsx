@@ -248,7 +248,7 @@ export default function FeaturedMatchCard({
 
         {/* ── クイズリンク ── */}
         <Link
-          href={`/quiz/${quizSlug}`}
+          href={`/articles/quiz/${quizSlug}`}
           className="flex items-center justify-between w-full bg-violet-50 dark:bg-violet-950/30 border border-violet-200 dark:border-violet-700/50 rounded px-4 py-3 hover:bg-violet-100 dark:hover:bg-violet-900/40 transition-colors group"
         >
           <div>
@@ -256,7 +256,7 @@ export default function FeaturedMatchCard({
               この試合のクイズに挑戦 →
             </p>
             <p className="text-xs text-violet-500 dark:text-violet-400 mt-0.5">
-              対戦成績・三苫・歴史　全5問
+              過去の対戦成績・データなど　全6問
             </p>
           </div>
           <span className="text-violet-400 text-xl group-hover:translate-x-0.5 transition-transform">

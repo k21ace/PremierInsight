@@ -17,9 +17,9 @@ export const metadata: Metadata = {
 
 export default function QuizListPage() {
   return (
-    <main className="min-h-screen bg-pn-bg">
+    <main className="min-h-screen bg-pn-bg dark:bg-gray-950">
       <div className="max-w-3xl mx-auto px-4 py-6">
-        <h1 className="text-xl font-semibold tracking-tight text-gray-900 mb-6">
+        <h1 className="text-xl font-semibold tracking-tight text-gray-900 dark:text-gray-100 mb-6">
           PLクイズ
         </h1>
         <div className="space-y-4">
@@ -40,27 +40,27 @@ export default function QuizListPage() {
             return (
               <div
                 key={quiz.slug}
-                className="bg-white border border-gray-200 rounded p-5 shadow-sm"
+                className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded p-5 shadow-sm"
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0">
-                    <h2 className="font-semibold text-gray-900 mb-1">
+                    <h2 className="font-semibold text-gray-900 dark:text-gray-100 mb-1">
                       {quiz.title}
                     </h2>
-                    <p className="text-sm text-gray-500 mb-3">
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-3">
                       {quiz.description}
                     </p>
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-xs bg-pn-blue-light text-pn-navy border border-pn-blue-light px-2 py-0.5 rounded">
+                      <span className="text-xs bg-pn-blue-light dark:bg-blue-900/40 text-pn-navy dark:text-blue-300 border border-pn-blue-light dark:border-blue-700/50 px-2 py-0.5 rounded">
                         全{quiz.questions.length}問
                       </span>
-                      <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded">
+                      <span className="text-xs bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 px-2 py-0.5 rounded">
                         {mixedLabel}
                       </span>
                       {quiz.tags.map((tag) => (
                         <span
                           key={tag}
-                          className="text-xs text-gray-400"
+                          className="text-xs text-gray-400 dark:text-gray-500"
                         >
                           #{tag}
                         </span>
@@ -81,7 +81,7 @@ export default function QuizListPage() {
         <div className="mt-6">
           <Link
             href="/articles"
-            className="text-sm text-pn-blue hover:underline"
+            className="text-sm text-pn-blue dark:text-blue-400 hover:underline"
           >
             ← 記事一覧に戻る
           </Link>
