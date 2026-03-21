@@ -102,6 +102,20 @@ export default function QuizClient({ quiz, relatedArticleSlug }: { quiz: Quiz; r
           </div>
         </div>
 
+        {/* 記事リンク */}
+        {relatedArticleSlug && (
+          <Link
+            href={`/articles/${relatedArticleSlug}`}
+            className="flex items-center justify-between bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded px-5 py-4 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+          >
+            <div>
+              <p className="text-xs text-gray-400 font-medium mb-0.5">マッチプレビュー</p>
+              <p className="text-sm font-semibold text-gray-800 dark:text-gray-100">記事を読む</p>
+            </div>
+            <span className="text-gray-400 text-lg">→</span>
+          </Link>
+        )}
+
         {/* 振り返り */}
         <div className="space-y-3">
           <p className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
@@ -177,18 +191,6 @@ export default function QuizClient({ quiz, relatedArticleSlug }: { quiz: Quiz; r
               他のクイズへ
             </Link>
           </div>
-          {relatedArticleSlug && (
-            <Link
-              href={`/articles/${relatedArticleSlug}`}
-              className="flex items-center justify-between bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded px-5 py-4 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-            >
-              <div>
-                <p className="text-xs text-gray-400 font-medium mb-0.5">マッチプレビュー</p>
-                <p className="text-sm font-semibold text-gray-800 dark:text-gray-100">記事を読む</p>
-              </div>
-              <span className="text-gray-400 text-lg">→</span>
-            </Link>
-          )}
         </div>
       </div>
     );

@@ -48,7 +48,7 @@ export default async function QuizDetailPage({ params }: Props) {
           {quiz.title}
         </h1>
         <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">{quiz.description}</p>
-        <QuizClient quiz={quiz} />
+        <QuizClient quiz={quiz} relatedArticleSlug={quiz.relatedArticleSlug} />
       </div>
     </main>
   );

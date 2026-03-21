@@ -14,6 +14,7 @@ export type Quiz = {
   questions: QuizQuestion[];
   publishedAt: string;
   tags: string[];
+  relatedArticleSlug?: string;
 };
 
 export const quizzes: Quiz[] = [
@@ -24,6 +25,7 @@ export const quizzes: Quiz[] = [
       "ブライトン対リバプールの対戦成績・三苫薫・歴史を問う全6問！試合前に挑戦しよう。",
     publishedAt: "2026-03-21",
     tags: ["ブライトン", "リバプール", "三苫薫", "プレビュー"],
+    relatedArticleSlug: "matchpreview-matchday31-brighton-liverpool",
     questions: [
       {
         id: 1,
