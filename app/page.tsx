@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { getFeaturedArticles } from "@/lib/articles";
 import { quizzes } from "@/lib/quiz-data";
-import { getMatches, getUpcomingMatches, getFeaturedMatchDetail } from "@/lib/football-api";
+import { getMatches, getUpcomingMatches, getFeaturedMatchDetail, getTransferredPlayerIds } from "@/lib/football-api";
 import { convertToJSTMedium } from "@/lib/utils";
 import { calcPointsTimeline } from "@/lib/chart-utils";
 import { JsonLd } from "@/components/JsonLd";
@@ -22,7 +22,15 @@ export const metadata = createMetadata(
 );
 
 export default async function Home() {
-  const [featuredArticles, matchesData, upcomingRaw, featuredMatchDetail] =
+  // playerId が設定されている選手の移籍チェック用IDを事前抽出
+  const homePlayerIds = FEATURED_MATCH_CONFIG.homeInjuries
+    .map((i) => i.playerId)
+    .filter((id): id is number => id !== undefined);
+  const awayPlayerIds = FEATURED_MATCH_CONFIG.awayInjuries
+    .map((i) => i.playerId)
+    .filter((id): id is number => id !== undefined);
+
+  const [featuredArticles, matchesData, upcomingRaw, featuredMatchDetail, homeTransferred, awayTransferred] =
     await Promise.all([
       Promise.resolve(getFeaturedArticles()),
       getMatches({ status: "FINISHED" }),
@@ -31,7 +39,15 @@ export default async function Home() {
         FEATURED_MATCH_CONFIG.homeTeamId,
         FEATURED_MATCH_CONFIG.awayTeamId,
       ),
+      getTransferredPlayerIds(homePlayerIds, FEATURED_MATCH_CONFIG.homeTeamId),
+      getTransferredPlayerIds(awayPlayerIds, FEATURED_MATCH_CONFIG.awayTeamId),
     ]);
+
+  // 移籍済み選手を除外した負傷者リスト
+  const homeInjuries = FEATURED_MATCH_CONFIG.homeInjuries
+    .filter((i) => !i.playerId || !homeTransferred.has(i.playerId));
+  const awayInjuries = FEATURED_MATCH_CONFIG.awayInjuries
+    .filter((i) => !i.playerId || !awayTransferred.has(i.playerId));
 
   const timelines = calcPointsTimeline(matchesData.matches ?? []);
 
@@ -87,16 +103,17 @@ export default async function Home() {
       matchId: FEATURED_MATCH_CONFIG.quizSlug,
       homeTeam: {
         ...featuredMatchDetail.homeTeam,
-        injuries: FEATURED_MATCH_CONFIG.homeInjuries,
+        injuries: homeInjuries,
       },
       awayTeam: {
         ...featuredMatchDetail.awayTeam,
-        injuries: FEATURED_MATCH_CONFIG.awayInjuries,
+        injuries: awayInjuries,
       },
       utcDate: featuredMatchDetail.utcDate,
       matchday: featuredMatchDetail.matchday,
-      venue: featuredMatchDetail.venue ?? "アメックス・スタジアム",
+      venue: featuredMatchDetail.venue ?? "エバートン・スタジアム",
       quizSlug: FEATURED_MATCH_CONFIG.quizSlug,
+      previewArticleSlug: FEATURED_MATCH_CONFIG.previewArticleSlug,
       scorePrediction: FEATURED_MATCH_CONFIG.scorePrediction,
     };
   }

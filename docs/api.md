@@ -23,6 +23,7 @@
 | `GET /competitions/PL/matches` | `getCurrentMatchday()` | 現在の節番号を取得（`getMatches()`経由） | 1800秒 |
 | `GET /competitions/PL/scorers` | `getScorers()` | 得点王ランキング取得 | 21600秒（6時間） |
 | `GET /persons/{id}` | `getPlayer(id)` | 選手詳細情報取得 | 86400秒（24時間） |
+| `GET /persons/{id}` × N | `getTransferredPlayerIds(playerIds, teamId)` | 注目カードの負傷者リストから移籍済み選手IDを検出 | getPlayer に準じて24時間 |
 | `GET /matches/{id}` | `getMatch(id)` | 試合詳細取得（得点・カード・交代・審判） | 300秒（5分） |
 | `GET /competitions/PL/matches?status=SCHEDULED` + `TIMED` + `GET /matches/{id}` | `getFeaturedMatchDetail(homeTeamId, awayTeamId)` | 注目カード用試合詳細取得（venue を含む） | 1800秒（検索）+ 300秒（detail） |
 

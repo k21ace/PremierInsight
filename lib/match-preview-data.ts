@@ -5,7 +5,19 @@
  *    football-data.org 無料プランでは負傷者情報は提供されないため静的管理です。
  *
  * utcDate / venue / homeTeam / awayTeam は football-data.org API から自動取得します。
- * 更新時は homeTeamId / awayTeamId と injuries のみ変更してください。
+ * 更新時は以下のフィールドのみ変更してください:
+ *   - homeTeamId / awayTeamId
+ *   - quizSlug（lib/quiz-data.ts の slug と一致させること）
+ *   - previewArticleSlug（content/articles/{slug}.mdx と一致させること）
+ *   - homeInjuries / awayInjuries
+ *   - scorePrediction（省略可）
+ *
+ * 【移籍検知】
+ * InjuryInfo に playerId（football-data.org の選手ID）を設定すると、
+ * ページ描画時に GET /persons/{id} で currentTeam を照合し、
+ * 移籍済みの選手は注目カードから自動除外されます。
+ * 選手IDは https://www.football-data.org/v4/persons/{id} で確認できます。
+ * playerId 未設定の選手は照合されず、そのまま表示されます。
  */
 
 export type InjuryInfo = {
@@ -21,6 +33,12 @@ export type InjuryInfo = {
   returning?: boolean;
   /** 情報ソースの URL */
   sourceUrl?: string;
+  /**
+   * football-data.org の選手ID（/persons/{id}）。
+   * 設定すると移籍チェックが有効になり、移籍済みの場合は自動除外される。
+   * 未設定の場合はチェックをスキップしてそのまま表示する。
+   */
+  playerId?: number;
 };
 
 /** football-data.org API から取得した試合データと injuries をマージした型（FeaturedMatchCard の Props） */
@@ -46,8 +64,10 @@ export type FeaturedMatchConfig = {
   utcDate: string;
   matchday: number;
   venue: string;
-  /** /quiz/[matchId] の matchId に対応 */
+  /** /quiz/[slug] の slug に対応 */
   quizSlug: string;
+  /** /articles/[slug] のマッチプレビュー記事スラッグ */
+  previewArticleSlug: string;
   /** スコア予想 */
   scorePrediction?: ScorePrediction;
 };
@@ -73,8 +93,10 @@ export type FeaturedMatchStaticConfig = {
   homeTeamId: number;
   /** アウェイチームの football-data.org チームID */
   awayTeamId: number;
-  /** /quiz/[slug] 用スラッグ */
+  /** /articles/quiz/[slug] 用スラッグ */
   quizSlug: string;
+  /** /articles/[slug] のマッチプレビュー記事スラッグ */
+  previewArticleSlug: string;
   /** ホームチームの負傷者・出場停止情報 */
   homeInjuries: InjuryInfo[];
   /** アウェイチームの負傷者・出場停止情報 */
@@ -89,88 +111,93 @@ export type FeaturedMatchStaticConfig = {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const FEATURED_MATCH_CONFIG: FeaturedMatchStaticConfig = {
-  homeTeamId: 397, // Brighton & Hove Albion FC
-  awayTeamId: 64,  // Liverpool FC
-  quizSlug: "brighton-vs-liverpool",
+  homeTeamId: 62,  // Everton FC
+  awayTeamId: 61,  // Chelsea FC
+  quizSlug: "everton-vs-chelsea",
+  previewArticleSlug: "matchpreview-matchday32-everton-chelsea",
   homeInjuries: [
     {
-      playerName: "三苫薫",
-      reason: "負傷",
-      status: "injury",
-      returning: true,
-      returnDate: "この試合から復帰予定",
-      sourceUrl: "https://www.sponichi.co.jp/soccer/news/2026/03/21/articles/20260321s00002021032000c.html",
+      playerName: "ティリック・ジョージ",
+      reason: "出場停止",
+      status: "suspension",
+      playerId: undefined, // Tyrique George
     },
     {
-      playerName: "アダム・ウェブスター",
-      reason: "膝の負傷",
+      playerName: "ジェームズ・タルコウスキー",
+      reason: "軽い外傷",
       status: "injury",
-      returnDate: "4月上旬",
+      returnDate: "未定",
+      playerId: 3207, // James Tarkowski
     },
     {
-      playerName: "ステファノス・チマス",
-      reason: "十字靭帯の負傷",
+      playerName: "ジャラッド・ブランスウェイト",
+      reason: "軽い外傷",
       status: "injury",
-      returnDate: "8月上旬",
+      returnDate: "未定",
+      playerId: 156714, // Jarrad Branthwaite
+    },
+    {
+      playerName: "チャーリー・アルカラス",
+      reason: "軽い外傷",
+      status: "injury",
+      returnDate: "4月中旬",
+      playerId: undefined, // Charly Alcaraz
+    },
+    {
+      playerName: "ジャック・グリーリッシュ",
+      reason: "足の骨折",
+      status: "injury",
+      returnDate: "6月上旬",
+      playerId: undefined, // Jack Grealish
     },
   ],
   awayInjuries: [
     {
-      playerName: "ジョー・ゴメス",
-      reason: "軽い外傷",
+      playerName: "ブノワ・バディアシル",
+      reason: "病気",
       status: "injury",
       returnDate: "未定",
+      playerId: undefined, // Benoît Badiashile
     },
     {
-      playerName: "アリソン・ベッカー",
-      reason: "筋肉損傷",
-      status: "injury",
-      returnDate: "4月上旬",
-    },
-    {
-      playerName: "コナー・ブラッドリー",
-      reason: "膝の負傷",
-      status: "injury",
-      returnDate: "今季復帰なし",
-    },
-    {
-      playerName: "ジョバンニ・レオーニ",
-      reason: "十字靭帯の負傷",
-      status: "injury",
-      returnDate: "8月上旬",
-    },
-    {
-      playerName: "ステファン・バイチェティッチ",
+      playerName: "ジェイミー・バイノー＝ギッテンス",
       reason: "ハムストリング損傷",
       status: "injury",
-      returnDate: "5月上旬",
+      returnDate: "未定",
+      playerId: undefined, // Jamie Bynoe-Gittens
     },
     {
-      playerName: "遠藤航",
-      reason: "足首の骨折",
+      playerName: "フィリップ・ヨルゲンセン",
+      reason: "鼠径部の負傷",
       status: "injury",
-      returnDate: "5月上旬",
+      returnDate: "4月中旬",
+      playerId: undefined, // Filip Jörgensen
     },
     {
-      playerName: "アレクサンダー・イサク",
-      reason: "脚の骨折",
+      playerName: "レヴィ・コルウィル",
+      reason: "十字靭帯の負傷",
+      status: "injury",
+      returnDate: "5月下旬",
+    },
+    {
+      playerName: "リース・ジェームズ",
+      reason: "ハムストリング損傷",
       status: "injury",
       returnDate: "4月中旬",
     },
     {
-      playerName: "モハメド・サラー",
-      reason: "筋肉損傷",
+      playerName: "トレヴォー・チャロバー",
+      reason: "足首の負傷",
       status: "injury",
-      returnDate: "この試合は欠場",
-      sourceUrl: "https://lscj.seesaa.net/article/520252219.html",
+      returnDate: "5月上旬",
     },
   ],
   scorePrediction: {
     homeGoals: 1,
     awayGoals: 2,
-    homeWinPct: 25,
-    drawPct: 22,
-    awayWinPct: 53,
-    comment: "首位リバプールが安定した守備とカウンターで制する。サラー欠場もジョタがフォローか。三苫の復帰がブライトンの鍵。",
+    homeWinPct: 30,
+    drawPct: 25,
+    awayWinPct: 45,
+    comment: "CB不在のエバートン守備陣をパーマーが崩す。新スタジアムの熱気で前半は拮抗するも、後半チェルシーが質の差を見せる。",
   },
 };

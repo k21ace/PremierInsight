@@ -19,6 +19,81 @@ export type Quiz = {
 
 export const quizzes: Quiz[] = [
   {
+    slug: "everton-vs-chelsea",
+    title: "エバートン vs チェルシー 直前クイズ",
+    description:
+      "新スタジアムで迎える因縁の一戦。エバートン対チェルシーの対戦成績・歴史・選手を問う全6問！",
+    publishedAt: "2026-03-28",
+    tags: ["エバートン", "チェルシー", "プレビュー", "第32節"],
+    relatedArticleSlug: "matchpreview-matchday32-everton-chelsea",
+    questions: [
+      {
+        id: 1,
+        question: "エバートンとチェルシーのプレミアリーグ直近5試合の対戦成績（エバートン視点）は？",
+        type: "choice",
+        options: ["1勝1分3敗", "2勝1分2敗", "0勝2分3敗", "3勝0分2敗"],
+        correctAnswer: "0",
+        explanation:
+          "直近5試合ではチェルシーが優勢で、エバートンは1勝1分3敗です。",
+      },
+      {
+        id: 2,
+        question: "チェルシーの現在の監督は誰？",
+        type: "choice",
+        options: [
+          "Liam Rosenior",
+          "Mauricio Pochettino",
+          "Frank Lampard",
+          "Enzo Maresca",
+        ],
+        correctAnswer: "0",
+        explanation:
+          "リアム・ローゼナーは2026年1月からチェルシーの監督を務めています。マレスカの後任として就任しました。",
+      },
+      {
+        id: 3,
+        question: "エバートンのホームスタジアム「グッディソン・パーク」が開場したのはいつ？",
+        type: "choice",
+        options: ["1892年", "1901年", "1910年", "1888年"],
+        correctAnswer: "0",
+        explanation:
+          "グッディソン・パークは1892年に開場し、世界初の目的建設型フットボール専用スタジアムのひとつです。2024-25シーズンをもって132年の歴史に幕を閉じました。",
+      },
+      {
+        id: 4,
+        question: "エバートンが2025-26シーズンから移転した新スタジアムの場所は？",
+        type: "choice",
+        options: [
+          "ブラムリー・ムーア・ドック",
+          "ウォーレル・パーク",
+          "アンフィールド・ロード",
+          "グッディソン・パーク",
+        ],
+        correctAnswer: "0",
+        explanation:
+          "エバートンは2025-26シーズンよりブラムリー・ムーア・ドックに建設された新スタジアムに移転しました。グッディソン・パークでの132年の歴史に幕を閉じました。",
+      },
+      {
+        id: 5,
+        question: "コール・パーマーの今シーズン（2025-26）プレミアリーグの得点数は？（第31節時点）",
+        type: "choice",
+        options: ["7", "9", "11", "13"],
+        correctAnswer: "1",
+        explanation:
+          "コール・パーマーは今シーズン第31節時点で9得点を記録しています。",
+      },
+      {
+        id: 6,
+        question: "チェルシーが保持するプレミアリーグ1シーズン最多勝利数の記録は何勝？（2005-06シーズン）",
+        type: "choice",
+        options: ["29勝", "30勝", "31勝", "32勝"],
+        correctAnswer: "0",
+        explanation:
+          "チェルシーは2005-06シーズンに29勝を記録し、当時の最多勝利数記録を樹立しました（後にマンチェスター・シティが更新）。",
+      },
+    ],
+  },
+  {
     slug: "brighton-vs-liverpool",
     title: "ブライトン vs リバプール 直前クイズ",
     description:

@@ -342,6 +342,46 @@ export async function getPlayer(id: number): Promise<PersonResponse> {
 }
 
 /**
+ * 選手IDリストのうち、expectedTeamId に現在所属して**いない**選手IDの Set を返す。
+ *
+ * - `currentTeam` が null、または `currentTeam.id !== expectedTeamId` の場合に移籍済みと判定する。
+ * - API エラーが発生した選手は移籍済みとはみなさない（フェイルオープン）。
+ * - キャッシュは getPlayer に準じて 24時間。
+ *
+ * @param playerIds      - チェック対象の football-data.org 選手ID リスト
+ * @param expectedTeamId - 在籍しているはずのチームID
+ */
+export async function getTransferredPlayerIds(
+  playerIds: number[],
+  expectedTeamId: number,
+): Promise<Set<number>> {
+  if (playerIds.length === 0) return new Set();
+
+  const results = await Promise.allSettled(
+    playerIds.map((id) => getPlayer(id)),
+  );
+
+  const transferred = new Set<number>();
+  results.forEach((result, idx) => {
+    if (result.status === "fulfilled") {
+      const { currentTeam } = result.value;
+      if (currentTeam == null || currentTeam.id !== expectedTeamId) {
+        const playerId = playerIds[idx];
+        transferred.add(playerId);
+        console.warn(
+          `[注目カード] 移籍検知: playerId=${playerId} の現在のチームは` +
+          ` "${currentTeam?.name ?? "不明"}"（期待: teamId=${expectedTeamId}）。` +
+          ` FEATURED_MATCH_CONFIG から該当選手を削除してください。`,
+        );
+      }
+    }
+    // rejected = API エラー → 移籍済みとはみなさず表示を維持
+  });
+
+  return transferred;
+}
+
+/**
  * 試合詳細情報を取得する（得点・カード・交代・審判を含む）。
  * ISR キャッシュ: 5分（300秒）
  *

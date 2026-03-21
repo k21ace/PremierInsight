@@ -2,6 +2,7 @@ import Link from "next/link";
 import { FormBadges } from "@/components/ui/ResultBadge";
 import { convertToJSTMedium } from "@/lib/utils";
 import type { FeaturedMatchConfig, InjuryInfo, ScorePrediction } from "@/lib/match-preview-data";
+import { quizzes } from "@/lib/quiz-data";
 import type { Match } from "@/types/football";
 
 type Props = {
@@ -221,7 +222,8 @@ export default function FeaturedMatchCard({
   homeRecentMatches,
   awayRecentMatches,
 }: Props) {
-  const { homeTeam, awayTeam, utcDate, matchday, venue, quizSlug } = config;
+  const { homeTeam, awayTeam, utcDate, matchday, venue, quizSlug, previewArticleSlug } = config;
+  const quizQuestionCount = quizzes.find((q) => q.slug === quizSlug)?.questions.length ?? 0;
 
   return (
     <section className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded shadow-sm overflow-hidden">
@@ -361,7 +363,7 @@ export default function FeaturedMatchCard({
                 クイズに挑戦 →
               </p>
               <p className="text-xs text-violet-500 dark:text-violet-400 mt-0.5">
-                全6問
+                {quizQuestionCount > 0 ? `全${quizQuestionCount}問` : "クイズ"}
               </p>
             </div>
             <span className="text-violet-400 text-xl group-hover:translate-x-0.5 transition-transform">
@@ -369,7 +371,7 @@ export default function FeaturedMatchCard({
             </span>
           </Link>
           <Link
-            href="/articles/matchpreview-matchday31-brighton-liverpool"
+            href={`/articles/${previewArticleSlug}`}
             className="flex items-center justify-between flex-1 bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded px-3 py-3 hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors group"
           >
             <div>

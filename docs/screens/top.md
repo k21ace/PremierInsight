@@ -38,8 +38,35 @@
 | `getUpcomingMatches(3)` | `GET /competitions/PL/matches?status=SCHEDULED\|TIMED` | 1800秒 | 直近3件の予定試合を取得 |
 | `getFeaturedMatchDetail(homeTeamId, awayTeamId)` | `GET /competitions/PL/matches?status=SCHEDULED\|TIMED` + `GET /matches/{id}` | 1800秒 + 300秒 | 注目カードの試合詳細（utcDate・venue・チーム名）を自動取得。SCHEDULED/TIMED fetch は getUpcomingMatches と同一URLのためリクエストメモ化により重複なし |
 
-注目カードの **けが人・出場停止情報のみ** `lib/match-preview-data.ts` の `FEATURED_MATCH_CONFIG` で静的管理（football-data.org 無料プランでは負傷者情報なし）。
+注目カードの **けが人・出場停止情報・クイズスラッグ・プレビュー記事スラッグ・スコア予想のみ** `lib/match-preview-data.ts` の `FEATURED_MATCH_CONFIG` で静的管理（football-data.org 無料プランでは負傷者情報なし）。
 utcDate・venue・homeTeam・awayTeam は API から自動取得するため、手動での入力ミスは発生しない。
+
+### 注目カード更新手順（試合ごと）
+
+次の試合に切り替える際は `lib/match-preview-data.ts` の `FEATURED_MATCH_CONFIG` のみを編集する。
+
+| フィールド | 説明 | 例 |
+|-----------|------|-----|
+| `homeTeamId` | ホームチームの football-data.org ID | `397` |
+| `awayTeamId` | アウェイチームの football-data.org ID | `64` |
+| `quizSlug` | `/articles/quiz/[slug]` に対応するクイズスラッグ | `"brighton-vs-liverpool"` |
+| `previewArticleSlug` | `/articles/[slug]` に対応するプレビュー記事スラッグ | `"matchpreview-matchday31-brighton-liverpool"` |
+| `homeInjuries` | ホームチームの負傷者・出場停止リスト | `[{ playerName, reason, status, returnDate }]` |
+| `awayInjuries` | アウェイチームの負傷者・出場停止リスト | 同上 |
+| `scorePrediction` | スコア予想（省略可） | `{ homeGoals, awayGoals, homeWinPct, drawPct, awayWinPct, comment }` |
+
+クイズ問題数は `quizSlug` から `lib/quiz-data.ts` を参照して自動算出されるため、手動変更不要。
+
+### 移籍チェックの仕組み
+
+`InjuryInfo` の `playerId`（football-data.org の選手ID）を設定すると、ページ描画時に `GET /persons/{id}` で `currentTeam` を照合し、移籍済みの選手は注目カードから**自動除外**される。
+
+- `playerId` 未設定の選手はチェックをスキップしてそのまま表示
+- API エラー時はフェイルオープン（除外せず表示を維持）
+- 移籍検知時はサーバーログに `console.warn` が出力される
+- キャッシュは 24時間のため、移籍直後の反映は最大 24時間後
+
+**選手IDの調べ方:** `https://www.football-data.org/v4/persons/{id}` で確認するか、試合詳細レスポンスの `goals[].scorer.id` などから取得する。
 
 `Promise.all` で並列フェッチしている（ただし `getFeaturedArticles` はファイルシステム読み込みのため同期）。
 
