@@ -3,6 +3,7 @@ import { getFeaturedArticles } from "@/lib/articles";
 import { quizzes } from "@/lib/quiz-data";
 import { getMatches, getUpcomingMatches } from "@/lib/football-api";
 import { convertToJSTMedium } from "@/lib/utils";
+import { calcPointsTimeline } from "@/lib/chart-utils";
 import { JsonLd } from "@/components/JsonLd";
 import { createMetadata } from "@/lib/metadata";
 import TitleRaceChart from "@/components/TitleRaceChart";
@@ -25,6 +26,8 @@ export default async function Home() {
       getMatches({ status: "FINISHED" }),
       getUpcomingMatches(3),
     ]);
+
+  const timelines = calcPointsTimeline(matchesData.matches ?? []);
 
   const recentMatches = [...(matchesData.matches ?? [])]
     .sort((a, b) => new Date(b.utcDate).getTime() - new Date(a.utcDate).getTime())
@@ -97,7 +100,7 @@ export default async function Home() {
               順位表を見る →
             </Link>
           </div>
-          <TitleRaceChart />
+          <TitleRaceChart timelines={timelines} />
         </section>
 
         {/* 2. 次の注目カード */}

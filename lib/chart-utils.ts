@@ -164,14 +164,14 @@ export function calcPointsTimeline(matches: Match[]): TeamTimeline[] {
       points.push(cumulative);
     }
 
-    // avgPPG: 直近5節のデルタ平均
-    const last5Deltas: number[] = [];
-    for (let i = Math.max(1, points.length - 5); i < points.length; i++) {
-      last5Deltas.push(points[i] - points[i - 1]);
+    // avgPPG: 直近10節のデルタ平均
+    const last10Deltas: number[] = [];
+    for (let i = Math.max(1, points.length - 10); i < points.length; i++) {
+      last10Deltas.push(points[i] - points[i - 1]);
     }
     const avgPPG =
-      last5Deltas.length > 0
-        ? last5Deltas.reduce((a, b) => a + b, 0) / last5Deltas.length
+      last10Deltas.length > 0
+        ? last10Deltas.reduce((a, b) => a + b, 0) / last10Deltas.length
         : 1;
 
     // predictedPoints: 現在節（index 0）〜38節
@@ -450,6 +450,98 @@ export function calcDramaticEvents(
     .sort((a, b) => b.severity - a.severity)
     .slice(0, 3)
     .map(({ matchday, description, isHeadToHead }) => ({ matchday, description, isHeadToHead }));
+}
+
+// ─── Probability Simulation ────────────────────────────────
+
+export interface TeamProbabilities {
+  teamId: number;
+  /** 最終順位1位になる確率 */
+  titleProb: number;
+  /** 最終順位5位以内に入る確率 */
+  clProb: number;
+  /** 最終順位17位以上になる確率（降格圏外） */
+  survivalProb: number;
+}
+
+/**
+ * モンテカルロシミュレーションで各チームの確率を推定する。
+ *
+ * 各チームの avgPPG からW/D/L確率を近似し、残り試合をランダムにシミュレーション。
+ * - EPLドロー率は約25%と仮定
+ * - simCount 回（デフォルト5000）シミュレーションして頻度から確率を算出
+ */
+export function calcProbabilities(
+  timelines: TeamTimeline[],
+  maxMatchday: number,
+  simCount = 5000,
+): TeamProbabilities[] {
+  if (timelines.length === 0) return [];
+
+  const remaining = Math.max(0, TOTAL_MATCHDAYS - maxMatchday);
+  const n = timelines.length;
+
+  // maxMatchday === 38 の場合は現在の順位から確定確率を返す
+  if (remaining === 0) {
+    const sorted = [...timelines].sort((a, b) => (b.points.at(-1) ?? 0) - (a.points.at(-1) ?? 0));
+    return timelines.map((tl) => {
+      const rank = sorted.findIndex((s) => s.teamId === tl.teamId) + 1;
+      return {
+        teamId: tl.teamId,
+        titleProb: rank === 1 ? 1 : 0,
+        clProb: rank <= 5 ? 1 : 0,
+        survivalProb: rank <= 17 ? 1 : 0,
+      };
+    });
+  }
+
+  const DRAW_RATE = 0.25;
+
+  // 各チームのW確率・D確率・現在勝点
+  const teamProbs = timelines.map((tl) => {
+    const avgPPG = Math.max(0, Math.min(3, tl.avgPPG));
+    const winProb = Math.max(0, Math.min(1, (avgPPG - DRAW_RATE) / 3));
+    const drawProb = Math.min(DRAW_RATE, 1 - winProb);
+    return {
+      winProb,
+      drawProb,
+      currentPts: tl.points.at(-1) ?? 0,
+    };
+  });
+
+  const titleCount = new Array(n).fill(0);
+  const clCount = new Array(n).fill(0);
+  const survivalCount = new Array(n).fill(0);
+
+  for (let sim = 0; sim < simCount; sim++) {
+    const finalPts = teamProbs.map(({ winProb, drawProb, currentPts }) => {
+      let pts = currentPts;
+      for (let g = 0; g < remaining; g++) {
+        const r = Math.random();
+        if (r < winProb) pts += 3;
+        else if (r < winProb + drawProb) pts += 1;
+      }
+      return pts;
+    });
+
+    // 勝点降順でランク付け（同点は順序不定）
+    const ranked = finalPts
+      .map((pts, i) => ({ i, pts }))
+      .sort((a, b) => b.pts - a.pts);
+
+    ranked.forEach(({ i }, rank) => {
+      if (rank === 0) titleCount[i]++;
+      if (rank < 5) clCount[i]++;
+      if (rank < 17) survivalCount[i]++;
+    });
+  }
+
+  return timelines.map((tl, i) => ({
+    teamId: tl.teamId,
+    titleProb: titleCount[i] / simCount,
+    clProb: clCount[i] / simCount,
+    survivalProb: survivalCount[i] / simCount,
+  }));
 }
 
 /**

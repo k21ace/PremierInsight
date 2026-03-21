@@ -1,36 +1,37 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 import Link from "next/link";
+import type { TeamTimeline } from "@/types/football";
+import { calcProbabilities } from "@/lib/chart-utils";
 
-interface TeamOdds {
-  name: string;
-  shortName: string;
-  crest: string;
-  probability: number; // 0–100
-  color: string;
+interface TitleRaceChartProps {
+  timelines: TeamTimeline[];
 }
 
-const TEAMS: TeamOdds[] = [
-  {
-    name: "Arsenal FC",
-    shortName: "Arsenal",
-    crest: "https://crests.football-data.org/57.png",
-    probability: 64,
-    color: "#EF0107",
-  },
-  {
-    name: "Manchester City FC",
-    shortName: "Man City",
-    crest: "https://crests.football-data.org/65.png",
-    probability: 21,
-    color: "#6CABDD",
-  },
-];
-
-export default function TitleRaceChart() {
+export default function TitleRaceChart({ timelines }: TitleRaceChartProps) {
   const [started, setStarted] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+
+  const maxMatchday = timelines[0]?.points.length ?? 0;
+
+  const teams = useMemo(() => {
+    const probs = calcProbabilities(timelines, maxMatchday);
+    return probs
+      .map((p) => {
+        const tl = timelines.find((t) => t.teamId === p.teamId)!;
+        return {
+          teamId: tl.teamId,
+          shortName: tl.teamShortName,
+          crest: tl.crestUrl,
+          probability: Math.round(p.titleProb * 100),
+          color: tl.color,
+        };
+      })
+      .filter((t) => t.probability >= 1)
+      .sort((a, b) => b.probability - a.probability)
+      .slice(0, 5);
+  }, [timelines, maxMatchday]);
 
   useEffect(() => {
     const el = ref.current;
@@ -38,7 +39,6 @@ export default function TitleRaceChart() {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          // 少し遅延させてから開始
           setTimeout(() => setStarted(true), 100);
           observer.disconnect();
         }
@@ -49,13 +49,27 @@ export default function TitleRaceChart() {
     return () => observer.disconnect();
   }, []);
 
+  if (teams.length === 0) {
+    return (
+      <div className="bg-white border border-gray-200 rounded p-4">
+        <p className="text-xs text-gray-400">データを読み込み中...</p>
+      </div>
+    );
+  }
+
   return (
     <div ref={ref} className="bg-white border border-gray-200 rounded p-4 space-y-4">
-      <p className="text-xs text-gray-500 mb-1">📊 今シーズンの優勝確率</p>
-      {TEAMS.map((team) => (
-        <div key={team.name} className="space-y-1.5">
+      <div className="flex items-center justify-between">
+        <p className="text-xs text-gray-500">📊 今シーズンの優勝確率</p>
+        <Link href="/charts/race" className="text-xs text-[#00a8e8] hover:underline">
+          詳細を見る →
+        </Link>
+      </div>
+      {teams.map((team) => (
+        <div key={team.teamId} className="space-y-1.5">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={team.crest} alt={team.shortName} className="w-5 h-5 object-contain" />
               <span className="text-sm font-medium text-gray-800">{team.shortName}</span>
             </div>
@@ -79,7 +93,7 @@ export default function TitleRaceChart() {
         </div>
       ))}
       <p className="text-[10px] text-gray-400 pt-1">
-        ※ 残り試合数・勝点差・得失点差をもとに算出した独自推計値です
+        ※ 直近10試合の平均勝点をもとにモンテカルロシミュレーション（5,000回）で算出した推計値です
       </p>
     </div>
   );
