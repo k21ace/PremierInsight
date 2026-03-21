@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useRef, useEffect } from "react";
 import { useTheme } from "next-themes";
 import {
   BarChart,
@@ -15,6 +16,43 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import type { TeamXgStats, UnderstatPlayer } from "@/lib/understat";
+
+// ─── InfoTooltip ──────────────────────────────────────────
+
+function InfoTooltip({ title, body }: { title: string; body: string }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    function handleClick(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [open]);
+
+  return (
+    <div ref={ref} className="relative inline-flex items-center">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="flex items-center justify-center w-4 h-4 rounded-full border border-gray-300 dark:border-gray-600 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 hover:border-gray-400 transition-colors text-[10px] font-semibold leading-none"
+        aria-label={title}
+      >
+        i
+      </button>
+      {open && (
+        <div className="absolute left-0 top-6 z-20 w-72 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded shadow-sm p-3 text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
+          <p className="font-semibold text-gray-800 dark:text-gray-200 mb-1">{title}</p>
+          <p>{body}</p>
+        </div>
+      )}
+    </div>
+  );
+}
 
 // ─── Bar Chart Tooltip ────────────────────────────────────
 
@@ -238,8 +276,12 @@ export default function XgClient({ teamStats, players }: Props) {
 
       {/* セクション3: 選手別xGランキング TOP20 */}
       <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded shadow-sm">
-        <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-800">
+        <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-800 flex items-center gap-1.5">
           <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-300">選手別 xG ランキング TOP20</h2>
+          <InfoTooltip
+            title="xG（Expected Goals）とは？"
+            body="xG（Expected Goals・ゴール期待値）とは、シュートが得点になる確率を数値化したものです。シュートの位置・角度・状況などをもとに算出され、チームや選手の本来の実力を測る指標として使われています。実得点がxGより高いと「決定力が高い」、低いと「決定力が低い」と解釈されます。"
+          />
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-xs">
@@ -287,18 +329,68 @@ export default function XgClient({ teamStats, players }: Props) {
         </div>
       </div>
 
-      {/* セクション4: xGとは */}
-      <div className="bg-[#e6f6fd] dark:bg-blue-950/30 border border-[#00a8e8] dark:border-blue-700 rounded p-4">
-        <div className="flex items-center gap-2 mb-2">
-          <span className="w-1 h-5 bg-[#00a8e8] rounded inline-block" />
-          <p className="text-sm font-semibold text-[#2d0a4e] dark:text-blue-200">xG（Expected Goals）とは？</p>
-        </div>
-        <p className="text-sm text-gray-700 dark:text-blue-200/80 leading-relaxed">
-          xG（Expected Goals・ゴール期待値）とは、シュートが得点になる確率を数値化したものです。
-          シュートの位置・角度・状況などをもとに算出され、チームや選手の本来の実力を測る指標として使われています。
-          実得点がxGより高いと「決定力が高い」、低いと「決定力が低い」と解釈されます。
-        </p>
-      </div>
+      {/* セクション4: 選手別xAランキング TOP20 */}
+      {(() => {
+        const topXaPlayers = [...players]
+          .sort((a, b) => parseFloat(b.xA) - parseFloat(a.xA))
+          .slice(0, 20);
+        return (
+          <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded shadow-sm">
+            <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-800 flex items-center gap-1.5">
+              <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-300">選手別 xA ランキング TOP20</h2>
+              <InfoTooltip
+                title="xA（Expected Assists）とは？"
+                body="xA（Expected Assists・アシスト期待値）とは、放たれたシュートのxGをもとに、そのシュートにつながったパスの価値を数値化したものです。KP（Key Passes・チャンス創出数）の多い選手でも、xAが低ければ質の低いチャンスしか作れていないことを示します。実アシスト数がxAより高いと「アシスト効率が高い」、低いと「運に恵まれていない」と解釈できます。"
+              />
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full text-xs">
+                <thead>
+                  <tr className="bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400 text-left">
+                    <th className="px-3 py-2 font-medium w-8">#</th>
+                    <th className="px-3 py-2 font-medium">選手名</th>
+                    <th className="px-3 py-2 font-medium hidden sm:table-cell">チーム</th>
+                    <th className="px-3 py-2 font-medium text-right">xA</th>
+                    <th className="px-3 py-2 font-medium text-right">実アシスト</th>
+                    <th className="px-3 py-2 font-medium text-right">差分</th>
+                    <th className="px-3 py-2 font-medium text-right hidden sm:table-cell">KP</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
+                  {topXaPlayers.map((p, i) => {
+                    const xa = parseFloat(p.xA);
+                    const assists = parseInt(p.assists);
+                    const kp = parseInt(p.key_passes);
+                    const diff = Math.round((assists - xa) * 10) / 10;
+                    return (
+                      <tr key={p.id} className="hover:bg-gray-50 dark:hover:bg-gray-800">
+                        <td className="px-3 py-2 font-mono tabular-nums text-gray-400 dark:text-gray-500">{i + 1}</td>
+                        <td className="px-3 py-2 font-medium text-gray-900 dark:text-gray-100">{p.player_name}</td>
+                        <td className="px-3 py-2 text-gray-500 dark:text-gray-400 hidden sm:table-cell">
+                          {p.team_title.replace(" FC", "")}
+                        </td>
+                        <td className="px-3 py-2 font-mono tabular-nums text-right text-violet-600 font-semibold">
+                          {xa.toFixed(1)}
+                        </td>
+                        <td className="px-3 py-2 font-mono tabular-nums text-right text-gray-700 dark:text-gray-300">{assists}</td>
+                        <td className={`px-3 py-2 font-mono tabular-nums text-right font-semibold ${
+                          diff > 0 ? "text-green-600" : diff < 0 ? "text-red-500" : "text-gray-400 dark:text-gray-500"
+                        }`}>
+                          {diff > 0 ? `+${diff}` : diff}
+                        </td>
+                        <td className="px-3 py-2 font-mono tabular-nums text-right text-gray-500 dark:text-gray-400 hidden sm:table-cell">
+                          {kp}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        );
+      })()}
+
 
     </div>
   );

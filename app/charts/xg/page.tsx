@@ -27,11 +27,11 @@ export default async function XgPage() {
       <main className="min-h-screen bg-pn-bg">
         <div className="max-w-5xl mx-auto px-4 py-6">
           <h1 className="text-xl font-semibold tracking-tight text-gray-900 mb-1">
-            xG 分析
+            xG xA 分析
             <span className="ml-2 text-sm font-normal text-gray-500">2025-26</span>
           </h1>
           <p className="text-sm text-gray-500 mb-6">
-            Understat のデータをもとにした期待得点（xG）分析。
+            Understat のデータをもとにした期待得点（xG）・アシスト期待値（xA）分析。
           </p>
           <XgClient teamStats={teamStats} players={playersData} />
         </div>
@@ -42,7 +42,7 @@ export default async function XgPage() {
       <main className="min-h-screen bg-pn-bg">
         <div className="max-w-5xl mx-auto px-4 py-6">
           <h1 className="text-xl font-semibold tracking-tight text-gray-900 mb-1">
-            xG 分析
+            xG xA 分析
           </h1>
           <div className="bg-white border border-gray-200 rounded p-8 text-center text-sm text-gray-500">
             データを取得できませんでした。しばらく経ってからアクセスしてください。
