@@ -11,6 +11,7 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
+import { useTheme } from "next-themes";
 import type { Standing } from "@/types/football";
 import { ResultBadge } from "@/components/ui/ResultBadge";
 import { formatGD } from "@/lib/formatting";
@@ -52,9 +53,9 @@ function StatCard({
   value: string | number;
 }) {
   return (
-    <div className="bg-white border border-gray-200 rounded shadow-sm p-3 text-center">
-      <div className="text-xs text-gray-500 mb-1">{label}</div>
-      <div className="text-xl font-bold font-mono tabular-nums text-gray-900">
+    <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded shadow-sm p-3 text-center">
+      <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">{label}</div>
+      <div className="text-xl font-bold font-mono tabular-nums text-gray-900 dark:text-gray-100">
         {value}
       </div>
     </div>
@@ -73,6 +74,11 @@ export default function TeamDetailClient({
   awayStanding,
   recentMatches,
 }: Props) {
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
+  const gridColor = isDark ? "#374151" : "#f0f0f0";
+  const axisColor = isDark ? "#9ca3af" : "#6b7280";
+
   const chartData = recentMatches.map((m) => ({
     matchday: m.matchday,
     goalsFor: m.scored,
@@ -85,7 +91,7 @@ export default function TeamDetailClient({
   return (
     <div className="max-w-5xl mx-auto px-4 py-6 space-y-6">
       {/* ─── セクション1: チームヘッダー ──────────────── */}
-      <div className="bg-white border border-gray-200 rounded shadow-sm p-5">
+      <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded shadow-sm p-5">
         <div className="flex items-center gap-4">
           <Image
             src={team.crest}
@@ -95,13 +101,13 @@ export default function TeamDetailClient({
             className="object-contain shrink-0"
           />
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
               {getTeamNameJa(team.id) ?? team.name}
             </h1>
             {getTeamNameJa(team.id) && (
-              <p className="text-sm text-gray-400">{team.name}</p>
+              <p className="text-sm text-gray-400 dark:text-gray-500">{team.name}</p>
             )}
-            <p className="text-sm text-gray-500">{team.tla}</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">{team.tla}</p>
           </div>
         </div>
 
@@ -115,20 +121,20 @@ export default function TeamDetailClient({
 
         <div className="grid grid-cols-3 gap-3 mt-3 text-center text-sm">
           <div>
-            <span className="text-gray-500 text-xs">勝</span>
-            <span className="ml-1 font-mono tabular-nums font-semibold text-gray-900">
+            <span className="text-gray-500 dark:text-gray-400 text-xs">勝</span>
+            <span className="ml-1 font-mono tabular-nums font-semibold text-gray-900 dark:text-gray-100">
               {totalStanding.won}
             </span>
           </div>
           <div>
-            <span className="text-gray-500 text-xs">分</span>
-            <span className="ml-1 font-mono tabular-nums font-semibold text-gray-900">
+            <span className="text-gray-500 dark:text-gray-400 text-xs">分</span>
+            <span className="ml-1 font-mono tabular-nums font-semibold text-gray-900 dark:text-gray-100">
               {totalStanding.draw}
             </span>
           </div>
           <div>
-            <span className="text-gray-500 text-xs">負</span>
-            <span className="ml-1 font-mono tabular-nums font-semibold text-gray-900">
+            <span className="text-gray-500 dark:text-gray-400 text-xs">負</span>
+            <span className="ml-1 font-mono tabular-nums font-semibold text-gray-900 dark:text-gray-100">
               {totalStanding.lost}
             </span>
           </div>
@@ -137,8 +143,8 @@ export default function TeamDetailClient({
 
       {/* ─── セクション2: 直近試合トレンドグラフ ──── */}
       {recentMatches.length > 0 && (
-        <div className="bg-white border border-gray-200 rounded shadow-sm p-5">
-          <h2 className="text-base font-semibold text-gray-900 mb-4">
+        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded shadow-sm p-5">
+          <h2 className="text-base font-semibold text-gray-900 dark:text-gray-100 mb-4">
             直近{recentMatches.length}試合のトレンド
           </h2>
 
@@ -147,28 +153,30 @@ export default function TeamDetailClient({
               data={chartData}
               margin={{ top: 4, right: 12, left: -24, bottom: 4 }}
             >
-              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+              <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
               <XAxis
                 dataKey="matchday"
                 tickFormatter={(v) => `第${v}節`}
-                tick={{ fontSize: 11, fill: "#9ca3af" }}
+                tick={{ fontSize: 11, fill: axisColor }}
                 angle={0}
               />
               <YAxis
-                tick={{ fontSize: 10, fill: "#6b7280" }}
+                tick={{ fontSize: 10, fill: axisColor }}
                 allowDecimals={false}
                 domain={[0, "auto"]}
               />
               <Tooltip
                 contentStyle={{
                   fontSize: 12,
-                  border: "1px solid #e5e7eb",
+                  border: `1px solid ${isDark ? "#374151" : "#e5e7eb"}`,
                   borderRadius: 4,
+                  backgroundColor: isDark ? "#1f2937" : "#ffffff",
+                  color: isDark ? "#f1f5f9" : "#111827",
                 }}
               />
               <Legend
                 content={() => (
-                  <div style={{ display: "flex", gap: 16, justifyContent: "center", fontSize: 12 }}>
+                  <div style={{ display: "flex", gap: 16, justifyContent: "center", fontSize: 12, color: isDark ? "#9ca3af" : undefined }}>
                     <span style={{ display: "flex", alignItems: "center", gap: 4 }}>
                       <span style={{ width: 24, height: 2, background: "#3b82f6", display: "inline-block" }} />
                       得点
@@ -205,9 +213,9 @@ export default function TeamDetailClient({
 
       {/* ─── セクション3: 直近試合リスト ──────────── */}
       {recentMatches.length > 0 && (
-        <div className="bg-white border border-gray-200 rounded shadow-sm overflow-hidden">
-          <div className="px-5 py-3 border-b border-gray-100">
-            <h2 className="text-base font-semibold text-gray-900">
+        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded shadow-sm overflow-hidden">
+          <div className="px-5 py-3 border-b border-gray-100 dark:border-gray-800">
+            <h2 className="text-base font-semibold text-gray-900 dark:text-gray-100">
               直近の試合結果
             </h2>
           </div>
@@ -215,13 +223,13 @@ export default function TeamDetailClient({
             {[...recentMatches].reverse().map((m) => (
               <li
                 key={m.id}
-                className="flex items-center gap-3 px-5 py-3 border-b border-gray-100 last:border-0 hover:bg-gray-50 transition-colors"
+                className="flex items-center gap-3 px-5 py-3 border-b border-gray-100 dark:border-gray-800 last:border-0 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
               >
-                <span className="text-xs text-gray-400 w-10 shrink-0 font-mono tabular-nums">
+                <span className="text-xs text-gray-400 dark:text-gray-500 w-10 shrink-0 font-mono tabular-nums">
                   {formatDate(m.utcDate)}
                 </span>
                 <ResultBadge result={m.result} />
-                <span className="text-xs text-gray-500 w-6 shrink-0">
+                <span className="text-xs text-gray-500 dark:text-gray-400 w-6 shrink-0">
                   {m.isHome ? "H" : "A"}
                 </span>
                 <Image
@@ -232,16 +240,16 @@ export default function TeamDetailClient({
                   className="object-contain shrink-0"
                 />
                 <div className="flex-1 min-w-0 leading-tight">
-                  <span className="text-sm text-gray-900 truncate block">
+                  <span className="text-sm text-gray-900 dark:text-gray-100 truncate block">
                     {getTeamShortNameJa(m.opponentId) ?? m.opponentShortName}
                   </span>
                   {getTeamShortNameJa(m.opponentId) && (
-                    <span className="text-xs text-gray-400 truncate block">{m.opponentShortName}</span>
+                    <span className="text-xs text-gray-400 dark:text-gray-500 truncate block">{m.opponentShortName}</span>
                   )}
                 </div>
-                <span className="font-mono tabular-nums text-sm font-semibold text-gray-900 shrink-0">
+                <span className="font-mono tabular-nums text-sm font-semibold text-gray-900 dark:text-gray-100 shrink-0">
                   {m.scored}
-                  <span className="text-gray-400 mx-1">–</span>
+                  <span className="text-gray-400 dark:text-gray-500 mx-1">–</span>
                   {m.conceded}
                 </span>
               </li>
@@ -252,16 +260,16 @@ export default function TeamDetailClient({
 
       {/* ─── セクション4: ホーム/アウェイ成績 ─────── */}
       {(homeStanding || awayStanding) && (
-        <div className="bg-white border border-gray-200 rounded shadow-sm overflow-hidden">
-          <div className="px-5 py-3 border-b border-gray-100">
-            <h2 className="text-base font-semibold text-gray-900">
+        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded shadow-sm overflow-hidden">
+          <div className="px-5 py-3 border-b border-gray-100 dark:border-gray-800">
+            <h2 className="text-base font-semibold text-gray-900 dark:text-gray-100">
               今シーズン通算スタッツ
             </h2>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-sm border-collapse">
               <thead>
-                <tr className="bg-gray-50 border-b border-gray-200 text-xs text-gray-500 uppercase tracking-wider">
+                <tr className="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   <th className="px-4 py-2 text-left">区分</th>
                   <th className="px-3 py-2 text-center">試</th>
                   <th className="px-3 py-2 text-center">勝</th>
@@ -282,33 +290,33 @@ export default function TeamDetailClient({
                   s ? (
                     <tr
                       key={label}
-                      className="border-b border-gray-100 last:border-0 hover:bg-gray-50 transition-colors"
+                      className="border-b border-gray-100 dark:border-gray-800 last:border-0 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                     >
-                      <td className="px-4 py-2.5 text-sm font-medium text-gray-700">
+                      <td className="px-4 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300">
                         {label}
                       </td>
-                      <td className="px-3 py-2.5 text-center font-mono tabular-nums text-gray-700">
+                      <td className="px-3 py-2.5 text-center font-mono tabular-nums text-gray-700 dark:text-gray-300">
                         {s.playedGames}
                       </td>
-                      <td className="px-3 py-2.5 text-center font-mono tabular-nums text-gray-700">
+                      <td className="px-3 py-2.5 text-center font-mono tabular-nums text-gray-700 dark:text-gray-300">
                         {s.won}
                       </td>
-                      <td className="px-3 py-2.5 text-center font-mono tabular-nums text-gray-700">
+                      <td className="px-3 py-2.5 text-center font-mono tabular-nums text-gray-700 dark:text-gray-300">
                         {s.draw}
                       </td>
-                      <td className="px-3 py-2.5 text-center font-mono tabular-nums text-gray-700">
+                      <td className="px-3 py-2.5 text-center font-mono tabular-nums text-gray-700 dark:text-gray-300">
                         {s.lost}
                       </td>
-                      <td className="px-3 py-2.5 text-center font-mono tabular-nums text-gray-700">
+                      <td className="px-3 py-2.5 text-center font-mono tabular-nums text-gray-700 dark:text-gray-300">
                         {s.goalsFor}
                       </td>
-                      <td className="px-3 py-2.5 text-center font-mono tabular-nums text-gray-700">
+                      <td className="px-3 py-2.5 text-center font-mono tabular-nums text-gray-700 dark:text-gray-300">
                         {s.goalsAgainst}
                       </td>
-                      <td className="px-3 py-2.5 text-center font-mono tabular-nums text-gray-700">
+                      <td className="px-3 py-2.5 text-center font-mono tabular-nums text-gray-700 dark:text-gray-300">
                         {formatGD(s.goalDifference)}
                       </td>
-                      <td className="px-3 py-2.5 text-center font-mono tabular-nums font-semibold text-gray-900">
+                      <td className="px-3 py-2.5 text-center font-mono tabular-nums font-semibold text-gray-900 dark:text-gray-100">
                         {s.points}
                       </td>
                     </tr>
