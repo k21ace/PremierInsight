@@ -8,6 +8,7 @@ import { JsonLd } from "@/components/JsonLd";
 import { createMetadata } from "@/lib/metadata";
 import TitleRaceChart from "@/components/TitleRaceChart";
 import FeaturedMatchCard, { buildRecentMatches } from "@/components/FeaturedMatchCard";
+import TickerBar from "@/components/ui/TickerBar";
 import { FEATURED_MATCH_CONFIG, type FeaturedMatchConfig } from "@/lib/match-preview-data";
 
 export const revalidate = 1800;
@@ -51,9 +52,11 @@ export default async function Home() {
 
   const timelines = calcPointsTimeline(matchesData.matches ?? []);
 
-  const recentMatches = [...(matchesData.matches ?? [])]
-    .sort((a, b) => new Date(b.utcDate).getTime() - new Date(a.utcDate).getTime())
-    .slice(0, 3);
+  const sortedFinished = [...(matchesData.matches ?? [])]
+    .sort((a, b) => new Date(b.utcDate).getTime() - new Date(a.utcDate).getTime());
+
+  const recentMatches = sortedFinished.slice(0, 3);
+  const tickerMatches = sortedFinished.slice(0, 10);
 
   const recentIds = new Set(recentMatches.map((m) => m.id));
   const upcomingMatches = upcomingRaw.filter((m) => !recentIds.has(m.id));
@@ -124,6 +127,7 @@ export default async function Home() {
 
   return (
     <main className="min-h-screen bg-pn-bg dark:bg-gray-950">
+      <TickerBar matches={tickerMatches} />
       <JsonLd
         data={{
           "@context": "https://schema.org",

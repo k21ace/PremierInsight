@@ -23,6 +23,7 @@
 | コンポーネント名 | ファイルパス | 役割 |
 |----------------|------------|------|
 | `Home`（page） | `app/page.tsx` | Server Component。データ取得・レイアウト制御 |
+| `TickerBar` | `components/ui/TickerBar.tsx` | 直近10試合のスコアを横スクロールするティッカーバー。ヘッダー直下に全幅表示。Client Component |
 | `TitleRaceChart` | `components/TitleRaceChart.tsx` | 優勝確率・CL圏確率・残留確率の3列コンパクト表示（モンテカルロシミュレーション）。`/charts/race` への詳細リンク付き |
 | `FeaturedMatchCard` | `components/FeaturedMatchCard.tsx` | 注目カード（フォーム比較・けが人・クイズリンク） |
 | `FormBadges` | `components/ui/ResultBadge.tsx` | 直近5試合 W/D/L バッジ列 |

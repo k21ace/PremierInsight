@@ -108,7 +108,8 @@ c:/ws/PremierNow/
 │
 ├── components/
 │   ├── ui/
-│   │   └── Header.tsx          # 共通ヘッダー（2行構成・6項目ナビ・Client Component）
+│   │   ├── Header.tsx          # 共通ヘッダー（2行構成・6項目ナビ・Client Component）
+│   │   └── TickerBar.tsx       # 直近試合スコアの横スクロールティッカー（Client Component）
 │   ├── mdx/
 │   │   └── MdxComponents.tsx   # MDX用カスタムコンポーネント（h2/h3/p/ul/ol など）
 │   ├── JsonLd.tsx              # JSON-LD構造化データ出力コンポーネント

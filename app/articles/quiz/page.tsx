@@ -78,14 +78,6 @@ export default function QuizListPage() {
             );
           })}
         </div>
-        <div className="mt-6">
-          <Link
-            href="/articles"
-            className="text-sm text-pn-blue dark:text-blue-400 hover:underline"
-          >
-            ← 記事一覧に戻る
-          </Link>
-        </div>
       </div>
     </main>
   );
