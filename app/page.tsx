@@ -137,17 +137,19 @@ export default async function Home() {
       <div className="max-w-3xl mx-auto px-4 py-4 space-y-4">
 
         {/* 1. 注目データ */}
-        <section>
-          <div className="flex items-center justify-between mb-3">
+        <section className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded shadow-sm overflow-hidden">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-gray-800">
             <div className="flex items-center gap-2">
               <span className="w-1 h-5 bg-[#00a8e8] rounded inline-block" />
-              <p className="text-sm font-semibold text-[#2d0a4e] dark:text-gray-100">注目データ</p>
+              <p className="text-sm font-semibold text-[#2d0a4e] dark:text-gray-100">Editor's Pick <span>いま注目のデータ</span></p>
             </div>
             <Link href="/standings" className="text-xs text-[#00a8e8] hover:underline">
               順位表を見る →
             </Link>
           </div>
-          <TitleRaceChart timelines={timelines} />
+          <div className="p-4">
+            <TitleRaceChart timelines={timelines} />
+          </div>
         </section>
 
         {/* 2. 注目カード */}
