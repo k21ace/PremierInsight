@@ -78,7 +78,7 @@ export default function TitleRaceChart({ timelines }: TitleRaceChartProps) {
         teamId: tl.teamId,
         shortName: tl.teamShortName,
         crest: tl.crestUrl,
-        probability: Math.round(prob * 100),
+        probability: prob >= 1 ? 100 : Math.min(99, Math.round(prob * 100)),
         color: tl.color,
       };
     };
